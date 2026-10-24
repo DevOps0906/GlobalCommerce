@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>상품 검색·GEO</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="search" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1280px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <p style="margin: 0; font-size: 13px; color: #64748B;">인사이트</p>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">상품 검색·GEO</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569;">상품명에 없는 표현으로도 찾고, AI 검색 엔진이 읽는 구조화 데이터(JSON-LD)를 만들어 상세페이지와 블로그에 넣습니다.</p>
+      </div>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center;">
+        <label for="nq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">자연어 검색</label>
+        <input id="nq" type="search" value="캠핑할 때 같이 쓰기 좋은 접이식 가구" style="flex: 1 1 360px; height: 44px; border: 1px solid #CBD5E1; border-radius: 10px; padding: 0 14px; font-family: inherit; font-size: 15px;">
+        <div style="flex: 0 1 260px; display: flex; flex-direction: column; gap: 4px;">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569; font-variant-numeric: tabular-nums;"><span>키워드 30</span><span>의미 70</span></div>
+          <div style="position: relative; height: 6px; border-radius: 3px; background: #E2E8F0;"><div style="width: 70%; height: 100%; border-radius: 3px; background: #00C9A7; margin-left: 30%;"></div><span style="position: absolute; left: 30%; top: -5px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: #FFFFFF; border: 2px solid #007A64;"></span></div>
+        </div>
+        <button type="button" style="height: 44px; padding: 0 18px; border: 0; border-radius: 10px; background: #0F172A; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">검색</button>
+      </section>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <aside aria-label="필터" style="flex: 1 1 200px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;"><legend style="font-size: 12px; font-weight: 700; color: #64748B; margin-bottom: 6px;">출처</legend>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked>아마존 <span style="margin-left: auto; color: #64748B; font-variant-numeric: tabular-nums;">184</span></label>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked>오너클랜 <span style="margin-left: auto; color: #64748B; font-variant-numeric: tabular-nums;">312</span></label>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox">도매꾹 <span style="margin-left: auto; color: #64748B; font-variant-numeric: tabular-nums;">97</span></label>
+          </fieldset>
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;"><legend style="font-size: 12px; font-weight: 700; color: #64748B; margin-bottom: 6px;">카테고리</legend>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked>캠핑</label>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox">생활가전</label>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox">주방</label>
+          </fieldset>
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;"><legend style="font-size: 12px; font-weight: 700; color: #64748B; margin-bottom: 6px;">마켓 등록</legend>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="radio" name="reg" checked>전체</label>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="radio" name="reg">등록된 상품만</label>
+          </fieldset>
+        </aside>
+
+        <section aria-label="검색 결과" style="flex: 3 1 440px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+          <div style="padding: 14px 16px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; gap: 8px; align-items: center;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">결과 <span style="font-weight: 500; color: #64748B;">12</span></h2>
+            <button type="button" style="border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 8px; height: 32px; padding: 0 12px; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">CSV 내보내기</button>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="tbl" style="min-width: 520px;">
+              <thead><tr><th>상품</th><th>일치 근거</th><th class="num">유사도</th></tr></thead>
+              <tbody>
+                <tr style="background: #E6FBF7;"><td style="font-weight: 600;">접이식 캠핑 의자 사이드 테이블 일체형</td><td style="font-size: 13px; color: #475569;">의미 · 키워드 '접이식'</td><td class="num"><b>0.91</b></td></tr>
+                <tr><td style="font-weight: 600;">알루미늄 롤 테이블 70cm 수납 가방 포함</td><td style="font-size: 13px; color: #475569;">의미</td><td class="num">0.87</td></tr>
+                <tr><td style="font-weight: 600;">캠핑 선반 3단 폴딩 랙</td><td style="font-size: 13px; color: #475569;">의미 · 키워드 '폴딩'</td><td class="num">0.84</td></tr>
+                <tr><td style="font-weight: 600;">경량 야전 침대 접이식 120kg</td><td style="font-size: 13px; color: #475569;">키워드 '접이식'</td><td class="num">0.78</td></tr>
+                <tr><td style="font-weight: 600;">캠핑 키친 테이블 수납형</td><td style="font-size: 13px; color: #475569;">의미</td><td class="num">0.76</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section aria-label="JSON-LD" style="flex: 2 1 340px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">JSON-LD</h2>
+            <span style="font-size: 12px; color: #475569;">Product 스키마 · 선택한 상품</span>
+          </div>
+<pre style="margin: 0; padding: 14px; border-radius: 8px; background: #0F172A; color: #E2E8F0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; white-space: pre;">{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "접이식 캠핑 의자 사이드 테이블 일체형",
+  "category": "캠핑 &gt; 의자",
+  "material": "강철, 600D 옥스퍼드",
+  "additionalProperty": [{
+    "@type": "PropertyValue",
+    "name": "최대 하중", "value": "136kg"
+  }],
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "KRW",
+    "price": "[판매가]",
+    "url": "[마켓 상품 URL]"
+  }
+}</pre>
+          <fieldset style="border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px;"><legend style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">넣을 곳</legend>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked>상세페이지 HTML</label>
+            <label style="display: flex; gap: 8px; align-items: center;"><input type="checkbox" checked>블로그 원고 1건</label>
+          </fieldset>
+          <button type="button" style="height: 38px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">JSON-LD 반영</button>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>슈퍼 어드민</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="admin" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1280px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <p style="margin: 0; font-size: 13px; color: #64748B;">운영</p>
+          <h1 style="margin: 0; display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800;">슈퍼 어드민 <span style="font-size: 12px; font-weight: 700; color: #FFFFFF; background: #0F172A; border-radius: 4px; padding: 2px 8px;">SUPER_ADMIN 전용</span></h1>
+          <p style="margin: 0; font-size: 14px; color: #475569;">일반 사용자에게는 이 메뉴가 보이지 않습니다.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+        <section style="flex: 2 1 360px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 6px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">이번 달 유료 전환</p>
+          <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 60px; line-height: 0.95; color: #0F172A; font-variant-numeric: tabular-nums;">38<span style="font-family: 'Noto Sans KR', sans-serif; font-size: 16px; font-weight: 600; margin-left: 6px;">명</span></p>
+          <p style="margin: 0; font-size: 14px; font-weight: 600;">▲ +9명 <span style="font-weight: 400; color: #64748B;">지난달 같은 기간 대비 · 전환율 7.4%</span></p>
+        </section>
+        <section style="flex: 1 1 200px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">가입자</p>
+          <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums;">512</p>
+          <p style="margin: 0; font-size: 13px; color: #475569;">이번 달 신규</p>
+        </section>
+        <section style="flex: 1 1 200px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 6px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">실패한 작업</p>
+          <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums;">14</p>
+          <a href="Runs.dc.html" style="font-size: 13px; font-weight: 600; text-decoration: none;">오늘 실패 목록</a>
+        </section>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <section style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px 16px; border-bottom: 1px solid #E2E8F0;">
+            <label for="uq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">사용자 검색</label>
+            <input id="uq" type="search" placeholder="이메일, 워크스페이스 검색" style="flex: 0 1 260px; height: 34px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 13px;">
+            <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; border-radius: 999px; padding: 4px 12px; cursor: pointer;">플랜: 전체</button>
+            <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; border-radius: 999px; padding: 4px 12px; cursor: pointer;">역할: 전체</button>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="tbl" style="min-width: 680px;">
+              <thead><tr><th>이메일</th><th>플랜</th><th>역할</th><th class="num">마켓 계정</th><th class="num">가입일</th></tr></thead>
+              <tbody>
+                <tr style="background: #E6FBF7; box-shadow: inset 3px 0 0 #00C9A7;"><td style="font-weight: 600;">seller.kim@example.com</td><td>프로</td><td>USER</td><td class="num">4</td><td class="num">8월 12일</td></tr>
+                <tr><td style="font-weight: 600;">camp.store@example.com</td><td>기본</td><td>USER</td><td class="num">2</td><td class="num">9월 3일</td></tr>
+                <tr><td style="font-weight: 600;">global.buy@example.com</td><td>엔터</td><td>USER</td><td class="num">11</td><td class="num">7월 28일</td></tr>
+                <tr><td style="font-weight: 600;">ops@nomadaifactory.com</td><td>엔터</td><td><span style="font-size: 12px; font-weight: 700; color: #FFFFFF; background: #0F172A; border-radius: 4px; padding: 1px 6px;">SUPER_ADMIN</span></td><td class="num">0</td><td class="num">6월 1일</td></tr>
+                <tr><td style="font-weight: 600;">newbie.shop@example.com</td><td>무료</td><td>USER</td><td class="num">1</td><td class="num">10월 22일</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside aria-label="사용자 상세" style="flex: 1 1 320px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <p style="margin: 0; font-size: 12px; color: #64748B;">선택한 사용자</p>
+            <h2 style="margin: 2px 0 0; font-size: 16px; font-weight: 800;">seller.kim@example.com</h2>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;"><label for="role" style="font-size: 13px; font-weight: 600;">역할</label><select id="role" style="height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 8px; font-family: inherit; font-size: 14px; background: #FFFFFF;"><option>USER</option><option>SUPER_ADMIN</option></select></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><label for="plan" style="font-size: 13px; font-weight: 600;">플랜</label><select id="plan" style="height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 8px; font-family: inherit; font-size: 14px; background: #FFFFFF;"><option>프로</option><option>엔터</option></select></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <p style="margin: 0; font-size: 13px; font-weight: 600;">마켓 계정 4</p>
+            <p style="margin: 0; font-size: 13px; color: #475569;">쿠팡 1호점 · 쿠팡 2호점 · 스마트스토어 1호점 · 스마트스토어 2호점 (키 만료)</p>
+          </div>
+          <div style="border-top: 1px solid #E2E8F0; padding-top: 12px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-size: 13px; font-weight: 700;">변경 기록</p>
+            <ol style="margin: 0; padding: 0 0 0 14px; list-style: none; border-left: 2px solid #E2E8F0; display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+              <li style="position: relative;"><span style="position: absolute; left: -20px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #94A3B8;"></span>기본 → 프로 변경 <span style="display: block; color: #64748B;">8월 23일 · 결제</span></li>
+              <li style="position: relative;"><span style="position: absolute; left: -20px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #94A3B8;"></span>스마트스토어 2호점 등록 <span style="display: block; color: #64748B;">9월 10일 · 마켓 계정</span></li>
+              <li style="position: relative;"><span style="position: absolute; left: -20px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #94A3B8;"></span>가입 <span style="display: block; color: #64748B;">8월 12일 · 카카오 로그인</span></li>
+            </ol>
+          </div>
+          <button type="button" style="height: 38px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">변경 저장</button>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

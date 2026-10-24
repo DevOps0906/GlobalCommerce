@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>실행 기록</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=JetBrains+Mono:wght@400&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+button:focus-visible,a:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="runs" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1240px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <p style="margin: 0; font-size: 13px; color: #64748B;">자동화</p>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">실행 기록</h1>
+        <p style="margin: 0; font-size: 14px; color: #475569;">워크플로우가 노드를 하나씩 실행한 결과입니다. 실패한 노드부터 다시 실행할 수 있습니다.</p>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+        <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #0F172A; background: #0F172A; color: #FFFFFF; border-radius: 999px; padding: 5px 12px; cursor: pointer;">오늘</button>
+        <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; border-radius: 999px; padding: 5px 12px; cursor: pointer;">상태: 전체</button>
+        <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; border-radius: 999px; padding: 5px 12px; cursor: pointer;">워크플로우: 전체</button>
+        <span style="margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #475569;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #15803D;"></span>실시간 갱신 중</span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <section aria-label="실행 목록" style="flex: 1 1 380px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+          <ul style="margin: 0; padding: 0; list-style: none;">
+            <li style="padding: 14px 16px; border-bottom: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;"><span style="font-size: 14px; font-weight: 700;">가을 시즌 상품 자동화</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #1E40AF; background: #DBEAFE; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #1D4ED8;"></span>실행 중</span></div>
+              <div style="height: 6px; border-radius: 3px; background: #E2E8F0; overflow: hidden;"><div style="width: 57%; height: 100%; background: #00C9A7;"></div></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569; font-variant-numeric: tabular-nums;"><span>4 / 7 노드 · 상세페이지 조립 중</span><span>4분 12초 · 11:02</span></div>
+            </li>
+            <li style="padding: 14px 16px; border-bottom: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;"><span style="font-size: 14px; font-weight: 700;">쿠팡 2호점 일괄 업로드</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>완료</span></div>
+              <div style="height: 6px; border-radius: 3px; background: #E2E8F0; overflow: hidden;"><div style="width: 100%; height: 100%; background: #00C9A7;"></div></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569; font-variant-numeric: tabular-nums;"><span>24 / 24건</span><span>2분 40초 · 10:48</span></div>
+            </li>
+            <li aria-current="true" style="padding: 14px 16px; border-bottom: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 8px; background: #E6FBF7; box-shadow: inset 3px 0 0 #00C9A7;">
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;"><span style="font-size: 14px; font-weight: 700;">숏폼 30초 렌더 (전기요 3종)</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #991B1B; background: #FEE2E2; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B91C1C;"></span>실패</span></div>
+              <div style="height: 6px; border-radius: 3px; background: #E2E8F0; overflow: hidden;"><div style="width: 52%; height: 100%; background: #EF4444;"></div></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569; font-variant-numeric: tabular-nums;"><span>음원 합성에서 멈춤</span><span>1분 05초 · 10:31</span></div>
+            </li>
+            <li style="padding: 14px 16px; border-bottom: 1px solid #E2E8F0; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;"><span style="font-size: 14px; font-weight: 700;">오너클랜 엑셀 수집</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>완료</span></div>
+              <div style="height: 6px; border-radius: 3px; background: #E2E8F0; overflow: hidden;"><div style="width: 100%; height: 100%; background: #00C9A7;"></div></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569; font-variant-numeric: tabular-nums;"><span>312 / 312행</span><span>38초 · 09:55</span></div>
+            </li>
+            <li style="padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+              <div style="display: flex; justify-content: space-between; gap: 8px; align-items: center;"><span style="font-size: 14px; font-weight: 700;">블로그 원고 생성</span><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #64748B;"></span>예약</span></div>
+              <div style="height: 6px; border-radius: 3px; background: #E2E8F0;"></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569;"><span>11:30에 시작</span><span>–</span></div>
+            </li>
+          </ul>
+        </section>
+
+        <section aria-label="실행 상세" style="flex: 2 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; justify-content: space-between;">
+            <div>
+              <h2 style="margin: 0; font-size: 18px; font-weight: 800;">숏폼 30초 렌더 (전기요 3종)</h2>
+              <p style="margin: 2px 0 0; font-size: 13px; color: #64748B;">10월 23일 10:31 시작 · 수동 실행 · 리치노마드</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">처음부터 다시</button>
+              <button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">음원 합성부터 다시 실행</button>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; font-size: 14px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #B91C1C; margin-top: 7px; flex: none;"></span>
+            <p style="margin: 0;"><b>고른 음원 파일을 찾을 수 없어 멈췄습니다.</b> 설정 › 음원에서 'Winter Cabin Loop'를 다시 올리거나 다른 음원을 고른 뒤, 이 노드부터 다시 실행하세요. 앞 단계 결과는 그대로 씁니다.</p>
+          </div>
+
+          <ol style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column;">
+            <li style="display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #E2E8F0; font-size: 14px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #15803D;"></span><span><b>상품 불러오기</b> <span style="color: #64748B; font-size: 13px;">상품 3개</span></span><span style="font-size: 13px; color: #475569; font-variant-numeric: tabular-nums;">성공 · 2초</span></li>
+            <li style="display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #E2E8F0; font-size: 14px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #15803D;"></span><span><b>이미지 모션 만들기</b> <span style="color: #64748B; font-size: 13px;">줌인 강조 · 장면 21개</span></span><span style="font-size: 13px; color: #475569; font-variant-numeric: tabular-nums;">성공 · 41초</span></li>
+            <li style="display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #E2E8F0; font-size: 14px;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #15803D;"></span><span><b>TTS 자막</b> <span style="color: #64748B; font-size: 13px;">문장 9개</span></span><span style="font-size: 13px; color: #475569; font-variant-numeric: tabular-nums;">성공 · 12초</span></li>
+            <li style="display: flex; flex-direction: column; gap: 10px; padding: 10px 0; border-bottom: 1px solid #E2E8F0; font-size: 14px;">
+              <div style="display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: center;"><span style="width: 10px; height: 10px; border-radius: 50%; background: #B91C1C;"></span><span><b>음원 합성</b> <span style="color: #64748B; font-size: 13px;">내 음원 · Winter Cabin Loop</span></span><span style="font-size: 13px; font-weight: 600; color: #991B1B; font-variant-numeric: tabular-nums;">실패 · 10초</span></div>
+              <div style="margin-left: 32px; display: flex; flex-direction: column; gap: 6px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 12px; font-weight: 600; color: #475569;">원문 로그</span><button type="button" style="border: 0; background: transparent; font-family: inherit; font-size: 12px; font-weight: 600; color: #007A64; cursor: pointer;">복사</button></div>
+                <pre style="margin: 0; padding: 12px; border-radius: 8px; background: #0F172A; color: #E2E8F0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.7; overflow-x: auto; white-space: pre;">10:32:26 mix-audio start node=audio_mix run=r_7f21
+10:32:31 fetch storage audio/u_8f2c/winter-cabin-loop.mp3
+10:32:36 Error: object not found (404)
+10:32:36 node failed, downstream skipped: render, handoff</pre>
+              </div>
+            </li>
+            <li style="display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid #E2E8F0; font-size: 14px; color: #64748B;"><span style="width: 10px; height: 10px; border-radius: 50%; border: 2px solid #94A3B8;"></span><span><b style="color: #475569;">mp4 렌더링</b></span><span style="font-size: 13px;">건너뜀</span></li>
+            <li style="display: grid; grid-template-columns: 20px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; font-size: 14px; color: #64748B;"><span style="width: 10px; height: 10px; border-radius: 50%; border: 2px solid #94A3B8;"></span><span><b style="color: #475569;">SNS 업로드로 넘기기</b></span><span style="font-size: 13px;">건너뜀</span></li>
+          </ol>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

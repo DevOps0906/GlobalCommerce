@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>모바일 대시보드</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#007A64}a:hover{color:#005A4A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A; overflow: hidden;">
+  <header style="height: 56px; flex: none; display: flex; align-items: center; gap: 10px; padding: 0 12px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0;">
+    <button type="button" aria-label="메뉴 열기" style="width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; color: #0F172A; cursor: pointer;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <h1 style="margin: 0; font-size: 20px; font-weight: 800; flex: 1;">대시보드</h1>
+    <button type="button" aria-label="검색" style="width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; color: #0F172A; cursor: pointer;"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+  </header>
+
+  <main style="flex: 1; min-height: 0; overflow: hidden; padding: 16px 16px 84px; display: flex; flex-direction: column; gap: 12px;">
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline;"><p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">USD/KRW</p><span style="font-size: 11px; font-weight: 600; color: #92400E; background: #FEF3C7; border-radius: 999px; padding: 1px 8px;">예시 데이터</span></div>
+      <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 0.95; font-variant-numeric: tabular-nums;">1,384.50</p>
+      <p style="margin: 0; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;">▲ +4.20 (+0.30%) <span style="font-weight: 400; color: #64748B;">전일 대비</span></p>
+      <svg role="img" aria-label="최근 30일 상승 추이" viewBox="0 0 300 60" preserveAspectRatio="none" style="width: 100%; height: 48px; display: block; margin-top: 6px;">
+        <path d="M0,50 L30,48 L60,44 L90,40 L120,38 L150,33 L180,28 L210,26 L240,20 L270,16 L300,12 L300,60 L0,60 Z" fill="#E6FBF7"/>
+        <path d="M0,50 L30,48 L60,44 L90,40 L120,38 L150,33 L180,28 L210,26 L240,20 L270,16 L300,12" fill="none" stroke="#00C9A7" stroke-width="2" vector-effect="non-scaling-stroke"/>
+      </svg>
+    </section>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 2px;">
+        <p style="margin: 0; font-size: 12px; font-weight: 600; color: #475569;">CAD/KRW</p>
+        <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums;">1,003.10</p>
+        <p style="margin: 0; font-size: 12px; font-variant-numeric: tabular-nums;">▼ −0.18%</p>
+      </section>
+      <a href="Products.dc.html" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 2px; text-decoration: none; color: #0F172A;">
+        <span style="font-size: 12px; font-weight: 600; color: #475569;">처리 대기</span>
+        <span style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums;">27건</span>
+        <span style="font-size: 12px; color: #007A64; font-weight: 600;">목록 보기</span>
+      </a>
+    </div>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline;"><h2 style="margin: 0; font-size: 15px; font-weight: 700;">검색어 추이</h2><span style="font-size: 12px; color: #475569;">12주 · 데이터랩</span></div>
+      <svg role="img" aria-label="전기요 검색량 12주 급상승" viewBox="0 0 320 110" style="width: 100%; height: auto; display: block;">
+        <line x1="0" y1="105" x2="320" y2="105" stroke="#CBD5E1"/>
+        <path d="M0,93 L29,92 L58,90 L87,87 L116,83 L145,78 L174,72 L203,64 L232,53 L261,41 L290,24 L320,5 L320,105 L0,105 Z" fill="#E6FBF7"/>
+        <path d="M0,85 L29,83 L58,84 L87,80 L116,77 L145,75 L174,70 L203,65 L232,59 L261,53 L290,47 L320,42" fill="none" stroke="#334155" stroke-width="2"/>
+        <path d="M0,93 L29,92 L58,90 L87,87 L116,83 L145,78 L174,72 L203,64 L232,53 L261,41 L290,24 L320,5" fill="none" stroke="#00C9A7" stroke-width="2.5"/>
+      </svg>
+      <div style="display: flex; gap: 12px; font-size: 12px; color: #334155;"><span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 3px; background: #00C9A7;"></span>전기요</span><span style="display: inline-flex; align-items: center; gap: 4px;"><span style="width: 12px; height: 3px; background: #334155;"></span>가습기</span></div>
+    </section>
+
+    <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px 16px; display: flex; flex-direction: column;">
+      <h2 style="margin: 6px 0 2px; font-size: 15px; font-weight: 700;">시즌 추천</h2>
+      <a href="Sourcing.dc.html" style="min-height: 48px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #E2E8F0; text-decoration: none; color: #0F172A; font-size: 14px;"><b style="flex: 1;">전기요</b><span style="font-weight: 700; color: #15803D;">▲ 144%</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></a>
+      <a href="Sourcing.dc.html" style="min-height: 48px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #E2E8F0; text-decoration: none; color: #0F172A; font-size: 14px;"><b style="flex: 1;">핫팩</b><span style="font-weight: 700; color: #15803D;">▲ 121%</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></a>
+      <a href="Sourcing.dc.html" style="min-height: 48px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: #0F172A; font-size: 14px;"><b style="flex: 1;">패딩 조끼</b><span style="font-weight: 700; color: #15803D;">▲ 73%</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748B" stroke-width="2" stroke-linecap="round"><path d="m9 6 6 6-6 6"/></svg></a>
+    </section>
+  </main>
+
+  <nav aria-label="하단 탭" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; padding-bottom: 8px; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); background: #FFFFFF; border-top: 1px solid #E2E8F0;">
+    <a href="Main.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #007A64; font-size: 11px; font-weight: 700;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>홈</a>
+    <a href="Products.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #475569; font-size: 11px;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>상품</a>
+    <a href="Shorts.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #475569; font-size: 11px;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2"/><path d="M10.5 9.5v5l4-2.5z"/></svg>콘텐츠</a>
+    <a href="Runs.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #475569; font-size: 11px;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>자동화</a>
+    <a href="Settings.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: #475569; font-size: 11px;"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>더보기</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

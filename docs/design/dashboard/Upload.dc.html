@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>마켓 업로드</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#475569;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td+td,.tbl th+th{border-left:1px solid #E2E8F0}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="upload" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1200px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <p style="margin: 0; font-size: 13px; color: #64748B;">상품</p>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800;">마켓 업로드</h1>
+          <p style="margin: 0; font-size: 14px; color: #475569;">보낼 상품과 마켓 계정을 고르면 한 번에 전송합니다. 전송이 끝난 상품 URL은 SNS 업로드에 자동으로 넘어갑니다.</p>
+        </div>
+      </div>
+
+      <section aria-label="전송 진행" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 28px;">
+          <div>
+            <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">전송 진행</p>
+            <p style="margin: 4px 0 0; font-family: 'Bebas Neue', sans-serif; font-size: 52px; line-height: 0.95; font-variant-numeric: tabular-nums;">7 <span style="font-size: 30px; color: #64748B;">/ 12</span></p>
+          </div>
+          <dl style="margin: 0 0 4px; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px;">
+            <div style="display: flex; gap: 6px; align-items: center;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #15803D;"></span><dt>성공</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">6</dd></div>
+            <div style="display: flex; gap: 6px; align-items: center;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #1D4ED8;"></span><dt>전송 중</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">1</dd></div>
+            <div style="display: flex; gap: 6px; align-items: center;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #B91C1C;"></span><dt>실패</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">1</dd></div>
+            <div style="display: flex; gap: 6px; align-items: center;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #94A3B8;"></span><dt>대기</dt><dd style="margin: 0; font-weight: 700; font-variant-numeric: tabular-nums;">4</dd></div>
+          </dl>
+          <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" style="height: 38px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">전송 취소</button>
+            <button type="button" style="height: 38px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; font-weight: 600; cursor: pointer;">실패 건만 다시 보내기</button>
+          </div>
+        </div>
+        <div role="progressbar" aria-label="전송 진행률" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="display: flex; height: 10px; border-radius: 5px; overflow: hidden; background: #E2E8F0;">
+          <span style="width: 50%; background: #00C9A7;"></span>
+          <span style="width: 8.33%; background: #EF4444;"></span>
+          <span style="width: 8.33%; background: #93C5FD;"></span>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; font-size: 13px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #B91C1C; margin-top: 6px; flex: none;"></span>
+          <p style="margin: 0; flex: 1; color: #0F172A;"><b>스마트스토어 1호점 · 전기 담요</b>: 이 카테고리에 필요한 '정격 전압' 속성이 비어 있어 등록되지 않았습니다. 속성을 입력하면 이 건만 다시 보냅니다.</p>
+          <a href="Products.dc.html" style="font-weight: 700; text-decoration: none; white-space: nowrap;">속성 입력</a>
+        </div>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 16px; border-bottom: 1px solid #E2E8F0;">
+          <h2 style="margin: 0 8px 0 0; font-size: 16px; font-weight: 700;">상품 × 마켓 계정</h2>
+          <span style="font-size: 13px; color: #475569;">계정:</span>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; border: 1px solid #00C9A7; background: #E6FBF7; border-radius: 999px; padding: 4px 12px;"><input type="checkbox" checked>쿠팡 1호점</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; border: 1px solid #00C9A7; background: #E6FBF7; border-radius: 999px; padding: 4px 12px;"><input type="checkbox" checked>쿠팡 2호점</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; border: 1px solid #00C9A7; background: #E6FBF7; border-radius: 999px; padding: 4px 12px;"><input type="checkbox" checked>스마트스토어 1호점</label>
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 999px; padding: 4px 12px; color: #64748B;"><input type="checkbox" disabled>스마트스토어 2호점 · 키 만료</label>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="tbl" style="min-width: 860px;">
+            <thead><tr><th style="min-width: 260px;"><label style="display: inline-flex; gap: 8px; align-items: center;"><input type="checkbox" checked>상품</label></th><th>쿠팡 1호점</th><th>쿠팡 2호점</th><th>스마트스토어 1호점</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><label style="display: flex; gap: 10px; align-items: center;"><input type="checkbox" checked><span style="width: 36px; height: 36px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">접이식 캠핑 의자 사이드 테이블 일체형</span></label></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>등록됨</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>등록됨</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>등록됨</span></td>
+              </tr>
+              <tr>
+                <td><label style="display: flex; gap: 10px; align-items: center;"><input type="checkbox" checked><span style="width: 36px; height: 36px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">전기 담요 무릎 담요 6단계 온도 조절</span></label></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>등록됨</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>등록됨</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #991B1B; background: #FEE2E2; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B91C1C;"></span>실패 · 속성 누락</span></td>
+              </tr>
+              <tr>
+                <td><label style="display: flex; gap: 10px; align-items: center;"><input type="checkbox" checked><span style="width: 36px; height: 36px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">보온 보냉 스테인리스 텀블러 946ml</span></label></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>등록됨</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #1E40AF; background: #DBEAFE; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #1D4ED8;"></span>전송 중</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #64748B;"></span>대기</span></td>
+              </tr>
+              <tr>
+                <td><label style="display: flex; gap: 10px; align-items: center;"><input type="checkbox" checked><span style="width: 36px; height: 36px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">비타민C 세럼 30ml 피부 고민 케어</span></label></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #64748B;"></span>대기</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #64748B;"></span>대기</span></td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #64748B;"></span>대기</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 14px 16px; border-top: 1px solid #E2E8F0; background: #F8FAFB;">
+          <p style="margin: 0; font-size: 14px;"><b style="font-variant-numeric: tabular-nums;">상품 4개 × 계정 3개 = 12건</b> <span style="color: #64748B;">· 등록된 6건은 다시 보내지 않습니다</span></p>
+          <button type="button" style="margin-left: auto; height: 38px; padding: 0 18px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">선택한 12건 전송</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

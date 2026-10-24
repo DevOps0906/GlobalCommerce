@@ -1,0 +1,46 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-10-23T06:20:00Z"},
+  "title": "NOMAD AI Factory 대시보드",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1440, "h": 1240, "title": "대시보드 · 6단계", "expand": "fill", "is_interactive": true},
+    "Sourcing.dc.html": {"x": 1520, "y": 0, "w": 1440, "h": 1240, "title": "소싱·수집 · 7단계", "expand": "fill", "is_interactive": true},
+    "Products.dc.html": {"x": 3040, "y": 0, "w": 1440, "h": 1240, "title": "상품 관리 · 8단계", "expand": "fill", "is_interactive": true},
+    "ProductImages.dc.html": {"x": 4560, "y": 0, "w": 1440, "h": 1240, "title": "상품 이미지 · 9단계", "expand": "fill", "is_interactive": true},
+    "DetailPage.dc.html": {"x": 6080, "y": 0, "w": 1440, "h": 1240, "title": "상세페이지 · 10단계", "expand": "fill", "is_interactive": true},
+    "Upload.dc.html": {"x": 7600, "y": 0, "w": 1440, "h": 1240, "title": "마켓 업로드 · 14단계", "expand": "fill", "is_interactive": true},
+    "Blog.dc.html": {"x": 0, "y": 1700, "w": 1440, "h": 1240, "title": "블로그 발행 · 11단계", "expand": "fill", "is_interactive": true},
+    "Shorts.dc.html": {"x": 1520, "y": 1700, "w": 1440, "h": 1240, "title": "숏폼 영상 · 12단계", "expand": "fill", "is_interactive": true},
+    "Sns.dc.html": {"x": 3040, "y": 1700, "w": 1440, "h": 1240, "title": "SNS 배포 · 13단계", "expand": "fill", "is_interactive": true},
+    "Workflows.dc.html": {"x": 0, "y": 3400, "w": 1440, "h": 1240, "title": "워크플로우 캔버스 · 4단계", "expand": "fill", "is_interactive": true},
+    "Runs.dc.html": {"x": 1520, "y": 3400, "w": 1440, "h": 1240, "title": "실행 기록 · 5단계", "expand": "fill", "is_interactive": true},
+    "Search.dc.html": {"x": 3040, "y": 3400, "w": 1440, "h": 1240, "title": "상품 검색·GEO · 15단계", "expand": "fill", "is_interactive": true},
+    "Settings.dc.html": {"x": 0, "y": 5100, "w": 1440, "h": 1360, "title": "설정 · 3단계", "expand": "fill", "is_interactive": true},
+    "Billing.dc.html": {"x": 1520, "y": 5100, "w": 1440, "h": 1560, "title": "플랜·결제 · 2단계", "expand": "fill", "is_interactive": true},
+    "Admin.dc.html": {"x": 3040, "y": 5100, "w": 1440, "h": 1240, "title": "슈퍼 어드민 · 1단계", "expand": "fill", "is_interactive": true},
+    "TabletDashboard.dc.html": {"x": 0, "y": 7000, "w": 834, "h": 1194, "title": "태블릿 · 대시보드", "is_interactive": true},
+    "MobileDashboard.dc.html": {"x": 914, "y": 7000, "w": 390, "h": 844, "title": "모바일 · 대시보드", "is_interactive": true},
+    "MobileUpload.dc.html": {"x": 1384, "y": 7000, "w": 390, "h": 844, "title": "모바일 · 마켓 업로드", "is_interactive": true},
+    "Sidebar.dc.html": {"x": 0, "y": 8540, "w": 240, "h": 900, "title": "공용 · 사이드바"},
+    "TopBar.dc.html": {"x": 320, "y": 8540, "w": 1200, "h": 60, "title": "공용 · 상단 바"}
+  },
+  "order": [
+    "Main.dc.html", "Sourcing.dc.html", "Products.dc.html", "ProductImages.dc.html", "DetailPage.dc.html", "Upload.dc.html",
+    "Blog.dc.html", "Shorts.dc.html", "Sns.dc.html",
+    "Workflows.dc.html", "Runs.dc.html", "Search.dc.html",
+    "Settings.dc.html", "Billing.dc.html", "Admin.dc.html",
+    "TabletDashboard.dc.html", "MobileDashboard.dc.html", "MobileUpload.dc.html",
+    "Sidebar.dc.html", "TopBar.dc.html"
+  ],
+  "notes": {
+    "row1": {"x": 0, "y": -300, "text": "홈·상품 흐름: 6 → 7 → 8 → 9 → 10 → 14단계", "kind": "title1", "maxW": 9040},
+    "row2": {"x": 0, "y": 1400, "text": "콘텐츠 배포: 11 · 12 · 13단계", "kind": "title1", "maxW": 4480},
+    "row3": {"x": 0, "y": 3100, "text": "자동화·인사이트: 4 · 5 · 15단계", "kind": "title1", "maxW": 4480},
+    "row4": {"x": 0, "y": 4800, "text": "설정·결제·운영: 3 · 2 · 1단계", "kind": "title1", "maxW": 4480},
+    "row5": {"x": 0, "y": 6700, "text": "반응형: 태블릿 768~1199 · 모바일 ~767", "kind": "title1", "maxW": 1774},
+    "row6": {"x": 0, "y": 8240, "text": "공용 컴포넌트", "kind": "title1", "maxW": 1520}
+  },
+  "designSystems": []
+}

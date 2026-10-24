@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>플랜·결제</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+button:focus-visible,a:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="billing" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1200px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <p style="margin: 0; font-size: 13px; color: #64748B;">설정</p>
+        <h1 style="margin: 0; font-size: 24px; font-weight: 800;">플랜·결제</h1>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+        <section style="flex: 1 1 320px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 8px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">현재 플랜</p>
+          <p style="margin: 0; display: flex; align-items: baseline; gap: 10px;"><span style="font-size: 28px; font-weight: 800;">프로</span><span style="font-family: 'Bebas Neue', sans-serif; font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums;">₩69,000</span><span style="font-size: 14px; color: #475569;">/ 월</span></p>
+          <p style="margin: 0; font-size: 13px; color: #475569;">다음 결제 11월 23일 · 신한카드 ••••4021</p>
+          <div style="display: flex; gap: 8px; margin-top: 6px;">
+            <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">결제 수단 변경</button>
+            <button type="button" style="height: 36px; padding: 0 14px; border: 0; background: transparent; font-family: inherit; font-size: 14px; color: #475569; cursor: pointer;">해지</button>
+          </div>
+        </section>
+        <section style="flex: 2 1 440px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">이번 달 사용량 <span style="font-weight: 400;">· 11월 22일까지</span></p>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">마켓 슬롯</span><span style="font-variant-numeric: tabular-nums;"><b>4</b> / 5</span></div>
+            <div style="height: 8px; border-radius: 4px; background: #E2E8F0; overflow: hidden;"><div style="width: 80%; height: 100%; background: #00C9A7;"></div></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">AI 생성 (상품명·원고·이미지)</span><span style="font-variant-numeric: tabular-nums;"><b>1,240</b> / 3,000</span></div>
+            <div style="height: 8px; border-radius: 4px; background: #E2E8F0; overflow: hidden;"><div style="width: 41%; height: 100%; background: #94A3B8;"></div></div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 600;">숏폼 렌더링</span><span style="font-variant-numeric: tabular-nums;"><b>38</b> / 100편</span></div>
+            <div style="height: 8px; border-radius: 4px; background: #E2E8F0; overflow: hidden;"><div style="width: 38%; height: 100%; background: #94A3B8;"></div></div>
+          </div>
+        </section>
+      </div>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 800;">플랜 비교</h2>
+          <div role="group" aria-label="결제 주기" style="display: inline-flex; border: 1px solid #CBD5E1; border-radius: 8px; padding: 2px;">
+            <button type="button" aria-pressed="true" style="height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: #0F172A; color: #FFFFFF; font-family: inherit; font-size: 13px; cursor: pointer;">월간</button>
+            <button type="button" aria-pressed="false" style="height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #334155; font-family: inherit; font-size: 13px; cursor: pointer;">연간</button>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+          <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-size: 15px; font-weight: 800;">무료</p>
+            <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1;">₩0</p>
+            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; display: flex; flex-direction: column; gap: 4px;"><li>마켓 슬롯 1개</li><li>AI 생성 월 100회</li><li>숏폼 월 5편</li></ul>
+            <button type="button" style="margin-top: auto; height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">낮추기</button>
+          </div>
+          <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-size: 15px; font-weight: 800;">기본</p>
+            <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1;">₩29,000</p>
+            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; display: flex; flex-direction: column; gap: 4px;"><li>마켓 슬롯 2개</li><li>AI 생성 월 1,000회</li><li>숏폼 월 30편</li></ul>
+            <button type="button" style="margin-top: auto; height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">낮추기</button>
+          </div>
+          <div style="border: 2px solid #00C9A7; border-radius: 10px; padding: 17px; display: flex; flex-direction: column; gap: 10px; background: #F6FDFB;">
+            <p style="margin: 0; display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 800;">프로<span style="font-size: 11px; font-weight: 700; color: #FFFFFF; background: #007A64; border-radius: 4px; padding: 1px 6px;">현재 플랜</span></p>
+            <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1;">₩69,000</p>
+            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; display: flex; flex-direction: column; gap: 4px;"><li>마켓 슬롯 5개</li><li>AI 생성 월 3,000회</li><li>숏폼 월 100편</li><li>노드 워크플로우</li></ul>
+            <span style="margin-top: auto; height: 36px; display: grid; place-items: center; font-size: 13px; color: #475569;">사용 중</span>
+          </div>
+          <div style="border: 1px solid #E2E8F0; border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 10px;">
+            <p style="margin: 0; font-size: 15px; font-weight: 800;">엔터</p>
+            <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 32px; line-height: 1;">₩149,000</p>
+            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #334155; display: flex; flex-direction: column; gap: 4px;"><li>마켓 슬롯 20개</li><li>AI 생성 월 10,000회</li><li>숏폼 무제한</li><li>팀원 초대, 우선 지원</li></ul>
+            <button type="button" style="margin-top: auto; height: 36px; border: 0; border-radius: 8px; background: #007A64; font-family: inherit; font-size: 13px; font-weight: 700; color: #FFFFFF; cursor: pointer;">엔터로 올리기</button>
+          </div>
+        </div>
+        <p style="margin: 0; font-size: 12px; color: #64748B;">플랜별 한도는 화면 예시 값입니다. 확정 값은 가격 정책 문서에서 정합니다.</p>
+      </section>
+
+      <section aria-label="추가 슬롯 구매" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: flex-start;">
+          <div>
+            <h2 style="margin: 0; font-size: 17px; font-weight: 800;">추가 슬롯</h2>
+            <p style="margin: 2px 0 0; font-size: 13px; color: #475569;">플랜을 바꾸지 않고 마켓 계정 자리만 늘립니다. 마켓 계정 등록이 한도를 넘으면 이 단계가 열립니다.</p>
+          </div>
+          <ol style="margin: 0; padding: 0; list-style: none; display: flex; gap: 8px; font-size: 13px;">
+            <li style="display: flex; align-items: center; gap: 6px; font-weight: 700;"><span style="width: 22px; height: 22px; border-radius: 50%; background: #007A64; color: #FFFFFF; display: grid; place-items: center; font-size: 12px;">1</span>수량</li>
+            <li style="color: #CBD5E1;">—</li>
+            <li style="display: flex; align-items: center; gap: 6px; color: #475569;"><span style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #94A3B8; display: grid; place-items: center; font-size: 12px;">2</span>결제</li>
+            <li style="color: #CBD5E1;">—</li>
+            <li style="display: flex; align-items: center; gap: 6px; color: #475569;"><span style="width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid #94A3B8; display: grid; place-items: center; font-size: 12px;">3</span>확인</li>
+          </ol>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center;">
+          <div style="display: inline-flex; align-items: center; border: 1px solid #CBD5E1; border-radius: 8px; overflow: hidden;">
+            <button type="button" aria-label="하나 줄이기" style="width: 40px; height: 40px; border: 0; background: #FFFFFF; font-family: inherit; font-size: 18px; color: #334155; cursor: pointer;">−</button>
+            <span style="width: 48px; text-align: center; font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums;">1</span>
+            <button type="button" aria-label="하나 늘리기" style="width: 40px; height: 40px; border: 0; background: #FFFFFF; font-family: inherit; font-size: 18px; color: #334155; cursor: pointer;">+</button>
+          </div>
+          <p style="margin: 0; font-size: 14px;">슬롯 1개 × <b>[추가 슬롯 가격]</b> / 월 · 다음 결제일부터 함께 청구</p>
+          <button type="button" style="margin-left: auto; height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">다음: 결제</button>
+        </div>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+        <h2 style="margin: 0; padding: 16px 20px; font-size: 16px; font-weight: 700; border-bottom: 1px solid #E2E8F0;">결제 내역</h2>
+        <div style="overflow-x: auto;">
+          <table class="tbl" style="min-width: 560px;">
+            <thead><tr><th>날짜</th><th>내용</th><th class="num">금액</th><th>상태</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>10월 23일</td><td>프로 플랜 · 월간</td><td class="num">₩69,000</td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">결제 완료</span></td><td style="text-align: right;"><a href="#" style="font-size: 13px; text-decoration: none;">영수증</a></td></tr>
+              <tr><td>9월 23일</td><td>프로 플랜 · 월간</td><td class="num">₩69,000</td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">결제 완료</span></td><td style="text-align: right;"><a href="#" style="font-size: 13px; text-decoration: none;">영수증</a></td></tr>
+              <tr><td>8월 23일</td><td>기본 → 프로 변경</td><td class="num">₩69,000</td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">결제 완료</span></td><td style="text-align: right;"><a href="#" style="font-size: 13px; text-decoration: none;">영수증</a></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

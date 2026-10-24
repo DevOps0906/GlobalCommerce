@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NOMAD AI Factory 화면 구조도</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: 설계 도면처럼 읽는 화면 지도. 위에서 아래로 셸 와이어프레임(주인공) → 데이터 흐름 → Phase별 단계 → 반응형 규칙 → 패턴 범례.
+   토큰 출처: platform-docs REFERENCES.md nomad-commerce V.2 (민트 #00C9A7, 슬레이트), DASHBOARD_VISUAL.md 6.4 명도 관계. 업무 화면이라 라이트 기본. */
+:root{
+  --paper:#F2F6F6;      /* 바탕: 슬레이트에 민트를 아주 약하게 섞은 도면지 */
+  --sheet:#FFFFFF;      /* 표면 */
+  --rule:#E2E8F0;       /* 구분선 */
+  --rule-2:#CBD5E1;     /* 진한 구분선 */
+  --ink:#0F172A;        /* 본문 */
+  --ink-2:#475569;
+  --ink-3:#64748B;
+  --mint:#00C9A7;       /* 브랜드 민트: 채움·표시용 */
+  --mint-ink:#007A64;   /* 밝은 배경 위 민트 글자·버튼 (AA) */
+  --mint-tint:#E6FBF7;
+  --btn:#007A64; --btn-fg:#FFFFFF;
+  --grid:#E6EDEE;
+  --wire:#EEF2F5;       /* 와이어프레임 회색 블록 */
+  --wire-2:#DCE3EA;
+  --ok:#15803D; --run:#1D4ED8; --err:#B91C1C;
+  --f-display:"Bebas Neue","Arial Narrow",Impact,sans-serif;
+  --f-body:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --f-code:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --fs-body:14px; --fs-h1:26px; --fs-h2:19px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1416; --sheet:#141C1F; --rule:#22302F; --rule-2:#324341;
+    --ink:#E4EDEE; --ink-2:#A6B4B7; --ink-3:#7F9195;
+    --mint:#00C9A7; --mint-ink:#3FE0C3; --mint-tint:#0F2D28;
+    --btn:#00C9A7; --btn-fg:#04221D;
+    --grid:#182226; --wire:#1C2629; --wire-2:#2A3739;
+    --ok:#4ADE80; --run:#7AA2FF; --err:#F87171;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1416; --sheet:#141C1F; --rule:#22302F; --rule-2:#324341;
+  --ink:#E4EDEE; --ink-2:#A6B4B7; --ink-3:#7F9195;
+  --mint:#00C9A7; --mint-ink:#3FE0C3; --mint-tint:#0F2D28;
+  --btn:#00C9A7; --btn-fg:#04221D;
+  --grid:#182226; --wire:#1C2629; --wire-2:#2A3739;
+  --ok:#4ADE80; --run:#7AA2FF; --err:#F87171;
+  color-scheme:dark;
+}
+@media (min-width:768px){ :root{ --fs-body:15px; --fs-h1:32px; --fs-h2:21px } }
+@media (min-width:1200px){ :root{ --fs-body:15px; --fs-h1:38px; --fs-h2:23px } }
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:var(--fs-body);line-height:1.65;word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+.page{max-width:1360px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3,h4{margin:0;text-wrap:balance;line-height:1.3}
+p{margin:0}
+code{font-family:var(--f-code);font-size:.86em}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+
+/* Header */
+.hd{display:grid;gap:20px}
+.hd-top{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;color:var(--ink-3);font-size:13px}
+.hd-top b{color:var(--mint-ink);font-weight:700}
+.hd h1{font-size:var(--fs-h1);font-weight:800;letter-spacing:-.02em}
+.hd-lead{max-width:68ch;color:var(--ink-2)}
+.facts{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:baseline}
+.fact{display:flex;align-items:baseline;gap:6px}
+.fact b{font-family:var(--f-display);font-size:34px;line-height:1;letter-spacing:.02em;font-weight:400;font-variant-numeric:tabular-nums}
+.fact span{color:var(--ink-2);font-size:13px}
+.rules{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.rule{padding:12px 0;display:grid;gap:2px;border-bottom:1px solid var(--rule)}
+.rule:last-child{border-bottom:0}
+.rule dt{font-size:12px;color:var(--ink-3);letter-spacing:.04em}
+.rule dd{margin:0;font-size:14px}
+@media (min-width:768px){
+  .rules{grid-template-columns:repeat(3,1fr)}
+  .rule{padding:14px 18px 14px 0;border-bottom:0;border-right:1px solid var(--rule)}
+  .rule+.rule{padding-left:18px}
+  .rule:last-child{border-right:0}
+}
+
+/* Section heads */
+.sec{display:grid;gap:16px}
+.sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:10px 20px}
+.sec-h h2{font-size:var(--fs-h2);font-weight:800;letter-spacing:-.01em}
+.sec-h p{color:var(--ink-2);font-size:14px;max-width:62ch}
+
+/* Breakpoint switch */
+.seg{display:inline-flex;border:1px solid var(--rule-2);border-radius:8px;padding:3px;background:var(--sheet);gap:2px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.seg button small{color:var(--ink-3);font-size:11px;margin-left:4px;font-variant-numeric:tabular-nums}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.seg button[aria-pressed="true"] small{color:var(--sheet);opacity:.75}
+
+/* Map layout */
+.map{display:grid;gap:18px;align-items:start}
+@media (min-width:1200px){ .map{grid-template-columns:minmax(0,1fr) 380px} }
+.stage{min-width:0;border:1px solid var(--rule);border-radius:10px;padding:18px;
+  background-color:var(--sheet);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;background-position:-1px -1px}
+.stage-scroll{overflow-x:auto;padding-bottom:4px}
+.stage-cap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--ink-3)}
+
+/* Device frame */
+.device{margin-inline:auto;border:1px solid var(--rule-2);border-radius:12px;background:var(--sheet);overflow:hidden;font-size:12px;line-height:1.45;transition:max-width .25s ease}
+.device[data-bp="d"]{min-width:760px;max-width:100%}
+.device[data-bp="t"]{min-width:520px;max-width:600px}
+.device[data-bp="m"]{width:100%;max-width:340px}
+.shell{display:grid;grid-template-columns:196px minmax(0,1fr);min-height:560px}
+.device[data-bp="t"] .shell{grid-template-columns:62px minmax(0,1fr)}
+.device[data-bp="m"] .shell{grid-template-columns:minmax(0,1fr);min-height:600px}
+
+.sb{border-right:1px solid var(--rule);background:var(--paper);padding:10px 8px;display:flex;flex-direction:column;gap:2px}
+.device[data-bp="m"] .sb{display:none}
+.sb-ws{display:flex;align-items:center;gap:8px;padding:4px 6px 10px;font-weight:700;font-size:12px}
+.sb-ws b{width:22px;height:22px;border-radius:6px;background:var(--ink);color:var(--sheet);display:grid;place-items:center;font-family:var(--f-display);font-size:15px;font-weight:400;flex:none}
+.sb-g{font-size:10.5px;color:var(--ink-3);padding:10px 8px 3px;letter-spacing:.06em}
+.sb-i{display:flex;align-items:center;gap:8px;width:100%;border:0;background:transparent;text-align:left;padding:6px 8px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-size:12px}
+.sb-i:hover{background:var(--wire)}
+.sb-i[aria-current="page"]{background:var(--mint-tint);color:var(--ink);font-weight:700;box-shadow:inset 2px 0 0 var(--mint)}
+.sb-i .ab{display:none}
+.sb-i em{margin-left:auto;font-style:normal;font-size:10px;color:var(--ink-3);border:1px solid var(--rule-2);border-radius:4px;padding:0 4px}
+.sb-foot{margin-top:auto;border-top:1px solid var(--rule);padding-top:8px;display:grid;gap:2px}
+.device[data-bp="t"] .sb{padding:10px 6px;align-items:stretch}
+.device[data-bp="t"] .sb-g,.device[data-bp="t"] .sb-i span,.device[data-bp="t"] .sb-i em,.device[data-bp="t"] .sb-ws span{display:none}
+.device[data-bp="t"] .sb-ws{justify-content:center;padding-inline:0}
+.device[data-bp="t"] .sb-i{flex-direction:column;gap:2px;padding:6px 2px;justify-content:center}
+.device[data-bp="t"] .sb-i .ab{display:block;font-size:10px;text-align:center;line-height:1.2}
+.device[data-bp="t"] .sb-i::before{content:"";width:18px;height:18px;border-radius:5px;border:1.5px solid currentColor;opacity:.55}
+.device[data-bp="t"] .sb-i[aria-current="page"]{box-shadow:none}
+.device[data-bp="t"] .sb-i[aria-current="page"]::before{background:var(--mint);border-color:var(--mint);opacity:1}
+
+.main{display:flex;flex-direction:column;min-width:0}
+.tb{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--rule);min-height:42px}
+.tb-ham{display:none;flex-direction:column;gap:3px;width:16px}
+.tb-ham i{display:block;height:2px;border-radius:1px;background:var(--ink-2)}
+.device:not([data-bp="d"]) .tb-ham{display:flex}
+.tb-org{font-weight:700;font-size:12px;white-space:nowrap}
+.tb-org small{color:var(--ink-3);font-weight:400;margin-left:4px}
+.tb-q{margin-left:auto;display:flex;align-items:center;gap:10px;border:1px solid var(--rule-2);border-radius:6px;padding:3px 8px;color:var(--ink-3);min-width:160px;justify-content:space-between}
+.tb-q kbd{font-family:var(--f-code);font-size:10px;border:1px solid var(--rule-2);border-radius:3px;padding:0 3px}
+.device[data-bp="m"] .tb-q{min-width:0;border:0;padding:0}
+.device[data-bp="m"] .tb-q span,.device[data-bp="m"] .tb-q kbd{display:none}
+.device[data-bp="m"] .tb-q::before{content:"";width:12px;height:12px;border:1.5px solid var(--ink-2);border-radius:50%}
+.device[data-bp="m"] .tb-org small{display:none}
+.tb-av{width:24px;height:24px;border-radius:50%;background:var(--wire-2);display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
+
+.ph{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px 10px}
+.ph-crumb{font-size:10.5px;color:var(--ink-3)}
+.ph-t{font-size:15px;font-weight:800}
+.device[data-bp="t"] .ph-t{font-size:14px}
+.device[data-bp="m"] .ph-t{font-size:13.5px}
+.ph-btn{background:var(--btn);color:var(--btn-fg);border-radius:6px;padding:5px 10px;font-weight:700;white-space:nowrap;font-size:11.5px}
+.ph-btn:empty{display:none}
+.wf{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.wr{display:flex;gap:8px;flex-wrap:wrap}
+.wb{flex:var(--w) 1 0;min-width:0;min-height:calc(var(--h) * 34px);border:1px solid var(--rule);border-radius:6px;background:var(--sheet);padding:7px 8px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.wb.stack{border:0;padding:0;background:transparent;gap:8px}
+.wb.stack>.wb{flex:none}
+.wl{font-size:10.5px;color:var(--ink-2);font-weight:500;line-height:1.3}
+.device[data-bp="t"] .wb{flex-basis:calc(50% - 4px)}
+.device[data-bp="t"] .wb.wide{flex-basis:100%}
+.device[data-bp="m"] .wb{flex-basis:100%;min-height:calc(var(--h) * 26px)}
+.device[data-bp="m"] .wb.k-kpi{flex-basis:calc(50% - 4px)}
+.device[data-bp="m"] .wf{padding-bottom:62px}
+.device[data-bp] .wb.stack>.wb{flex:0 0 auto}
+
+/* glyphs */
+.g{flex:1;display:flex;flex-direction:column;gap:5px;min-height:0}
+.ln{display:block;height:6px;border-radius:3px;background:var(--wire-2)}
+.ln.s{width:45%}.ln.m{width:70%}
+.num{display:block;height:14px;width:58%;border-radius:3px;background:var(--wire-2)}
+.num.lg{height:22px;width:66%;background:var(--mint)}
+.row{display:flex;gap:6px;align-items:center}
+.row .ln{flex:1}
+.cell{flex:1;height:14px;border-radius:2px;background:var(--wire)}
+.cb{width:9px;height:9px;border:1.5px solid var(--ink-3);border-radius:2px;flex:none}
+.cb.on{background:var(--mint);border-color:var(--mint)}
+.chip{height:14px;border-radius:7px;border:1px solid var(--rule-2);width:44px;flex:none}
+.inp{flex:1;height:16px;border:1px solid var(--rule-2);border-radius:4px}
+.bt-mini{height:16px;width:46px;border-radius:4px;background:var(--btn);flex:none}
+.tabs{display:flex;gap:12px;border-bottom:1px solid var(--rule);padding-bottom:4px}
+.tabs i{display:block;height:7px;width:42px;border-radius:3px;background:var(--wire-2)}
+.tabs i.on{background:var(--ink-2);box-shadow:0 5px 0 -3px var(--mint)}
+.tiles{flex:1;display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:5px;align-content:start}
+.tiles i{display:block;aspect-ratio:1;border-radius:4px;background:var(--wire);max-width:100%}
+.tiles i:nth-child(3n+1){background:var(--wire-2)}
+.prog{display:grid;grid-template-columns:auto 1fr 64px auto;gap:6px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot.ok{background:var(--ok)}.dot.run{background:var(--run)}.dot.err{background:var(--err)}.dot.wait{background:var(--ink-3)}
+.bar{height:6px;border-radius:3px;background:var(--wire);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--mint)}
+.st{font-size:9.5px;color:var(--ink-3);white-space:nowrap}
+.tl{display:flex;flex-direction:column;gap:8px;padding-left:4px;border-left:1.5px solid var(--wire-2);margin-left:3px}
+.tl .row{margin-left:-8px}
+.tl .dot{background:var(--ink-3)}
+.pv{flex:1;border:1px solid var(--rule);border-radius:4px;padding:6px;display:flex;flex-direction:column;gap:5px}
+.pv .img{flex:1;min-height:30px;border-radius:3px;background:var(--wire)}
+.pv.portrait{flex:none;height:170px;aspect-ratio:9/16;margin-inline:auto;width:auto;max-width:100%}
+.code{flex:1;border-radius:4px;background:var(--wire);padding:6px;display:flex;flex-direction:column;gap:5px}
+.code .ln{background:var(--wire-2)}
+.cal{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal i{display:block;border-radius:2px;background:var(--wire);min-height:16px}
+.cal i.ev{background:var(--mint-tint);box-shadow:inset 2px 0 0 var(--mint)}
+.plans{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.plans>div{border:1px solid var(--rule);border-radius:5px;padding:6px;display:flex;flex-direction:column;gap:5px}
+.plans>div.on{border-color:var(--mint);box-shadow:inset 0 2px 0 var(--mint)}
+.plans b{font-size:10px;font-weight:700}
+.plans small{font-size:9.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.device[data-bp="m"] .plans{grid-template-columns:repeat(4,72%);overflow-x:auto}
+.device[data-bp="t"] .plans{grid-template-columns:repeat(2,1fr)}
+.sw{width:20px;height:11px;border-radius:6px;background:var(--wire-2);position:relative;flex:none}
+.sw.on{background:var(--mint)}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:7px;height:7px;border-radius:50%;background:var(--sheet)}
+.sw.on::after{left:11px}
+.cv{flex:1;border-radius:4px;background-color:var(--paper);background-image:radial-gradient(var(--wire-2) 1px,transparent 1.2px);background-size:10px 10px;position:relative;min-height:120px}
+.cv svg{position:absolute;inset:0;width:100%;height:100%}
+.chart{flex:1;min-height:50px;width:100%}
+.bars{flex:1;display:flex;align-items:flex-end;gap:5px}
+.bars i{flex:1;background:var(--wire-2);border-radius:2px 2px 0 0}
+
+.bt{display:none}
+.device[data-bp="m"] .main{position:relative}
+.device[data-bp="m"] .bt{display:grid;grid-template-columns:repeat(5,1fr);position:absolute;left:0;right:0;bottom:0;border-top:1px solid var(--rule);background:var(--sheet)}
+.bt button{border:0;background:transparent;padding:7px 0 8px;font-size:10px;color:var(--ink-3);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.bt button::before{content:"";width:16px;height:16px;border-radius:5px;border:1.5px solid currentColor;opacity:.6}
+.bt button[aria-current="true"]{color:var(--ink);font-weight:700}
+.bt button[aria-current="true"]::before{background:var(--mint);border-color:var(--mint);opacity:1}
+
+/* Detail panel */
+.dp{border:1px solid var(--rule);border-radius:10px;background:var(--sheet);padding:20px;display:grid;gap:16px;min-width:0}
+@media (min-width:1200px){ .dp{position:sticky;top:max(16px,env(safe-area-inset-top,0px));max-height:calc(100vh - 32px);overflow-y:auto} }
+.dp-head{display:flex;gap:14px;align-items:flex-start}
+.dp-num{font-family:var(--f-display);font-size:56px;line-height:.85;color:var(--mint-ink);font-variant-numeric:tabular-nums;flex:none}
+.dp-ph{font-size:12px;color:var(--ink-3)}
+.dp h3{font-size:18px;font-weight:800;margin-top:2px}
+.dp-route{display:inline-block;margin-top:6px;color:var(--ink-2);background:var(--wire);border-radius:4px;padding:1px 6px}
+.dp-sum{color:var(--ink-2)}
+.pats{display:flex;flex-wrap:wrap;gap:6px}
+.pat{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule-2);border-radius:999px;padding:2px 10px 2px 3px;font-size:12.5px;background:var(--sheet)}
+.pat b{width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--sheet);display:grid;place-items:center;font-family:var(--f-display);font-weight:400;font-size:14px;padding-top:1px}
+.dp h4{font-size:12px;color:var(--ink-3);font-weight:700;letter-spacing:.05em;margin-bottom:6px}
+.dp ul{margin:0;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.dp ul li::marker{color:var(--mint-ink)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tags code{background:var(--wire);border-radius:4px;padding:2px 7px;font-size:12px;color:var(--ink)}
+.rwd{display:grid;gap:6px;margin:0}
+.rwd div{display:grid;grid-template-columns:62px 1fr;gap:10px;font-size:13.5px}
+.rwd dt{color:var(--ink-3);font-size:12.5px}
+.rwd dd{margin:0}
+.chk{border-left:3px solid var(--mint);padding:8px 12px;background:var(--mint-tint);border-radius:0 6px 6px 0;font-size:13.5px}
+.note{border-left:3px solid var(--err);padding:8px 12px;background:var(--wire);border-radius:0 6px 6px 0;font-size:13.5px}
+.dp-nav{display:flex;gap:8px}
+.dp-nav button{flex:1;border:1px solid var(--rule-2);background:var(--sheet);border-radius:6px;padding:8px;cursor:pointer;font-size:13px}
+.dp-nav button:hover{border-color:var(--ink-3)}
+.dp-nav button:disabled{opacity:.4;cursor:default}
+
+/* Flow diagram */
+.flow{border:1px solid var(--rule);border-radius:10px;background:var(--sheet);padding:14px;overflow-x:auto}
+.flow svg{display:block;min-width:820px;width:100%;height:auto}
+.fn rect{fill:var(--sheet);stroke:var(--rule-2);stroke-width:1.2}
+.fn{cursor:pointer}
+.fn:hover rect{stroke:var(--ink-3)}
+.fn.sel rect{fill:var(--mint-tint);stroke:var(--mint);stroke-width:2}
+.fn text{fill:var(--ink);font-family:var(--f-body);font-size:12.5px;font-weight:500}
+.fn .fnum{font-family:var(--f-display);font-size:17px;fill:var(--mint-ink);font-weight:400}
+.fe{fill:none;stroke:var(--rule-2);stroke-width:1.5}
+.fe.hot{stroke:var(--mint);stroke-width:2}
+.fl{fill:var(--ink-3);font-size:11px;font-family:var(--f-body);paint-order:stroke;stroke:var(--sheet);stroke-width:4px;stroke-linejoin:round}
+.band{fill:var(--paper);stroke:var(--rule-2);stroke-dasharray:4 4}
+.bl{fill:var(--ink-2);font-size:12px;font-family:var(--f-body)}
+.arrow{fill:var(--rule-2)}
+.arrow.hot{fill:var(--mint)}
+.colh{fill:var(--ink-3);font-size:11px;font-family:var(--f-body);letter-spacing:.06em}
+
+/* Phase board */
+.phases{display:grid;gap:12px}
+.phase{border:1px solid var(--rule);border-radius:10px;background:var(--sheet)}
+.phase-h{width:100%;display:flex;align-items:center;gap:14px;border:0;background:transparent;padding:14px 18px;cursor:pointer;text-align:left}
+.phase-h .pn{font-family:var(--f-display);font-size:28px;line-height:1;color:var(--ink-3);width:40px;flex:none;font-weight:400}
+.phase-h .pt{flex:1;min-width:0}
+.phase-h .pt b{display:block;font-size:16px;font-weight:800}
+.phase-h .pt small{color:var(--ink-3);font-size:12.5px}
+.phase-h .tw{width:10px;height:10px;border-right:2px solid var(--ink-3);border-bottom:2px solid var(--ink-3);transform:rotate(45deg);transition:transform .2s;flex:none;margin-right:4px}
+.phase-h[aria-expanded="false"] .tw{transform:rotate(-45deg)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;padding:0 18px 18px}
+.card{border:1px solid var(--rule);border-radius:8px;background:var(--sheet);padding:14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card:hover{border-color:var(--ink-3)}
+.card[aria-current="true"]{border-color:var(--mint);box-shadow:0 0 0 1px var(--mint)}
+.card-t{display:flex;gap:10px;align-items:baseline}
+.card-t .n{font-family:var(--f-display);font-size:24px;line-height:1;color:var(--mint-ink);font-weight:400;font-variant-numeric:tabular-nums}
+.card-t b{font-size:14.5px;font-weight:700;line-height:1.35}
+.card p{font-size:13px;color:var(--ink-2)}
+.card-f{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:auto}
+.card-f code{font-size:11px;color:var(--ink-3);margin-right:auto}
+.lt{width:20px;height:20px;border-radius:50%;border:1px solid var(--rule-2);display:grid;place-items:center;font-family:var(--f-display);font-size:13px;padding-top:1px;color:var(--ink-2)}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13.5px}
+th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+thead th{font-size:12px;color:var(--ink-3);font-weight:700;letter-spacing:.04em;background:var(--paper)}
+tbody tr:last-child td{border-bottom:0}
+td b{font-weight:700}
+td .px{display:block;color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+.fsz{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Legend */
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:0;border-top:1px solid var(--rule)}
+.lg{display:grid;grid-template-columns:36px 1fr;gap:4px 12px;padding:14px 4px;border-bottom:1px solid var(--rule)}
+.lg .lt{width:30px;height:30px;font-size:18px;grid-row:span 3;background:var(--sheet)}
+.lg b{font-size:14.5px}
+.lg p{font-size:13px;color:var(--ink-2)}
+.lg .uses{display:flex;flex-wrap:wrap;gap:4px}
+.lg .uses button{border:1px solid var(--rule-2);background:var(--sheet);border-radius:4px;font-size:11.5px;padding:0 6px;cursor:pointer;font-variant-numeric:tabular-nums}
+.lg .uses button:hover{border-color:var(--mint);color:var(--mint-ink)}
+.src{font-size:12.5px;color:var(--ink-3)}
+.src code{color:var(--ink-2)}
+
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;scroll-behavior:auto!important} }
+</style>
+
+</head>
+<body>
+<div class="page">
+
+<header class="hd">
+  <div class="hd-top"><b>NOMAD AI Factory V.2</b><span>아마존 구매대행 자동화 SaaS</span><span>기준 문서: platform-docs/products/_design-guide</span></div>
+  <h1>대시보드 화면 구조도</h1>
+  <p class="hd-lead">15단계 마이크로 PRD를 platform-docs 디자인 가이드의 화면 패턴(A~O)에 배치했습니다. 메뉴, 흐름도의 노드, 단계 카드 중 어느 것을 눌러도 같은 화면이 열리고, 오른쪽에 구성 요소와 데이터, 외부 연동, 반응형 규칙이 표시됩니다.</p>
+  <div class="facts" id="facts"></div>
+  <dl class="rules">
+    <div class="rule"><dt>기본 테마</dt><dd>라이트 (업무·입력 화면). 다크는 두 번째 벌로 함께 제공</dd></div>
+    <div class="rule"><dt>포인트 컬러</dt><dd>민트 1색. 현재 위치, 주 행동 버튼, 진행률, 핵심 숫자에만</dd></div>
+    <div class="rule"><dt>홈 화면</dt><dd>패턴 C. 환율 USD/KRW 하나를 크게, 나머지는 작게</dd></div>
+  </dl>
+</header>
+
+<section class="sec" id="map">
+  <div class="sec-h">
+    <div>
+      <h2>앱 셸과 화면 와이어프레임</h2>
+      <p>패턴 A 셸(사이드바, 상단 바, 페이지 슬롯) 안에 선택한 단계의 화면을 그립니다. 구간을 바꾸면 셸과 블록 배치가 해당 폭의 규칙대로 바뀝니다.</p>
+    </div>
+    <div class="seg" role="group" aria-label="화면 폭">
+      <button type="button" data-bp="d" aria-pressed="true">데스크탑<small>1200~</small></button>
+      <button type="button" data-bp="t" aria-pressed="false">태블릿<small>768~1199</small></button>
+      <button type="button" data-bp="m" aria-pressed="false">모바일<small>~767</small></button>
+    </div>
+  </div>
+  <div class="map">
+    <div class="stage">
+      <div class="stage-scroll">
+        <div class="device" id="device" data-bp="d">
+          <div class="shell">
+            <aside class="sb" id="sidebar" aria-label="제품 메뉴"></aside>
+            <div class="main">
+              <div class="tb">
+                <span class="tb-ham" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="tb-org">디지털노마드연구소 <small>워크스페이스 전환</small></span>
+                <span class="tb-q"><span>상품, 실행, 설정 검색</span><kbd>Ctrl K</kbd></span>
+                <span class="tb-av">RN</span>
+              </div>
+              <div class="ph">
+                <div><p class="ph-crumb" id="crumb"></p><p class="ph-t" id="ptitle"></p></div>
+                <span class="ph-btn" id="pact"></span>
+              </div>
+              <div class="wf" id="wire"></div>
+              <nav class="bt" id="tabs" aria-label="모바일 하단 탭"></nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-cap"><span id="bpnote"></span><span>회색 블록은 자리 표시, 민트는 화면당 하나뿐인 강조 위치</span></div>
+    </div>
+    <aside class="dp" id="detail" aria-label="선택한 단계 상세"></aside>
+  </div>
+</section>
+
+<section class="sec" id="flow">
+  <div class="sec-h">
+    <div>
+      <h2>단계 간 데이터 흐름</h2>
+      <p>상품 한 건이 수집되어 마켓과 SNS로 나가기까지 거치는 단계입니다. 4·5단계가 이 흐름 전체를 노드로 묶어 실행하고, 1~3단계가 모든 단계의 계정·권한·설정을 받칩니다.</p>
+    </div>
+  </div>
+  <div class="flow"><svg id="flowsvg" viewBox="0 0 1000 392" role="img" aria-label="15단계 데이터 흐름도"></svg></div>
+</section>
+
+<section class="sec" id="phases">
+  <div class="sec-h">
+    <div>
+      <h2>Phase별 단계</h2>
+      <p>PRD의 6개 Phase 순서 그대로입니다. 카드를 누르면 위 와이어프레임으로 이동합니다.</p>
+    </div>
+  </div>
+  <div class="phases" id="board"></div>
+</section>
+
+<section class="sec" id="rwd">
+  <div class="sec-h">
+    <div>
+      <h2>반응형 3구간 규칙</h2>
+      <p>모든 화면에 공통으로 적용합니다. 화면별 예외는 위 상세 패널의 반응형 항목에 있습니다.</p>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>구간</th><th>셸</th><th>표·목록</th><th>캔버스·에디터</th><th>글자 크기 (px)</th></tr></thead>
+      <tbody>
+        <tr><td><b>모바일</b><span class="px">~767</span></td><td>상단 바 + 햄버거 드로어, 하단 탭 5개 (홈·상품·콘텐츠·자동화·더보기)</td><td>표를 카드 목록으로 바꾸고, 일괄 작업은 하단 고정 바</td><td>캔버스는 읽기 전용과 실행만. 에디터는 편집/미리보기 탭 전환</td><td class="fsz">본문 14 · 표 13<br>페이지 제목 20<br>핵심 숫자 26</td></tr>
+        <tr><td><b>태블릿</b><span class="px">768~1199</span></td><td>아이콘 레일 64px + 햄버거로 전체 메뉴 (A 패턴의 1024px 미만 햄버거 규칙 충족)</td><td>핵심 열만 표시하고 나머지는 가로 스크롤, 상세는 오버레이 시트</td><td>캔버스 편집 가능, 설정 패널은 하단 시트</td><td class="fsz">본문 14 · 표 13<br>페이지 제목 22<br>핵심 숫자 30</td></tr>
+        <tr><td><b>데스크탑</b><span class="px">1200~</span></td><td>사이드바 240px (접으면 64px 레일, 상태 유지), Ctrl K 검색</td><td>전체 열 + 첫 열 고정, 오른쪽 상세 시트 360px</td><td>팔레트 · 캔버스 · 설정 3단, 에디터는 블록 · 미리보기 · 속성 3단</td><td class="fsz">본문 14 · 표 13<br>페이지 제목 24<br>핵심 숫자 36</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" id="legend">
+  <div class="sec-h">
+    <div>
+      <h2>사용한 화면 패턴</h2>
+      <p>DASHBOARD_PATTERNS.md의 코드와 이름입니다. 번호를 누르면 그 패턴을 쓰는 단계가 열립니다.</p>
+    </div>
+  </div>
+  <div class="legend" id="legendgrid"></div>
+  <p class="src">참고한 레포 문서: <code>DASHBOARD_PATTERNS.md</code> (패턴 A~O, 홈 고르기 기준) · <code>DASHBOARD_VISUAL.md</code> (포인트 1색, 명도 관계, 반응형) · <code>REFERENCES.md</code> (nomad-commerce V.2 토큰) · <code>reviews/nomad-ai-factory.md</code> (v1 보안 지적 사항)</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+const PAT={
+  A:['앱 셸','모든 앱 화면의 뼈대','Vercel, Supabase Studio'],
+  B:['리스트-상세','레코드를 찾고, 거르고, 고칠 때','Linear, Attio'],
+  C:['KPI 오버뷰','숫자가 판단을 이끄는 홈','Stripe Dashboard'],
+  E:['캘린더·일정','날짜가 핵심일 때','Cal.com, Buffer'],
+  G:['레코드 상세','한 대상의 정보와 이력을 볼 때','Stripe 고객 상세'],
+  H:['설정','계정·결제·연동 설정','Vercel, GitHub 설정'],
+  I:['위저드·단계형','입력이 많은 생성, 처음 설정','Stripe 온보딩'],
+  J:['에디터 + 미리보기','결과물을 만들고 바로 확인할 때','Webflow, Shopify 테마 편집기'],
+  K:['노드 캔버스','흐름·자동화를 설계할 때','n8n, Make'],
+  L:['분석 탐색','조건별로 쪼개 보고 찾을 때','PostHog, GA4'],
+  M:['미디어 갤러리','이미지·영상이 주인공일 때','Canva, Frame.io'],
+  N:['작업·실행 모니터','오래 걸리는 작업이 돌 때','Vercel 배포, GitHub Actions'],
+  O:['스프레드시트 그리드','많은 행을 한 번에 고칠 때','Airtable']
+};
+const PH={1:'인프라·수익화 기반',2:'시각적 워크플로우',3:'정보 대시보드·데이터 수집',4:'AI 콘텐츠 공장',5:'마케팅 생성·다중 채널 배포',6:'고도화·검색 최적화'};
+const NAV=[
+  {g:'홈',items:[['dashboard','대시보드','홈',[6]]]},
+  {g:'상품',items:[['sourcing','소싱·수집','소싱',[7]],['products','상품 관리','상품',[8,9,10]],['upload','마켓 업로드','업로드',[14]]]},
+  {g:'콘텐츠',items:[['blog','블로그 발행','블로그',[11]],['shorts','숏폼 영상','숏폼',[12]],['sns','SNS 배포','SNS',[13]]]},
+  {g:'자동화',items:[['workflows','워크플로우','플로우',[4]],['runs','실행 기록','실행',[5]]]},
+  {g:'인사이트',items:[['search','상품 검색·GEO','검색',[15]]]}
+];
+const FOOT=[['settings','설정','설정',[3]],['billing','플랜·결제','플랜',[2]],['admin','슈퍼 어드민','운영',[1],'운영자']];
+const TABS=[['홈','dashboard',6],['상품','sourcing',7],['콘텐츠','blog',11],['자동화','workflows',4],['더보기','settings',3]];
+const TABGROUP={dashboard:0,sourcing:1,products:1,upload:1,blog:2,shorts:2,sns:2,workflows:3,runs:3,search:4,settings:4,billing:4,admin:4};
+
+const S=[
+{n:1,ph:1,t:'전역 인프라·슈퍼 어드민 DB',sh:'DB·슈퍼 어드민',nav:'admin',route:'/admin/users',crumb:'운영 / 사용자',pat:['B','C','G'],act:'역할 변경',
+ sum:'users 테이블에 role(SUPER_ADMIN)을 두고, 사용자·워크스페이스·마켓 계정(1:N)을 운영자 한 사람이 관리하는 전용 화면입니다.',
+ comp:['운영 지표 줄: 유료 전환 수를 크게, 가입자·실패 잡은 작게 (C)','사용자 표: 이메일 · 플랜 · 역할 · 마켓 계정 수 · 가입일 (B)','사용자 상세 시트: 역할 변경, 플랜 수동 조정, 마켓 계정 목록 (G시트)','감사 로그 타임라인: 누가 언제 무엇을 바꿨는지'],
+ data:['users.role','workspaces','market_accounts','audit_logs'],
+ api:['Supabase RLS + 서버 전용 service role'],
+ rwd:['표를 카드 목록으로, 상세는 전체 화면 시트','핵심 4열 + 오버레이 시트','표 + 오른쪽 고정 시트 360px'],
+ chk:'일반 사용자 세션으로 /admin에 접근하면 404이고, 사이드바에 메뉴 자체가 보이지 않는다.',
+ wire:[[{k:'kpi-lg',l:'유료 전환 · 전월 대비',w:2},{k:'kpi',l:'가입자'},{k:'kpi',l:'실패 잡'}],[{k:'filter',l:'검색 · 플랜 · 역할 필터',w:4,h:1}],[{k:'table',l:'사용자 목록',w:3,h:5},{k:'panel',l:'선택 사용자 시트',w:1.3,h:5}]]},
+{n:2,ph:1,t:'Supabase Auth·4단계 플랜 결제',sh:'인증·플랜 결제',nav:'billing',route:'/login · /billing',crumb:'설정 / 플랜·결제',pat:['H','I'],act:'플랜 변경',
+ sum:'소셜 로그인 후 무료·기본·프로·엔터 플랜으로 기능 권한을 나누고, 마켓 슬롯 한도를 넘기면 추가 슬롯(Add-on) 결제로 안내합니다.',
+ comp:['로그인: 카카오·구글은 Supabase 기본 제공, 네이버는 커스텀 OAuth 연동 필요','현재 플랜 + 사용량 막대 (마켓 슬롯, 월 생성 수)','플랜 비교 4열: 무료 ₩0 · 기본 ₩29,000 · 프로 ₩69,000 · 엔터 ₩149,000','슬롯 초과 시 추가 슬롯 결제 3단계 (선택 → 결제 → 확인, I)','결제 내역 표와 영수증'],
+ data:['plans','subscriptions','addon_slots','payments'],
+ api:['Supabase Auth','정기결제 PG (토스페이먼츠 빌링 등, 결정 필요)'],
+ rwd:['플랜 비교를 가로 스와이프 카드로','플랜 2×2 그리드','플랜 4열 한 줄'],
+ chk:'플랜 한도를 넘는 마켓 계정을 등록하려 하면 등록 대신 추가 슬롯 결제 단계가 열린다. 한도 판정은 서버에서만 한다.',
+ note:'v1 리뷰 지적: 과금 체크가 클라이언트에 있었음. V.2는 서버 액션과 RLS에서 판정.',
+ wire:[[{k:'kpi-lg',l:'현재 플랜 · 다음 결제일',w:2},{k:'bars',l:'사용량: 마켓 슬롯 · 월 생성',w:2,h:2}],[{k:'plans',l:'플랜 비교',w:4,h:3.6}],[{k:'table',l:'결제 내역',w:4,h:2}]]},
+{n:3,ph:1,t:'통합 설정 창',sh:'통합 설정',nav:'settings',route:'/settings/[section]',crumb:'설정 / 마켓 계정',pat:['H'],act:'',
+ sum:'마켓 API 다계정 등록, 해외 배송 템플릿 On/Off, 음원 라이브러리를 설정 하위 메뉴로 나눕니다. 섹션마다 따로 저장합니다.',
+ comp:['하위 메뉴: 일반 · 마켓 계정 · 배송 템플릿 · 음원 · API 키 · 알림','마켓 계정 표: 쿠팡·스마트스토어 × 1호점·2호점, 연결 상태 배지','해외 배송 템플릿 On/Off 스위치와 적용 미리보기','음원: 내 업로드(Suno 등)와 기본 제공 풀, 길이·분위기 태그','API 키는 생성 직후 한 번만 전체 표시, 이후 마스킹'],
+ data:['market_accounts','shipping_templates','audio_tracks','api_credentials'],
+ api:['쿠팡 Open API','네이버 커머스 API','Supabase Storage (음원)','Supabase Vault (키 암호화)'],
+ rwd:['하위 메뉴를 상단 가로 스크롤 탭으로','하위 메뉴를 드롭다운으로 접음','왼쪽 하위 메뉴 200px 고정'],
+ chk:'마켓 API 키가 브라우저 저장소에 남지 않고, 서버에서 암호화해 보관된다.',
+ note:'v1 리뷰 지적: API 키를 localStorage에 보관했음.',
+ wire:[[{k:'list',l:'하위 메뉴',w:1,h:7},{stack:[{k:'table',l:'마켓 계정 · 연결 상태',h:3},{k:'toggle',l:'해외 배송 템플릿',h:1.8},{k:'media',l:'음원 라이브러리',h:2}],w:3}]]},
+{n:4,ph:2,t:'노드 기반 자동화 캔버스',sh:'노드 캔버스',nav:'workflows',route:'/workflows/[id]',crumb:'자동화 / 워크플로우',pat:['K'],act:'실행',
+ sum:'수집 → 가공 → 숏폼 → 마켓 배포를 노드로 연결해 자동화 흐름을 설계합니다. 숏폼 노드에서 길이·템플릿·음원을 고릅니다.',
+ comp:['노드 팔레트: 수집 · 상품명 · 이미지 · 상세페이지 · 숏폼 · 블로그 · SNS · 마켓 배포','무한 캔버스 + 미니맵 + 확대·맞춤','오른쪽 노드 설정 패널 (캔버스 위 팝오버만으로 설정하지 않음)','노드별 실행 상태: 대기 · 실행 · 성공 · 실패 (점 + 글자)'],
+ data:['workflows.graph','workflow_versions'],
+ api:['@xyflow/react (React Flow)'],
+ rwd:['읽기 전용 보기와 실행 버튼만 (편집은 태블릿 이상)','팔레트 접힘, 설정 패널은 하단 시트','팔레트 · 캔버스 · 설정 3단'],
+ chk:'저장 후 새로고침해도 노드 위치와 연결이 그대로이고, 버전 기록에서 이전 그래프로 되돌릴 수 있다.',
+ wire:[[{k:'list',l:'노드 팔레트',w:1,h:7},{k:'canvas',l:'캔버스 · 미니맵',w:3.4,h:7},{k:'form',l:'노드 설정',w:1.4,h:7}]]},
+{n:5,ph:2,t:'워크플로우 실행 엔진',sh:'실행 엔진',nav:'runs',route:'/runs · /runs/[id]',crumb:'자동화 / 실행 기록',pat:['N'],act:'실패 건 재시도',
+ sum:'연결된 노드를 순서대로 읽어 백엔드 작업을 큐에 넣고 순차·비동기로 호출합니다. 진행률과 노드별 로그를 실시간으로 보여 줍니다.',
+ comp:['실행 목록: 상태 점 + 진행률 + 소요 시간','펼치면 노드별 입력·출력과 로그','실패 원인을 사람 말로 한 줄 + 원문 로그, 재시도·취소','Realtime 갱신 (진행률 없는 무한 스피너 금지)'],
+ data:['runs','run_steps','jobs'],
+ api:['Supabase Realtime','작업 큐 (pg-boss, Inngest 등 결정 필요)'],
+ rwd:['목록만, 누르면 로그 전체 화면','목록 + 하단 로그','목록 + 오른쪽 로그 패널'],
+ chk:'중간 노드가 실패하면 앞 노드 결과를 재사용해 그 노드부터 다시 실행된다.',
+ wire:[[{k:'filter',l:'상태 · 워크플로우 · 기간',w:4,h:1}],[{k:'progress',l:'실행 목록',w:2.4,h:6},{k:'timeline',l:'선택한 실행의 노드별 로그',w:1.6,h:6}]]},
+{n:6,ph:3,t:'마스터 대시보드 (환율·트렌드)',sh:'환율·트렌드',nav:'dashboard',route:'/dashboard',crumb:'홈',pat:['C','L'],act:'소싱 시작',
+ sum:'상단 카드에 실시간 환율(USD, CAD), 하단에 네이버 데이터랩 트렌드와 시즌 추천 상품을 둡니다.',
+ comp:['USD/KRW를 크게: 구매대행 마진을 좌우하는 숫자 하나','CAD/KRW, 오늘 처리 대기 건수는 작게. 전일 대비는 부호(+/−)와 글자로','네이버 데이터랩 검색어 추이 (에어리어 차트)','시즌 추천 상품 목록, 누르면 소싱 화면으로 (C → B)','최근 실행 잡 5건 요약'],
+ data:['fx_rates','trend_keywords','season_picks'],
+ api:['한국수출입은행 현재환율 API','네이버 데이터랩 검색어 트렌드 API'],
+ rwd:['환율 2열 → 차트 → 추천 → 잡 순서로 세로','환율 줄 + 전체 폭 차트, 추천은 아래','환율 줄 / 차트 + 추천 2단 / 실행 잡'],
+ chk:'환율 API가 실패하면 마지막 값과 기준 시각을 함께 보여 준다.',
+ wire:[[{k:'kpi-lg',l:'USD/KRW · 전일 대비',w:2},{k:'kpi',l:'CAD/KRW'},{k:'kpi',l:'오늘 처리 대기'}],[{k:'chart',l:'네이버 데이터랩 검색어 추이',w:2.8,h:4.4},{k:'list',l:'시즌 추천 상품',w:1.3,h:4.4}],[{k:'progress',l:'최근 실행 잡',w:4,h:2.6}]]},
+{n:7,ph:3,t:'글로벌 소싱·위탁 수집',sh:'소싱·위탁 수집',nav:'sourcing',route:'/sourcing',crumb:'상품 / 소싱·수집',pat:['B','O'],act:'상품 수집',
+ sum:'아마존 URL로 해외 상품을 수집하고, 오너클랜·도매꾹 엑셀을 일괄 파싱해 국내 위탁 상품으로 분리 적재합니다.',
+ comp:['상단 탭: 해외 소싱(아마존) · 국내 위탁(엑셀)','URL 여러 줄 붙여넣기 → 수집 잡 생성','엑셀 업로드 → 열 매핑 미리보기 → 검증 오류 셀 표시 (O)','수집 결과 표: 원가(USD) · 환산가(KRW) · 예상 마진 · 상태','다중 선택 후 가공 시작'],
+ data:['products.source','source_imports','import_rows'],
+ api:['아마존 수집 방식 결정 필요 (PA-API 자격 조건 확인)','SheetJS 엑셀 파싱'],
+ rwd:['표를 카드 목록으로, 엑셀 업로드는 데스크탑 권장 안내','핵심 5열 + 가로 스크롤','전체 열 + 첫 열 고정'],
+ chk:'같은 ASIN을 다시 수집하면 새로 만들지 않고 기존 상품을 갱신한다.',
+ wire:[[{k:'tabs',l:'해외 소싱 · 국내 위탁',w:4,h:1}],[{k:'form',l:'URL 붙여넣기 / 엑셀 업로드',w:4,h:2}],[{k:'grid',l:'수집 결과 · 원가 · 환산가 · 마진',w:4,h:5}]]},
+{n:8,ph:4,t:'AI 상품명 최적화·금지어 필터',sh:'AI 상품명',nav:'products',route:'/products',crumb:'상품 / 상품 관리',pat:['B','O'],act:'선택 상품 가공',
+ sum:'GPT-4o로 번역하고 GEO 키워드를 조합해 상품명을 만들고, 화장품·건기식 금지어 사전으로 자동 치환합니다.',
+ comp:['표 열: 원문 상품명 · AI 상품명 · 치환된 금지어 수 · 글자 수 · 상태','금지어는 밑줄과 치환어 툴팁 (색만으로 표시하지 않음)','셀 직접 수정 → 변경 셀 표시 → 한 번에 저장','금지어 사전 관리 (카테고리: 화장품 · 건기식)'],
+ data:['products.title_ai','banned_words','title_revisions'],
+ api:['OpenAI GPT-4o'],
+ rwd:['상품 카드에서 원문/AI 상품명 전환','AI 상품명 · 금지어 · 상태 3열','전체 열 + 인라인 편집'],
+ chk:'저장된 상품명에 금지어 사전 단어가 0건이다.',
+ wire:[[{k:'filter',l:'검색 · 출처 · 가공 상태',w:4,h:1}],[{k:'grid',l:'원문 | AI 상품명 | 금지어 | 상태',w:4,h:6.4}]]},
+{n:9,ph:4,t:'AI 썸네일 누끼·이미지 재생성',sh:'누끼·이미지 생성',nav:'products',route:'/products/[id]/images',crumb:'상품 / 상품 관리 / 이미지',pat:['G','M'],act:'이미지 재생성',
+ sum:'원본 배경을 지우고(누끼) DALL-E 3로 1080×1080 규격의 마켓용 대표 이미지를 합성합니다.',
+ comp:['레코드 요약: 상품명 · 상태 배지 · 출처','탭: 상품명 · 이미지 · 상세페이지 (8~10단계가 한 레코드 안에)','원본 → 누끼 → 합성 결과 3단 비교','생성 중·실패 배지와 다시 만들기','오른쪽 활동 타임라인 (생성 이력)'],
+ data:['product_images','media'],
+ api:['배경 제거 API (remove.bg 등)','OpenAI 이미지 생성 (PRD는 DALL-E 3, 착수 시 지원 모델 확인)'],
+ rwd:['3단 비교를 좌우 스와이프로','3단 비교 + 이력은 아래','3단 비교 + 오른쪽 이력'],
+ chk:'결과 이미지가 1080×1080 정사각형이고 원본 상품 형태가 유지된다.',
+ wire:[[{k:'kpi',l:'상품 요약 · 상태 배지',w:4,h:1.4}],[{k:'tabs',l:'상품명 · 이미지 · 상세페이지',w:4,h:1}],[{k:'media',l:'원본 → 누끼 → 합성',w:3,h:5},{k:'timeline',l:'생성 이력',w:1,h:5}]]},
+{n:10,ph:4,t:'스마트 상세페이지 어셈블러',sh:'상세페이지 조립',nav:'products',route:'/products/[id]/detail-page',crumb:'상품 / 상품 관리 / 상세페이지',pat:['J'],act:'상세페이지 확정',
+ sum:'해외 상품 여부와 사용자 설정에 따라 배송 템플릿을 조건부로 붙이고, 4단 구조 텍스트로 상세페이지를 조립합니다.',
+ comp:['왼쪽 블록 목록: 4단 구조 블록 (구성은 03장에서 확정)','가운데 실물 미리보기, 기기 폭 전환','오른쪽 속성 패널: 문구 · 이미지 · 배송 템플릿 조건','실행 취소, 자동 저장 상태 표시'],
+ data:['detail_pages.blocks','shipping_templates'],
+ api:['HTML → 이미지 변환 (마켓 업로드용, 결정 필요)'],
+ rwd:['미리보기 / 편집 탭 전환','미리보기 + 하단 속성 시트','블록 · 미리보기 · 속성 3단'],
+ chk:'국내 위탁 상품에는 해외 배송 템플릿이 붙지 않는다.',
+ wire:[[{k:'list',l:'블록 4단',w:1,h:7.4},{k:'preview',l:'실물 미리보기',w:2.6,h:7.4},{k:'form',l:'속성 패널',w:1.3,h:7.4}]]},
+{n:11,ph:5,t:'마케팅 원고·자체 블로그 발행',sh:'블로그 발행',nav:'blog',route:'/content/blog',crumb:'콘텐츠 / 블로그 발행',pat:['B','J'],act:'발행',
+ sum:'상세페이지 내용으로 정보성 원고를 만들고, 플랫폼 내장 블로그(지역 신문사) 또는 워드프레스로 바로 발행합니다.',
+ comp:['원고 목록: 상품 · 발행처 · 상태(초안 · 예약 · 발행) · 발행일','원고 편집기 + 미리보기','발행처 선택: 자체 블로그 · 워드프레스','15단계 JSON-LD 자동 삽입'],
+ data:['posts','publish_targets'],
+ api:['WordPress REST API','자체 블로그 (platform-docs local-news 연동)'],
+ rwd:['목록 → 편집 화면 이동','목록 접힘 + 편집','목록 | 편집 2단'],
+ chk:'발행 후 게시 URL이 원고에 저장되고 목록 상태가 발행으로 바뀐다.',
+ wire:[[{k:'filter',l:'상태 · 발행처 · 기간',w:4,h:1}],[{k:'table',l:'원고 목록',w:1.6,h:6},{k:'preview',l:'편집기 + 미리보기',w:2.4,h:6}]]},
+{n:12,ph:5,t:'숏폼 영상 모션 렌더링',sh:'숏폼 렌더링',nav:'shorts',route:'/content/shorts',crumb:'콘텐츠 / 숏폼 영상',pat:['J','N','M'],act:'렌더링 시작',
+ sum:'상품 이미지에 줌·팬 모션을 주고 TTS 자막과 음원(사용자·랜덤)을 입혀 15·30·50초 mp4로 렌더링합니다.',
+ comp:['길이 선택 15 / 30 / 50초','템플릿 · 음원(내 음원 · 기본 풀 · 랜덤) 선택','9:16 미리보기 플레이어','렌더 대기열: 진행률 · 소요 시간 (N)','완성 영상 갤러리 (M)'],
+ data:['videos','render_jobs','audio_tracks'],
+ api:['TTS (OpenAI TTS 등)','렌더러: Remotion 또는 FFmpeg 워커 (결정 필요)'],
+ rwd:['설정 → 미리보기 → 대기열 세로 순서','설정 + 미리보기 2단, 대기열 아래','설정 · 미리보기 · 대기열 3단'],
+ chk:'선택한 길이와 결과 mp4 길이 차이가 0.5초 이내다.',
+ wire:[[{k:'form',l:'길이 15/30/50 · 템플릿 · 음원',w:1.3,h:5.6},{k:'portrait',l:'9:16 미리보기',w:1.1,h:5.6},{k:'progress',l:'렌더 대기열',w:1.8,h:5.6}],[{k:'media',l:'완성 영상',w:4,h:2.4}]]},
+{n:13,ph:5,t:'SNS 자동 업로드·상품 링크 삽입',sh:'SNS 업로드',nav:'sns',route:'/content/sns',crumb:'콘텐츠 / SNS 배포',pat:['N','E'],act:'업로드 예약',
+ sum:'렌더링된 영상을 유튜브 쇼츠·인스타 릴스에 올리고, 마켓 전송 후 받은 상품 URL을 설명란과 고정 댓글에 넣습니다.',
+ comp:['채널 연결 상태: 유튜브 · 인스타그램','업로드 일정 (주 · 목록 보기, KST 표시)','업로드 잡: 영상 · 채널 · 상품 URL 삽입 여부 · 상태','마켓 전송 전에는 링크 대기로 표시하고, 14단계 완료 시 자동 진행'],
+ data:['sns_accounts','sns_posts'],
+ api:['YouTube Data API v3','Instagram Graph API (비즈니스 계정)'],
+ rwd:['일정은 목록 보기가 기본','주 보기 + 잡 목록 아래','일정 | 잡 2단'],
+ chk:'마켓 전송 완료 후 설명란에 해당 상품 URL이 들어간다.',
+ note:'확인 필요: YouTube Data API는 댓글 작성은 되지만 댓글 고정 기능은 제공하지 않는 것으로 알려져 있다. 고정은 수동 단계로 남길지 착수 전 결정.',
+ wire:[[{k:'kpi',l:'유튜브 연결'},{k:'kpi',l:'인스타 연결'},{k:'kpi-lg',l:'링크 대기',w:1},{k:'kpi',l:'오늘 업로드'}],[{k:'cal',l:'업로드 일정',w:2,h:5},{k:'progress',l:'업로드 잡',w:2,h:5}]]},
+{n:14,ph:5,t:'마켓별 다계정 선택 업로드',sh:'다계정 업로드',nav:'upload',route:'/upload',crumb:'상품 / 마켓 업로드',pat:['O','N'],act:'선택 상품 전송',
+ sum:'상품 목록에서 마켓(쿠팡, 스마트스토어)과 등록된 계정(1호점, 2호점)을 다중 체크해 일괄 전송하고 진행률을 실시간으로 표시합니다.',
+ comp:['상품 × 마켓 계정 체크 매트릭스','선택 요약 바: 상품 n개 × 계정 m개 = 전송 건수','전송 진행률 바 + 건별 성공·실패','실패 사유 한 줄 + 실패 건만 재전송','전송 완료 시 상품 URL 저장 → 13단계로 전달'],
+ data:['market_listings','upload_batches'],
+ api:['쿠팡 Open API','네이버 커머스 API'],
+ rwd:['계정 선택 → 상품 선택 2단계, 진행률은 하단 고정','핵심 계정 열 + 가로 스크롤','전체 매트릭스 + 첫 열 고정'],
+ chk:'일괄 전송 중 일부가 실패해도 나머지는 완료되고, 실패 건만 다시 보낼 수 있다.',
+ wire:[[{k:'grid',l:'상품 × 마켓 계정 (쿠팡 1호점 · 2호점 · 스마트스토어 1호점)',w:4,h:5}],[{k:'progress',l:'전송 진행률 · 건별 결과',w:4,h:2.8}]]},
+{n:15,ph:6,t:'Vector DB 임베딩·GEO JSON-LD',sh:'벡터·JSON-LD',nav:'search',route:'/insights/search',crumb:'인사이트 / 상품 검색·GEO',pat:['L'],act:'JSON-LD 반영',
+ sum:'text-embedding-3-small로 상품을 벡터화해 의미 기반 하이브리드 검색을 하고, 생성형 검색 봇용 JSON-LD를 만들어 상세페이지와 블로그에 반영합니다.',
+ comp:['자연어 검색창 + 키워드/의미 가중치 조절','왼쪽 필터 레일: 출처 · 카테고리 · 마켓','결과 표: 유사도 · 상품명 · 상태','JSON-LD 미리보기 (Product 스키마)와 반영 대상'],
+ data:['product_embeddings','jsonld_snapshots'],
+ api:['OpenAI text-embedding-3-small','Supabase pgvector + 전문 검색'],
+ rwd:['필터는 시트, 결과 목록, JSON-LD는 상세에서','결과 + JSON-LD 아래','필터 · 결과 · JSON-LD 3단'],
+ chk:'상품명에 없는 표현으로 검색해도 의미가 같은 상품이 상위에 나온다.',
+ wire:[[{k:'form1',l:'자연어 검색 · 가중치',w:4,h:1.2}],[{k:'list',l:'필터 레일',w:1,h:6},{k:'table',l:'검색 결과 · 유사도',w:2,h:6},{k:'code',l:'JSON-LD 미리보기',w:1.4,h:6}]]}
+];
+const byN={}; S.forEach(s=>byN[s.n]=s);
+const navLabel={}; NAV.forEach(g=>g.items.forEach(i=>navLabel[i[0]]=i[1])); FOOT.forEach(i=>navLabel[i[0]]=i[1]);
+
+/* ---------- glyphs ---------- */
+const rep=(n,f)=>Array.from({length:n},(_,i)=>f(i)).join('');
+function glyph(k){
+  switch(k){
+    case 'kpi': return '<div class="g"><i class="num"></i><i class="ln s"></i></div>';
+    case 'kpi-lg': return '<div class="g"><i class="num lg"></i><i class="ln s"></i></div>';
+    case 'chart': return '<svg class="chart" viewBox="0 0 200 70" preserveAspectRatio="none" aria-hidden="true"><g stroke="var(--grid)" stroke-width="1"><line x1="0" y1="17" x2="200" y2="17"/><line x1="0" y1="35" x2="200" y2="35"/><line x1="0" y1="53" x2="200" y2="53"/></g><path d="M0 58 L25 50 L50 54 L75 40 L100 44 L125 30 L150 34 L175 18 L200 22 L200 70 L0 70 Z" fill="var(--mint-tint)"/><path d="M0 58 L25 50 L50 54 L75 40 L100 44 L125 30 L150 34 L175 18 L200 22" fill="none" stroke="var(--mint)" stroke-width="2" vector-effect="non-scaling-stroke"/><circle cx="200" cy="22" r="3" fill="var(--mint)"/></svg>';
+    case 'bars': return '<div class="bars">'+[60,85,40,70,30,90,55].map(h=>'<i style="height:'+h+'%"></i>').join('')+'</div>';
+    case 'table': return '<div class="g">'+rep(6,i=>'<div class="row"><i class="ln" style="max-width:'+(i?38:30)+'%"></i><i class="cell"></i><i class="cell"></i><i class="cell" style="flex:.6"></i></div>')+'</div>';
+    case 'grid': return '<div class="g">'+rep(7,i=>'<div class="row"><i class="cb'+(i>0&&i<4?' on':'')+'"></i><i class="cell" style="flex:1.6"></i><i class="cell"></i><i class="cell"></i><i class="cell" style="flex:.7"></i></div>')+'</div>';
+    case 'filter': return '<div class="row"><i class="inp" style="max-width:40%"></i><i class="chip"></i><i class="chip"></i><i class="chip"></i></div>';
+    case 'form': return '<div class="g">'+rep(3,()=>'<i class="ln s"></i><i class="inp" style="flex:none"></i>')+'<div class="row" style="justify-content:flex-end;margin-top:auto"><i class="bt-mini"></i></div></div>';
+    case 'form1': return '<div class="row"><i class="inp"></i><i class="chip"></i><i class="bt-mini"></i></div>';
+    case 'tabs': return '<div class="tabs"><i class="on"></i><i></i><i></i></div>';
+    case 'list': return '<div class="g">'+rep(6,i=>'<div class="row"><i class="dot wait"></i><i class="ln" style="max-width:'+(60+i*7%30)+'%"></i></div>')+'</div>';
+    case 'toggle': return '<div class="g">'+rep(2,i=>'<div class="row"><i class="ln"></i><i class="sw'+(i?'':' on')+'"></i></div>')+'</div>';
+    case 'media': return '<div class="tiles">'+rep(8,()=>'<i></i>')+'</div>';
+    case 'progress': {
+      const R=[['ok',100,'완료'],['run',68,'진행'],['run',34,'진행'],['err',52,'실패'],['wait',0,'대기']];
+      return '<div class="g">'+R.map(r=>'<div class="prog"><i class="dot '+r[0]+'"></i><i class="ln"></i><span class="bar"><i style="width:'+r[1]+'%"></i></span><span class="st">'+r[2]+'</span></div>').join('')+'</div>';
+    }
+    case 'timeline': return '<div class="tl">'+rep(5,i=>'<div class="row"><i class="dot"></i><i class="ln" style="max-width:'+(80-i*9)+'%"></i></div>')+'</div>';
+    case 'preview': return '<div class="pv"><i class="ln m"></i><i class="img"></i><i class="ln"></i><i class="ln m"></i><i class="img" style="flex:.6"></i><i class="ln s"></i></div>';
+    case 'portrait': return '<div class="pv portrait"><i class="img"></i><i class="ln m"></i><i class="ln s"></i></div>';
+    case 'code': return '<div class="code">'+[30,55,70,62,48,66,40,24].map((w,i)=>'<i class="ln" style="width:'+w+'%;margin-left:'+(i&&i<7?8:0)+'%"></i>').join('')+'</div>';
+    case 'cal': return '<div class="cal">'+rep(21,i=>'<i'+([2,5,9,10,15,18].includes(i)?' class="ev"':'')+'></i>')+'</div>';
+    case 'panel': return '<div class="g"><i class="ln m"></i><i class="ln s"></i>'+rep(4,()=>'<div class="row"><i class="ln s" style="flex:none;width:30%"></i><i class="inp"></i></div>')+'<div class="tl" style="margin-top:6px">'+rep(3,()=>'<div class="row"><i class="dot"></i><i class="ln"></i></div>')+'</div></div>';
+    case 'plans': return '<div class="plans">'+[['무료','₩0'],['기본','₩29,000'],['프로','₩69,000'],['엔터','₩149,000']].map((p,i)=>'<div'+(i===2?' class="on"':'')+'><b>'+p[0]+'</b><small>'+p[1]+' / 월</small><i class="ln"></i><i class="ln m"></i><i class="ln s"></i></div>').join('')+'</div>';
+    case 'canvas': return '<div class="cv"><svg viewBox="0 0 300 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><g fill="none" stroke="var(--rule-2)" stroke-width="1.5"><path d="M74 40 C100 40 100 40 116 40"/><path d="M74 40 C96 40 96 110 116 110"/><path d="M178 40 C200 40 200 75 222 75"/><path d="M178 110 C200 110 200 75 222 75"/></g><g fill="var(--sheet)" stroke="var(--rule-2)"><rect x="14" y="26" width="60" height="28" rx="5"/><rect x="116" y="26" width="62" height="28" rx="5"/><rect x="116" y="96" width="62" height="28" rx="5"/><rect x="222" y="61" width="64" height="28" rx="5" stroke="var(--mint)" stroke-width="2"/></g><g><circle cx="24" cy="40" r="3" fill="var(--ok)"/><circle cx="126" cy="40" r="3" fill="var(--ok)"/><circle cx="126" cy="110" r="3" fill="var(--run)"/><circle cx="232" cy="75" r="3" fill="var(--ink-3)"/></g><g fill="var(--ink-2)" font-size="9" font-family="Noto Sans KR, sans-serif"><text x="31" y="43">수집</text><text x="133" y="43">상품명</text><text x="133" y="113">숏폼</text><text x="239" y="78">마켓 배포</text></g><rect x="236" y="122" width="56" height="32" rx="3" fill="var(--sheet)" stroke="var(--rule-2)"/><rect x="242" y="128" width="20" height="10" fill="var(--wire-2)"/></svg></div>';
+  }
+  return '';
+}
+function block(b){
+  if(b.stack) return '<div class="wb stack'+((b.w||1)>=2?' wide':'')+'" style="--w:'+(b.w||1)+';--h:1">'+b.stack.map(c=>block(c)).join('')+'</div>';
+  const k=b.k, w=b.w||1, h=b.h||1.8;
+  return '<div class="wb k-'+k+(w>=2?' wide':'')+'" style="--w:'+w+';--h:'+h+'"><span class="wl">'+b.l+'</span>'+glyph(k)+'</div>';
+}
+
+/* ---------- shell ---------- */
+const sb=document.getElementById('sidebar');
+function navBtn(i){return '<button type="button" class="sb-i" data-nav="'+i[0]+'" data-step="'+i[3][0]+'"><span class="ab">'+i[2]+'</span><span>'+i[1]+'</span>'+(i[4]?'<em>'+i[4]+'</em>':'')+'</button>';}
+sb.innerHTML='<div class="sb-ws"><b>N</b><span>NOMAD AI Factory</span></div>'+NAV.map(g=>'<p class="sb-g">'+g.g+'</p>'+g.items.map(navBtn).join('')).join('')+'<div class="sb-foot">'+FOOT.map(navBtn).join('')+'</div>';
+const tabs=document.getElementById('tabs');
+tabs.innerHTML=TABS.map((t,i)=>'<button type="button" data-tab="'+i+'" data-step="'+t[2]+'">'+t[0]+'</button>').join('');
+
+/* ---------- facts ---------- */
+const used=new Set(['A']); S.forEach(s=>s.pat.forEach(p=>used.add(p)));
+const navCount=NAV.reduce((a,g)=>a+g.items.length,0)+FOOT.length;
+document.getElementById('facts').innerHTML=[[15,'단계'],[6,'Phase'],[navCount,'메뉴 화면'],[used.size,'화면 패턴'],[3,'반응형 구간']].map(f=>'<div class="fact"><b>'+f[0]+'</b><span>'+f[1]+'</span></div>').join('');
+
+/* ---------- board ---------- */
+const board=document.getElementById('board');
+board.innerHTML=Object.keys(PH).map(p=>{
+  const st=S.filter(s=>s.ph==p);
+  return '<div class="phase"><button type="button" class="phase-h" aria-expanded="true" aria-controls="ph'+p+'"><span class="pn">P'+p+'</span><span class="pt"><b>'+PH[p]+'</b><small>'+st.length+'개 단계 · '+st.map(s=>s.n).join(', ')+'단계</small></span><i class="tw"></i></button>'+
+   '<div class="cards" id="ph'+p+'">'+st.map(s=>'<button type="button" class="card" data-step="'+s.n+'"><span class="card-t"><span class="n">'+String(s.n).padStart(2,'0')+'</span><b>'+s.t+'</b></span><p>'+s.sum+'</p><span class="card-f"><code>'+s.route+'</code>'+s.pat.map(x=>'<span class="lt" title="'+PAT[x][0]+'">'+x+'</span>').join('')+'</span></button>').join('')+'</div></div>';
+}).join('');
+board.addEventListener('click',e=>{
+  const h=e.target.closest('.phase-h');
+  if(h){const ex=h.getAttribute('aria-expanded')==='true';h.setAttribute('aria-expanded',String(!ex));document.getElementById(h.getAttribute('aria-controls')).hidden=ex;return;}
+});
+
+/* ---------- legend ---------- */
+document.getElementById('legendgrid').innerHTML=Object.keys(PAT).filter(k=>used.has(k)).map(k=>{
+  const steps=k==='A'?[]:S.filter(s=>s.pat.includes(k)).map(s=>s.n);
+  return '<div class="lg"><span class="lt">'+k+'</span><b>'+PAT[k][0]+'</b><p>'+PAT[k][1]+'. 참고: '+PAT[k][2]+'</p><div class="uses">'+(k==='A'?'<p>모든 화면의 셸</p>':steps.map(n=>'<button type="button" data-step="'+n+'">'+n+'단계</button>').join(''))+'</div></div>';
+}).join('');
+
+/* ---------- flow diagram ---------- */
+const NW=150,NH=44;
+const POS={6:[30,112],7:[30,212],8:[228,112],9:[228,212],10:[426,162],14:[624,104],11:[624,176],12:[624,248],15:[822,104],13:[822,214],
+  4:[30,14],5:[192,14],1:[30,338],2:[192,338],3:[354,338]};
+const SMALL={4:1,5:1,1:1,2:1,3:1};
+const EDGES=[[6,7,'트렌드'],[7,8],[7,9],[8,10],[9,10],[10,14],[10,11],[10,12],[12,13],[14,13,'상품 URL'],[14,15,'임베딩']];
+function box(n){const p=POS[n];return {x:p[0],y:p[1],w:SMALL[n]?150:NW,h:SMALL[n]?38:NH};}
+const svg=document.getElementById('flowsvg');
+let sv='<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow" d="M0 0 L10 5 L0 10 z"/></marker><marker id="ahh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="arrow hot" d="M0 0 L10 5 L0 10 z"/></marker></defs>';
+sv+='<rect class="band" x="16" y="6" width="968" height="54" rx="8"/><text class="bl" x="362" y="38">캔버스에서 연결한 노드를 실행 엔진이 순서대로 호출</text>';
+sv+='<rect class="band" x="16" y="330" width="968" height="54" rx="8"/><text class="bl" x="524" y="362">기반: 모든 단계가 쓰는 계정·권한·설정</text>';
+[['수집',30],['AI 가공',228],['조립',426],['출력',624],['배포·검색',822]].forEach(c=>{sv+='<text class="colh" x="'+c[1]+'" y="86">'+c[0]+'</text>';});
+EDGES.forEach(e=>{
+  const a=box(e[0]),b=box(e[1]);let d,mx,my;
+  if(b.x>a.x+a.w){const x1=a.x+a.w,y1=a.y+a.h/2,x2=b.x-2,y2=b.y+b.h/2,cx=(x1+x2)/2;d='M'+x1+' '+y1+' C'+cx+' '+y1+' '+cx+' '+y2+' '+x2+' '+y2;mx=cx;my=(y1+y2)/2;}
+  else{const x1=a.x+a.w/2,y1=a.y+a.h,x2=b.x+b.w/2,y2=b.y-2;d='M'+x1+' '+y1+' L'+x2+' '+y2;mx=x1+6;my=(y1+y2)/2+4;}
+  sv+='<path class="fe" data-e="'+e[0]+'-'+e[1]+'" d="'+d+'" marker-end="url(#ah)"/>';
+  if(e[2]) sv+='<text class="fl" x="'+mx+'" y="'+my+'" text-anchor="'+(b.x>a.x+a.w?'middle':'start')+'">'+e[2]+'</text>';
+});
+Object.keys(POS).forEach(n=>{
+  const b=box(n),s=byN[n];
+  sv+='<g class="fn" data-step="'+n+'" tabindex="0" role="button" aria-label="'+n+'단계 '+s.t+'"><rect x="'+b.x+'" y="'+b.y+'" width="'+b.w+'" height="'+b.h+'" rx="7"/><text class="fnum" x="'+(b.x+10)+'" y="'+(b.y+b.h/2+6)+'">'+String(n).padStart(2,'0')+'</text><text x="'+(b.x+34)+'" y="'+(b.y+b.h/2+4.5)+'">'+s.sh+'</text></g>';
+});
+svg.innerHTML=sv;
+
+/* ---------- detail ---------- */
+const dp=document.getElementById('detail');
+function renderDetail(s){
+  const bpN=['모바일','태블릿','데스크탑'];
+  dp.innerHTML='<div class="dp-head"><span class="dp-num">'+String(s.n).padStart(2,'0')+'</span><div><p class="dp-ph">Phase '+s.ph+' · '+PH[s.ph]+'</p><h3>'+s.t+'</h3><code class="dp-route">'+s.route+'</code></div></div>'+
+  '<p class="dp-sum">'+s.sum+'</p>'+
+  '<div class="pats">'+['A'].concat(s.pat).map(x=>'<span class="pat"><b>'+x+'</b>'+PAT[x][0]+'</span>').join('')+'</div>'+
+  '<div><h4>화면 구성</h4><ul>'+s.comp.map(c=>'<li>'+c+'</li>').join('')+'</ul></div>'+
+  '<div><h4>데이터</h4><div class="tags">'+s.data.map(d=>'<code>'+d+'</code>').join('')+'</div></div>'+
+  '<div><h4>외부 연동</h4><ul>'+s.api.map(c=>'<li>'+c+'</li>').join('')+'</ul></div>'+
+  '<div><h4>반응형</h4><dl class="rwd">'+s.rwd.map((r,i)=>'<div><dt>'+bpN[i]+'</dt><dd>'+r+'</dd></div>').join('')+'</dl></div>'+
+  '<div><h4>확인 기준</h4><p class="chk">'+s.chk+'</p></div>'+
+  (s.note?'<p class="note">'+s.note+'</p>':'')+
+  '<div class="dp-nav"><button type="button" data-step="'+(s.n-1)+'"'+(s.n===1?' disabled':'')+'>이전 단계</button><button type="button" data-step="'+(s.n+1)+'"'+(s.n===15?' disabled':'')+'>다음 단계</button></div>';
+}
+
+/* ---------- select ---------- */
+let cur=6;
+function select(n,opts){
+  n=Math.max(1,Math.min(15,n|0)); cur=n; const s=byN[n];
+  document.querySelectorAll('.sb-i').forEach(b=>{ if(b.dataset.nav===s.nav) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  const tg=TABGROUP[s.nav];
+  tabs.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-current',String(i===tg)));
+  document.getElementById('crumb').textContent=s.crumb;
+  document.getElementById('ptitle').textContent=s.t;
+  document.getElementById('pact').textContent=s.act;
+  document.getElementById('wire').innerHTML=s.wire.map(r=>'<div class="wr">'+r.map(block).join('')+'</div>').join('');
+  renderDetail(s);
+  document.querySelectorAll('.card').forEach(c=>c.setAttribute('aria-current',String(+c.dataset.step===n)));
+  svg.querySelectorAll('.fn').forEach(g=>g.classList.toggle('sel',+g.dataset.step===n));
+  svg.querySelectorAll('.fe').forEach(p=>{const ab=p.dataset.e.split('-').map(Number);const hot=ab.includes(n);p.classList.toggle('hot',hot);p.setAttribute('marker-end',hot?'url(#ahh)':'url(#ah)');});
+  try{ history.replaceState(null,'','#s'+n); }catch(e){}
+  if(opts&&opts.scroll){
+    const r=document.getElementById('map').getBoundingClientRect();
+    if(r.top<0||r.top>window.innerHeight*0.5){
+      const rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document.getElementById('map').scrollIntoView({behavior:rm?'auto':'smooth',block:'start'});
+    }
+  }
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-step]');
+  if(!t||t.disabled) return;
+  const fromMock=t.closest('#device')||t.closest('#detail');
+  select(+t.dataset.step,{scroll:!fromMock});
+});
+svg.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){const g=e.target.closest('.fn'); if(g){e.preventDefault();select(+g.dataset.step,{scroll:true});}} });
+
+/* ---------- breakpoint ---------- */
+const device=document.getElementById('device');
+const NOTE={d:'데스크탑: 사이드바 240px, 블록은 비율대로 한 줄 배치',t:'태블릿: 아이콘 레일, 넓은 블록은 한 줄 전체, 나머지는 2열',m:'모바일: 사이드바 대신 하단 탭, 모든 블록 1열 (숫자 카드만 2열)'};
+function setBp(bp){
+  device.dataset.bp=bp;
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.bp===bp)));
+  document.getElementById('bpnote').textContent=NOTE[bp];
+}
+document.querySelector('.seg').addEventListener('click',e=>{const b=e.target.closest('button'); if(b) setBp(b.dataset.bp);});
+const vw=window.innerWidth||1280;
+setBp(vw<768?'m':vw<1200?'t':'d');
+
+const m=/^#s(\d{1,2})$/.exec(location.hash||'');
+select(m?+m[1]:6);
+})();
+</script>
+
+</body>
+</html>
