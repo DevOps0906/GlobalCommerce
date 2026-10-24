@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>SNS 배포</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+button:focus-visible,a:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="sns" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1240px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <p style="margin: 0; font-size: 13px; color: #64748B;">콘텐츠</p>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800;">SNS 배포</h1>
+          <p style="margin: 0; font-size: 14px; color: #475569;">완성 영상을 유튜브 쇼츠와 인스타그램 릴스에 올리고, 마켓 등록이 끝난 상품 링크를 설명란에 넣습니다.</p>
+        </div>
+        <button type="button" style="height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">업로드 예약</button>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+        <section style="flex: 1 1 220px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">링크 대기</p>
+          <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1; color: #007A64; font-variant-numeric: tabular-nums;">3</p>
+          <p style="margin: 0; font-size: 13px; color: #475569;">마켓 등록이 끝나면 자동으로 올라갑니다</p>
+        </section>
+        <section style="flex: 1 1 220px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 6px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">오늘 업로드</p>
+          <p style="margin: 0; font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums;">5</p>
+          <p style="margin: 0; font-size: 13px; color: #475569;">쇼츠 3 · 릴스 2</p>
+        </section>
+        <section style="flex: 1 1 220px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 8px;">
+          <p style="margin: 0; font-size: 13px; font-weight: 600; color: #475569;">연결된 채널</p>
+          <p style="margin: 0; display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 700;">유튜브</span><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 1px 8px;">연결됨</span></p>
+          <p style="margin: 0; display: flex; justify-content: space-between; font-size: 14px;"><span style="font-weight: 700;">인스타그램 <span style="font-weight: 400; color: #64748B; font-size: 12px;">비즈니스</span></span><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 1px 8px;">연결됨</span></p>
+        </section>
+      </div>
+
+      <section aria-label="업로드 일정" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">10월 19일 – 25일 <span style="font-size: 12px; font-weight: 500; color: #64748B;">한국 시간</span></h2>
+          <div style="display: flex; gap: 12px; font-size: 12px; color: #334155; align-items: center;">
+            <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #0F172A;"></span>유튜브 쇼츠</span>
+            <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 10px; height: 10px; border-radius: 2px; border: 2px solid #0F172A; background: #FFFFFF;"></span>인스타 릴스</span>
+            <div role="group" aria-label="보기" style="display: inline-flex; border: 1px solid #CBD5E1; border-radius: 8px; padding: 2px;">
+              <button type="button" aria-pressed="true" style="height: 28px; padding: 0 10px; border: 0; border-radius: 6px; background: #0F172A; color: #FFFFFF; font-family: inherit; font-size: 12px; cursor: pointer;">주</button>
+              <button type="button" aria-pressed="false" style="height: 28px; padding: 0 10px; border: 0; border-radius: 6px; background: transparent; color: #334155; font-family: inherit; font-size: 12px; cursor: pointer;">목록</button>
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <div style="min-width: 760px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; color: #64748B;">월 19</p><div style="min-height: 120px; border-radius: 8px; background: #F8FAFB; padding: 6px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; background: #0F172A; color: #FFFFFF; border-radius: 6px; padding: 6px;">10:00 텀블러 30초</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; color: #64748B;">화 20</p><div style="min-height: 120px; border-radius: 8px; background: #F8FAFB; padding: 6px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; border: 2px solid #0F172A; background: #FFFFFF; border-radius: 6px; padding: 5px;">19:00 텀블러 15초</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; color: #64748B;">수 21</p><div style="min-height: 120px; border-radius: 8px; background: #F8FAFB; padding: 6px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; background: #0F172A; color: #FFFFFF; border-radius: 6px; padding: 6px;">12:00 가습기 30초</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; color: #64748B;">목 22</p><div style="min-height: 120px; border-radius: 8px; background: #F8FAFB; padding: 6px;"></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; font-weight: 700; color: #007A64;">금 23 · 오늘</p><div style="min-height: 120px; border-radius: 8px; background: #E6FBF7; padding: 6px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; background: #0F172A; color: #FFFFFF; border-radius: 6px; padding: 6px;">11:00 캠핑 의자 30초</span><span style="font-size: 12px; border: 2px solid #0F172A; background: #FFFFFF; border-radius: 6px; padding: 5px;">18:00 캠핑 의자 30초</span><span style="font-size: 12px; border: 1px dashed #64748B; background: #FFFFFF; border-radius: 6px; padding: 5px; color: #334155;">링크 대기 · 전기 담요</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; color: #64748B;">토 24</p><div style="min-height: 120px; border-radius: 8px; background: #F8FAFB; padding: 6px; display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 12px; background: #0F172A; color: #FFFFFF; border-radius: 6px; padding: 6px;">10:00 캠핑 의자 50초</span></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px;"><p style="margin: 0; font-size: 12px; color: #64748B;">일 25</p><div style="min-height: 120px; border-radius: 8px; background: #F8FAFB; padding: 6px;"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #E2E8F0;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">업로드 작업</h2>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="tbl" style="min-width: 820px;">
+            <thead><tr><th>영상</th><th>채널</th><th>상품 링크</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight: 600;">캠핑 의자 · 30초</td><td>유튜브 쇼츠</td><td><span style="font-size: 13px;">설명란 넣음 · 댓글 작성함</span></td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">업로드 완료</span></td></tr>
+              <tr><td style="font-weight: 600;">캠핑 의자 · 30초</td><td>인스타 릴스</td><td><span style="font-size: 13px;">캡션 넣음</span></td><td><span style="font-size: 12px; font-weight: 600; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;">18:00 예약</span></td></tr>
+              <tr><td style="font-weight: 600;">전기 담요 · 30초</td><td>유튜브 쇼츠</td><td><span style="font-size: 13px; color: #92400E;">스마트스토어 1호점 등록 실패로 대기</span></td><td><span style="font-size: 12px; font-weight: 600; color: #92400E; background: #FEF3C7; border-radius: 999px; padding: 2px 10px;">링크 대기</span></td></tr>
+              <tr><td style="font-weight: 600;">가습기 · 30초</td><td>유튜브 쇼츠</td><td><span style="font-size: 13px;">설명란 넣음 · 댓글 작성함</span></td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">업로드 완료</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 16px; border-top: 1px solid #E2E8F0; background: #F8FAFB; font-size: 13px; color: #334155;">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round" style="flex: none; margin-top: 2px;"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>
+          <p style="margin: 0;">유튜브는 댓글을 자동으로 고정할 수 없습니다. 링크 댓글은 자동으로 달고, 고정은 YouTube Studio에서 한 번 눌러 주세요.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

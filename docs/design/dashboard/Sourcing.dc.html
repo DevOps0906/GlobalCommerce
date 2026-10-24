@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>소싱·수집</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="sourcing" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1200px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <p style="margin: 0; font-size: 13px; color: #64748B;">상품</p>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800;">소싱·수집</h1>
+          <p style="margin: 0; font-size: 14px; color: #475569;">아마존 상품은 URL로, 국내 위탁 상품은 오너클랜·도매꾹 엑셀로 가져옵니다.</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" style="height: 38px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">엑셀 양식 받기</button>
+          <button type="button" style="height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">상품 수집</button>
+        </div>
+      </div>
+
+      <div role="tablist" aria-label="수집 방식" style="display: flex; gap: 24px; border-bottom: 1px solid #E2E8F0;">
+        <button type="button" role="tab" aria-selected="true" style="padding: 10px 2px; border: 0; background: transparent; font-family: inherit; font-size: 15px; font-weight: 700; color: #0F172A; box-shadow: inset 0 -2px 0 #00C9A7; cursor: pointer;">해외 소싱 <span style="font-weight: 500; color: #64748B;">아마존</span></button>
+        <button type="button" role="tab" aria-selected="false" style="padding: 10px 2px; border: 0; background: transparent; font-family: inherit; font-size: 15px; font-weight: 500; color: #475569; cursor: pointer;">국내 위탁 <span style="color: #64748B;">엑셀</span></button>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px;">
+        <section style="flex: 2 1 480px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <label for="urls" style="font-size: 14px; font-weight: 700;">아마존 상품 URL <span style="font-weight: 400; color: #64748B;">한 줄에 하나씩, 최대 50개</span></label>
+          <textarea id="urls" rows="4" style="width: 100%; resize: vertical; border: 1px solid #CBD5E1; border-radius: 8px; padding: 12px; font-family: inherit; font-size: 14px; line-height: 1.7; color: #0F172A;">https://www.amazon.com/dp/B0C1XK2M7Q
+https://www.amazon.com/dp/B0D2F8L1NZ
+https://www.amazon.com/dp/B0B9Q7RJ3S</textarea>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px;">
+            <span style="font-size: 13px; color: #334155; background: #F1F5F9; border-radius: 999px; padding: 4px 12px;">마켓플레이스 amazon.com</span>
+            <span style="font-size: 13px; color: #334155; background: #F1F5F9; border-radius: 999px; padding: 4px 12px; font-variant-numeric: tabular-nums;">환율 USD/KRW 1,384.50 적용</span>
+            <span style="font-size: 13px; color: #334155; background: #F1F5F9; border-radius: 999px; padding: 4px 12px;">목표 마진 25% 이상</span>
+            <button type="button" style="margin-left: auto; height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">3건 수집 시작</button>
+          </div>
+        </section>
+        <section style="flex: 1 1 280px; background: #FFFFFF; border: 1px dashed #CBD5E1; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 8px; justify-content: center; align-items: flex-start;">
+          <p style="margin: 0; font-size: 14px; font-weight: 700;">국내 위탁 엑셀</p>
+          <p style="margin: 0; font-size: 13px; color: #475569;">오너클랜·도매꾹에서 받은 .xlsx 파일을 여기로 끌어 놓으세요. 열을 자동으로 맞추고, 맞지 않는 셀은 저장 전에 표시합니다.</p>
+          <button type="button" style="margin-top: 4px; height: 34px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">파일 선택</button>
+        </section>
+      </div>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid #E2E8F0;">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+            <h2 style="margin: 0 8px 0 0; font-size: 16px; font-weight: 700;">수집 결과 <span style="font-weight: 500; color: #64748B; font-variant-numeric: tabular-nums;">6</span></h2>
+            <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 999px; padding: 3px 12px; color: #0F172A; cursor: pointer;">상태: 전체</button>
+            <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 999px; padding: 3px 12px; color: #0F172A; cursor: pointer;">마진 25% 이상</button>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; background: #0F172A; color: #FFFFFF; border-radius: 8px; padding: 6px 8px 6px 14px; font-size: 13px;">
+            <span style="font-variant-numeric: tabular-nums;">2개 선택됨</span>
+            <a href="Products.dc.html" style="color: #FFFFFF; background: #007A64; border-radius: 6px; padding: 4px 12px; font-weight: 700; text-decoration: none;">가공 시작</a>
+            <button type="button" style="font-family: inherit; font-size: 13px; color: #FFFFFF; background: transparent; border: 1px solid #475569; border-radius: 6px; padding: 3px 10px; cursor: pointer;">삭제</button>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+          <table class="tbl" style="min-width: 960px;">
+            <thead><tr><th style="width: 44px;"><input type="checkbox" aria-label="전체 선택"></th><th>상품 (원문)</th><th>ASIN</th><th class="num">원가 USD</th><th class="num">환산가 KRW</th><th class="num">예상 마진</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr style="background: #F6FDFB;">
+                <td><input type="checkbox" checked aria-label="선택"></td>
+                <td><div style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 40px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">Folding Camping Chair with Side Table, Supports 300 lbs</span></div></td>
+                <td style="color: #475569;">B0C1XK2M7Q</td><td class="num">$39.99</td><td class="num">₩55,366</td><td class="num" style="font-weight: 700;">28%</td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>수집 완료</span></td>
+              </tr>
+              <tr style="background: #F6FDFB;">
+                <td><input type="checkbox" checked aria-label="선택"></td>
+                <td><div style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 40px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">Heated Throw Blanket, 50x60 Inch, 6 Heat Levels</span></div></td>
+                <td style="color: #475569;">B0D2F8L1NZ</td><td class="num">$45.99</td><td class="num">₩63,673</td><td class="num" style="font-weight: 700;">31%</td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>수집 완료</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="선택"></td>
+                <td><div style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 40px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">Cool Mist Humidifier 4L, Quiet for Bedroom</span></div></td>
+                <td style="color: #475569;">B0B9Q7RJ3S</td><td class="num">$32.50</td><td class="num">₩44,996</td><td class="num" style="font-weight: 700;">24%</td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>수집 완료</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="선택"></td>
+                <td><div style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 40px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600;">Insulated Stainless Steel Water Bottle 32oz</span></div></td>
+                <td style="color: #475569;">B0CJ5T2W8P</td><td class="num">$19.95</td><td class="num">₩27,621</td><td class="num" style="font-weight: 700;">35%</td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #15803D;"></span>수집 완료</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="선택"></td>
+                <td><div style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 40px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span style="font-weight: 600; color: #475569;">LED Desk Lamp with Wireless Charger</span></div></td>
+                <td style="color: #475569;">B0BX4N7K2D</td><td class="num" style="color: #64748B;">–</td><td class="num" style="color: #64748B;">–</td><td class="num" style="color: #64748B;">–</td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #1E40AF; background: #DBEAFE; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #1D4ED8;"></span>수집 중</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" aria-label="선택"></td>
+                <td><div style="display: flex; align-items: center; gap: 12px;"><span style="width: 40px; height: 40px; border-radius: 6px; background: #EEF2F5; flex: none;"></span><span><span style="display: block; font-weight: 600;">Portable Propane Heater for Camping</span><span style="font-size: 12px; color: #991B1B;">가스 용품은 해외 배송 금지 품목이라 수집하지 않았습니다.</span></span></div></td>
+                <td style="color: #475569;">B0C7H3PQ9M</td><td class="num" style="color: #64748B;">–</td><td class="num" style="color: #64748B;">–</td><td class="num" style="color: #64748B;">–</td>
+                <td><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #991B1B; background: #FEE2E2; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #B91C1C;"></span>제외</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

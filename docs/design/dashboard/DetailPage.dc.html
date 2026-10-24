@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>상세페이지 어셈블러</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="products" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 24px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0;">
+      <a href="ProductImages.dc.html" style="font-size: 13px; color: #475569; text-decoration: none;">접이식 캠핑 의자</a>
+      <span style="color: #CBD5E1;">/</span>
+      <h1 style="margin: 0; font-size: 16px; font-weight: 800;">상세페이지</h1>
+      <span style="font-size: 12px; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px; font-weight: 600;">자동 저장됨 10:44</span>
+      <div style="display: flex; gap: 4px; margin-left: 8px;">
+        <button type="button" aria-label="실행 취소" style="width: 34px; height: 34px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #334155;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+        <button type="button" aria-label="다시 실행" style="width: 34px; height: 34px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; display: grid; place-items: center; cursor: pointer; color: #334155;"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h3"/></svg></button>
+      </div>
+      <div role="group" aria-label="미리보기 폭" style="display: inline-flex; border: 1px solid #CBD5E1; border-radius: 8px; padding: 2px; margin-left: auto;">
+        <button type="button" aria-pressed="true" style="height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: #0F172A; color: #FFFFFF; font-family: inherit; font-size: 13px; cursor: pointer;">데스크탑</button>
+        <button type="button" aria-pressed="false" style="height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: transparent; color: #334155; font-family: inherit; font-size: 13px; cursor: pointer;">모바일</button>
+      </div>
+      <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">미리보기 링크</button>
+      <button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">상세페이지 확정</button>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; flex: 1; align-items: stretch;">
+      <aside aria-label="블록" style="flex: 1 1 220px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E2E8F0; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+        <h2 style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: #64748B;">4단 구조</h2>
+        <button type="button" style="display: flex; gap: 10px; align-items: flex-start; text-align: left; padding: 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: #64748B;">1</span><span><span style="display: block; font-size: 14px; font-weight: 700;">후킹 헤드라인</span><span style="font-size: 12px; color: #64748B;">대표 이미지 + 한 줄 문구</span></span></button>
+        <button type="button" aria-current="true" style="display: flex; gap: 10px; align-items: flex-start; text-align: left; padding: 10px; border: 1px solid #00C9A7; border-radius: 8px; background: #E6FBF7; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: #007A64;">2</span><span><span style="display: block; font-size: 14px; font-weight: 700;">핵심 특징</span><span style="font-size: 12px; color: #475569;">3가지 장점, 각 이미지 1장</span></span></button>
+        <button type="button" style="display: flex; gap: 10px; align-items: flex-start; text-align: left; padding: 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: #64748B;">3</span><span><span style="display: block; font-size: 14px; font-weight: 700;">상세 스펙</span><span style="font-size: 12px; color: #64748B;">소재 · 크기 · 무게 · 하중</span></span></button>
+        <button type="button" style="display: flex; gap: 10px; align-items: flex-start; text-align: left; padding: 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; line-height: 1; color: #64748B;">4</span><span><span style="display: block; font-size: 14px; font-weight: 700;">배송·교환 안내</span><span style="font-size: 12px; color: #64748B;">해외 배송 템플릿 자동 결합</span></span></button>
+        <p style="margin: 8px 0 0; font-size: 12px; color: #64748B;">블록 순서는 끌어서 바꿀 수 있습니다. 4단 구성은 제품 기획서 03장에서 확정합니다.</p>
+      </aside>
+
+      <section aria-label="미리보기" style="flex: 3 1 520px; min-width: 0; padding: 24px; display: flex; justify-content: center; background-color: #EEF2F5;">
+        <article style="width: 100%; max-width: 640px; background: #FFFFFF; border: 1px solid #E2E8F0; box-shadow: 0 1px 2px rgba(15,23,42,0.06);">
+          <div style="aspect-ratio: 4 / 3; max-width: 100%; background: #E9EFE8; display: grid; place-items: center; color: #475569; font-size: 13px;">[합성 대표 이미지]</div>
+          <div style="padding: 32px 36px 8px; display: flex; flex-direction: column; gap: 10px; text-align: center;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700; color: #007A64;">캠핑 의자 하나로 테이블까지</p>
+            <h2 style="margin: 0; font-size: 28px; font-weight: 900; line-height: 1.3;">펼치면 의자, 옆에는 테이블.<br>짐은 하나로 줄이세요</h2>
+          </div>
+          <div style="margin: 20px 24px; padding: 20px; border: 2px solid #00C9A7; border-radius: 6px; display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; gap: 14px; align-items: flex-start;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; color: #007A64;">01</span><div><p style="margin: 0; font-size: 16px; font-weight: 800;">사이드 테이블 일체형</p><p style="margin: 2px 0 0; font-size: 14px; color: #475569;">컵홀더가 달린 테이블이 팔걸이 옆에 붙어 있어 따로 챙길 필요가 없습니다.</p></div></div>
+            <div style="display: flex; gap: 14px; align-items: flex-start;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; color: #007A64;">02</span><div><p style="margin: 0; font-size: 16px; font-weight: 800;">최대 하중 136kg</p><p style="margin: 2px 0 0; font-size: 14px; color: #475569;">강철 프레임과 600D 원단으로 성인이 편하게 기대 앉을 수 있습니다.</p></div></div>
+            <div style="display: flex; gap: 14px; align-items: flex-start;"><span style="font-family: 'Bebas Neue', sans-serif; font-size: 28px; line-height: 1; color: #007A64;">03</span><div><p style="margin: 0; font-size: 16px; font-weight: 800;">접으면 가방 하나</p><p style="margin: 2px 0 0; font-size: 14px; color: #475569;">전용 수납 가방에 넣어 어깨에 메고 이동합니다.</p></div></div>
+            <span style="align-self: flex-start; font-size: 11px; font-weight: 700; color: #FFFFFF; background: #007A64; border-radius: 4px; padding: 2px 8px;">편집 중인 블록</span>
+          </div>
+          <table style="margin: 8px 24px 20px; width: calc(100% - 48px); border-collapse: collapse; font-size: 14px;">
+            <tbody>
+              <tr><th scope="row" style="text-align: left; width: 30%; padding: 10px 12px; background: #F8FAFB; border: 1px solid #E2E8F0; font-weight: 600;">소재</th><td style="padding: 10px 12px; border: 1px solid #E2E8F0;">강철 프레임, 600D 옥스퍼드 원단</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 10px 12px; background: #F8FAFB; border: 1px solid #E2E8F0; font-weight: 600;">최대 하중</th><td style="padding: 10px 12px; border: 1px solid #E2E8F0;">136kg</td></tr>
+              <tr><th scope="row" style="text-align: left; padding: 10px 12px; background: #F8FAFB; border: 1px solid #E2E8F0; font-weight: 600;">구성</th><td style="padding: 10px 12px; border: 1px solid #E2E8F0;">의자 1, 사이드 테이블 1, 수납 가방 1</td></tr>
+            </tbody>
+          </table>
+          <div style="margin: 0 24px 28px; padding: 16px 18px; background: #F8FAFB; border: 1px solid #E2E8F0; border-radius: 6px; font-size: 13px; line-height: 1.7;">
+            <p style="margin: 0 0 4px; font-size: 14px; font-weight: 800;">해외 배송 상품 안내</p>
+            <p style="margin: 0; color: #334155;">미국 현지에서 구매해 보내 드리는 상품입니다. 통관을 거쳐 받기까지 영업일 기준 7~14일이 걸리며, 주문 시 개인통관고유부호가 필요합니다.</p>
+          </div>
+        </article>
+      </section>
+
+      <aside aria-label="블록 속성" style="flex: 1 1 260px; max-width: 100%; background: #FFFFFF; border-left: 1px solid #E2E8F0; padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 700;">핵심 특징 블록</h2>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="f1" style="font-size: 13px; font-weight: 600;">특징 1 제목</label>
+          <input id="f1" value="사이드 테이블 일체형" style="height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-family: inherit; font-size: 14px;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="f1d" style="font-size: 13px; font-weight: 600;">특징 1 설명</label>
+          <textarea id="f1d" rows="3" style="border: 1px solid #CBD5E1; border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 14px; line-height: 1.6;">컵홀더가 달린 테이블이 팔걸이 옆에 붙어 있어 따로 챙길 필요가 없습니다.</textarea>
+          <button type="button" style="align-self: flex-start; border: 0; background: transparent; font-family: inherit; font-size: 13px; font-weight: 600; color: #007A64; cursor: pointer; padding: 0;">AI로 다시 쓰기</button>
+        </div>
+        <div style="border-top: 1px solid #E2E8F0; padding-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+          <h3 style="margin: 0; font-size: 14px; font-weight: 700;">배송 템플릿 조건</h3>
+          <label style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px;">해외 상품일 때만 붙이기
+            <span style="width: 40px; height: 22px; border-radius: 11px; background: #007A64; position: relative; flex: none;"><span style="position: absolute; top: 3px; left: 21px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF;"></span></span>
+          </label>
+          <p style="margin: 0; font-size: 12px; color: #64748B;">이 상품은 아마존 소싱이라 해외 배송 안내가 4번 블록에 붙었습니다. 국내 위탁 상품에는 붙지 않습니다.</p>
+          <a href="Settings.dc.html" style="font-size: 13px; font-weight: 600; text-decoration: none;">템플릿 문구 편집</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

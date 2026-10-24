@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>숏폼 영상</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800;900&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="shorts" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1240px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <p style="margin: 0; font-size: 13px; color: #64748B;">콘텐츠</p>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800;">숏폼 영상</h1>
+          <p style="margin: 0; font-size: 14px; color: #475569;">상품 이미지에 줌·팬 모션, TTS 자막, 음원을 입혀 세로 영상으로 렌더링합니다.</p>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <span style="font-size: 13px; color: #475569;">상품: <b style="color: #0F172A;">전기 담요 무릎 담요</b></span>
+          <button type="button" style="height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">렌더링 시작</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch;">
+        <section aria-label="영상 설정" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 18px;">
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700;">길이</p>
+            <div role="radiogroup" aria-label="영상 길이" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+              <button type="button" role="radio" aria-checked="false" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; color: #0F172A; cursor: pointer;">15초</button>
+              <button type="button" role="radio" aria-checked="true" style="height: 44px; border: 2px solid #00C9A7; border-radius: 8px; background: #E6FBF7; font-family: inherit; font-size: 15px; font-weight: 800; color: #0F172A; cursor: pointer;">30초</button>
+              <button type="button" role="radio" aria-checked="false" style="height: 44px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 15px; font-weight: 600; color: #0F172A; cursor: pointer;">50초</button>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700;">모션 템플릿</p>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px;">
+              <button type="button" aria-pressed="true" style="display: flex; flex-direction: column; gap: 6px; padding: 6px; border: 2px solid #00C9A7; border-radius: 8px; background: #FFFFFF; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="aspect-ratio: 9 / 16; max-width: 100%; width: 100%; border-radius: 4px; background: #EEF2F5;"></span><span style="font-size: 12px; font-weight: 700;">줌인 강조</span></button>
+              <button type="button" aria-pressed="false" style="display: flex; flex-direction: column; gap: 6px; padding: 6px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="aspect-ratio: 9 / 16; max-width: 100%; width: 100%; border-radius: 4px; background: #EEF2F5;"></span><span style="font-size: 12px;">좌우 팬</span></button>
+              <button type="button" aria-pressed="false" style="display: flex; flex-direction: column; gap: 6px; padding: 6px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; cursor: pointer; color: #0F172A;"><span style="aspect-ratio: 9 / 16; max-width: 100%; width: 100%; border-radius: 4px; background: #EEF2F5;"></span><span style="font-size: 12px;">분할 비교</span></button>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <p style="margin: 0; font-size: 14px; font-weight: 700;">음원</p>
+            <div role="tablist" aria-label="음원 출처" style="display: flex; gap: 4px; background: #F1F5F9; border-radius: 8px; padding: 3px;">
+              <button type="button" role="tab" aria-selected="true" style="flex: 1; height: 30px; border: 0; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; color: #0F172A; cursor: pointer;">내 음원</button>
+              <button type="button" role="tab" aria-selected="false" style="flex: 1; height: 30px; border: 0; border-radius: 6px; background: transparent; font-family: inherit; font-size: 13px; color: #475569; cursor: pointer;">기본 제공</button>
+              <button type="button" role="tab" aria-selected="false" style="flex: 1; height: 30px; border: 0; border-radius: 6px; background: transparent; font-family: inherit; font-size: 13px; color: #475569; cursor: pointer;">랜덤</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #E2E8F0; border-radius: 8px;">
+              <button type="button" aria-label="미리 듣기" style="width: 32px; height: 32px; border-radius: 50%; border: 0; background: #0F172A; color: #FFFFFF; display: grid; place-items: center; cursor: pointer; flex: none;"><svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg></button>
+              <span style="flex: 1; min-width: 0;"><span style="display: block; font-size: 13px; font-weight: 700;">Winter Cabin Loop</span><span style="font-size: 12px; color: #64748B;">내 음원 · Suno · 0:32</span></span>
+              <span style="font-size: 12px; color: #007A64; font-weight: 600;">선택됨</span>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="voice" style="font-size: 14px; font-weight: 700;">TTS 목소리</label>
+            <select id="voice" style="height: 38px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-family: inherit; font-size: 14px; background: #FFFFFF;"><option>차분한 여성 · 보통 속도</option><option>밝은 남성 · 빠른 속도</option></select>
+          </div>
+        </section>
+
+        <section aria-label="미리보기" style="flex: 1 1 280px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <div style="position: relative; width: 100%; max-width: 270px; aspect-ratio: 9 / 16; border-radius: 14px; background: #1E293B; overflow: hidden;">
+            <div style="position: absolute; inset: 14% 10% 34%; border-radius: 8px; background: #334155; display: grid; place-items: center; color: #CBD5E1; font-size: 12px;">[상품 이미지 · 줌인]</div>
+            <p style="position: absolute; left: 12px; right: 12px; bottom: 18%; margin: 0; text-align: center; font-size: 17px; font-weight: 900; line-height: 1.4; color: #FFFFFF; text-shadow: 0 1px 3px rgba(0,0,0,0.6);">무릎 위에 덮고<br>6단계로 온도 조절</p>
+            <p style="position: absolute; left: 12px; top: 12px; margin: 0; font-size: 11px; font-weight: 700; color: #0F172A; background: #00C9A7; border-radius: 4px; padding: 2px 6px;">9:16 · 30초</p>
+          </div>
+          <div style="width: 100%; max-width: 270px; display: flex; flex-direction: column; gap: 6px;">
+            <div style="height: 6px; border-radius: 3px; background: #E2E8F0; overflow: hidden;"><div style="width: 40%; height: 100%; background: #0F172A;"></div></div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #475569; font-variant-numeric: tabular-nums;"><span>0:12</span><span>장면 3 / 7</span><span>0:30</span></div>
+          </div>
+        </section>
+
+        <section aria-label="렌더 대기열" style="flex: 1 1 300px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">렌더 대기열</h2>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px;"><b>전기 담요 · 30초</b><span style="font-weight: 600; color: #1E40AF;">렌더링 64%</span></div>
+            <div style="height: 6px; border-radius: 3px; background: #E2E8F0; overflow: hidden;"><div style="width: 64%; height: 100%; background: #00C9A7;"></div></div>
+            <span style="font-size: 12px; color: #64748B;">남은 시간 약 40초 · 자막 합성 단계</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px;"><b>캠핑 의자 · 15초</b><span style="font-weight: 600; color: #475569;">대기</span></div>
+            <div style="height: 6px; border-radius: 3px; background: #E2E8F0;"></div>
+            <span style="font-size: 12px; color: #64748B;">앞 작업이 끝나면 시작</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid #FECACA; background: #FEF2F2; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px;"><b>가습기 · 50초</b><span style="font-weight: 600; color: #991B1B;">실패</span></div>
+            <span style="font-size: 12px; color: #0F172A;">고른 음원이 50초보다 짧습니다. 50초 이상 음원을 고르거나 반복 재생을 켜 주세요.</span>
+            <button type="button" style="align-self: flex-start; height: 30px; padding: 0 12px; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 12px; font-weight: 600; color: #0F172A; cursor: pointer;">설정 고치고 다시 렌더</button>
+          </div>
+        </section>
+      </div>
+
+      <section style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+          <h2 style="margin: 0; font-size: 16px; font-weight: 700;">완성 영상 <span style="font-weight: 500; color: #64748B;">6</span></h2>
+          <a href="Sns.dc.html" style="font-size: 13px; font-weight: 600; text-decoration: none;">SNS 업로드로 보내기</a>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;">
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px;"><div style="aspect-ratio: 9 / 16; max-width: 100%; border-radius: 8px; background: #CBD5E1; position: relative;"><span style="position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: rgba(15,23,42,0.75); border-radius: 4px; padding: 1px 5px; font-variant-numeric: tabular-nums;">0:30</span></div><figcaption style="font-size: 12px; font-weight: 600;">텀블러 · 30초</figcaption></figure>
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px;"><div style="aspect-ratio: 9 / 16; max-width: 100%; border-radius: 8px; background: #CBD5E1; position: relative;"><span style="position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: rgba(15,23,42,0.75); border-radius: 4px; padding: 1px 5px; font-variant-numeric: tabular-nums;">0:15</span></div><figcaption style="font-size: 12px; font-weight: 600;">텀블러 · 15초</figcaption></figure>
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px;"><div style="aspect-ratio: 9 / 16; max-width: 100%; border-radius: 8px; background: #CBD5E1; position: relative;"><span style="position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: rgba(15,23,42,0.75); border-radius: 4px; padding: 1px 5px; font-variant-numeric: tabular-nums;">0:50</span></div><figcaption style="font-size: 12px; font-weight: 600;">캠핑 의자 · 50초</figcaption></figure>
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px;"><div style="aspect-ratio: 9 / 16; max-width: 100%; border-radius: 8px; background: #CBD5E1; position: relative;"><span style="position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: rgba(15,23,42,0.75); border-radius: 4px; padding: 1px 5px; font-variant-numeric: tabular-nums;">0:30</span></div><figcaption style="font-size: 12px; font-weight: 600;">캠핑 의자 · 30초</figcaption></figure>
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px;"><div style="aspect-ratio: 9 / 16; max-width: 100%; border-radius: 8px; background: #CBD5E1; position: relative;"><span style="position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: rgba(15,23,42,0.75); border-radius: 4px; padding: 1px 5px; font-variant-numeric: tabular-nums;">0:30</span></div><figcaption style="font-size: 12px; font-weight: 600;">가습기 · 30초</figcaption></figure>
+          <figure style="margin: 0; display: flex; flex-direction: column; gap: 6px;"><div style="aspect-ratio: 9 / 16; max-width: 100%; border-radius: 8px; background: #CBD5E1; position: relative;"><span style="position: absolute; right: 6px; bottom: 6px; font-size: 11px; font-weight: 700; color: #FFFFFF; background: rgba(15,23,42,0.75); border-radius: 4px; padding: 1px 5px; font-variant-numeric: tabular-nums;">0:15</span></div><figcaption style="font-size: 12px; font-weight: 600;">세럼 · 15초</figcaption></figure>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

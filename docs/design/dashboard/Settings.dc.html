@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>설정</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:12px 14px;border-bottom:1px solid #E2E8F0;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+button:focus-visible,a:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="settings" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1200px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <h1 style="margin: 0; font-size: 24px; font-weight: 800;">설정</h1>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start;">
+        <nav aria-label="설정 메뉴" style="flex: 1 1 180px; display: flex; flex-direction: column; gap: 2px; font-size: 14px;">
+          <a href="#general" style="padding: 8px 12px; border-radius: 8px; color: #334155; text-decoration: none;">일반</a>
+          <a href="#markets" aria-current="true" style="padding: 8px 12px; border-radius: 8px; color: #0F172A; font-weight: 700; text-decoration: none; background: #FFFFFF; box-shadow: inset 3px 0 0 #00C9A7;">마켓 계정</a>
+          <a href="#shipping" style="padding: 8px 12px; border-radius: 8px; color: #334155; text-decoration: none;">배송 템플릿</a>
+          <a href="#music" style="padding: 8px 12px; border-radius: 8px; color: #334155; text-decoration: none;">음원</a>
+          <a href="#keys" style="padding: 8px 12px; border-radius: 8px; color: #334155; text-decoration: none;">API 키</a>
+          <a href="#alerts" style="padding: 8px 12px; border-radius: 8px; color: #334155; text-decoration: none;">알림</a>
+        </nav>
+
+        <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
+          <section id="markets" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+            <div style="padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h2 style="margin: 0; font-size: 17px; font-weight: 800;">마켓 계정</h2>
+                <p style="margin: 2px 0 0; font-size: 13px; color: #475569;">마켓마다 여러 계정을 등록할 수 있습니다. 프로 플랜은 5개까지, 넘으면 추가 슬롯을 살 수 있습니다.</p>
+              </div>
+              <button type="button" style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">계정 추가 <span style="font-weight: 500; opacity: 0.85;">4 / 5</span></button>
+            </div>
+            <div style="overflow-x: auto;">
+              <table class="tbl" style="min-width: 640px;">
+                <thead><tr><th>마켓</th><th>계정 이름</th><th>API 키</th><th>상태</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td style="font-weight: 600;">쿠팡</td><td>1호점</td><td style="color: #475569;">••••••••a91c</td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">연결됨</span></td><td style="text-align: right;"><button type="button" style="border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #475569; cursor: pointer;">관리</button></td></tr>
+                  <tr><td style="font-weight: 600;">쿠팡</td><td>2호점</td><td style="color: #475569;">••••••••07de</td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">연결됨</span></td><td style="text-align: right;"><button type="button" style="border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #475569; cursor: pointer;">관리</button></td></tr>
+                  <tr><td style="font-weight: 600;">스마트스토어</td><td>1호점</td><td style="color: #475569;">••••••••5f20</td><td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px;">연결됨</span></td><td style="text-align: right;"><button type="button" style="border: 0; background: transparent; font-family: inherit; font-size: 13px; color: #475569; cursor: pointer;">관리</button></td></tr>
+                  <tr><td style="font-weight: 600;">스마트스토어</td><td>2호점</td><td style="color: #475569;">••••••••c3b8</td><td><span style="font-size: 12px; font-weight: 600; color: #991B1B; background: #FEE2E2; border-radius: 999px; padding: 2px 10px;">키 만료</span></td><td style="text-align: right;"><button type="button" style="border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 6px; height: 30px; padding: 0 10px; font-family: inherit; font-size: 13px; font-weight: 600; color: #0F172A; cursor: pointer;">키 다시 등록</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin: 0; padding: 12px 20px; border-top: 1px solid #E2E8F0; background: #F8FAFB; font-size: 12px; color: #475569;">API 키는 서버에서 암호화해 보관하고, 등록할 때 한 번만 전체를 보여 줍니다.</p>
+          </section>
+
+          <section id="shipping" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+            <div>
+              <h2 style="margin: 0; font-size: 17px; font-weight: 800;">해외 배송 템플릿</h2>
+              <p style="margin: 2px 0 0; font-size: 13px; color: #475569;">해외 소싱 상품의 상세페이지 마지막 블록에 붙는 안내 문구입니다.</p>
+            </div>
+            <label style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 14px; font-weight: 600;">해외 상품에 자동으로 붙이기
+              <span style="width: 44px; height: 24px; border-radius: 12px; background: #007A64; position: relative; flex: none;"><span style="position: absolute; top: 3px; left: 23px; width: 18px; height: 18px; border-radius: 50%; background: #FFFFFF;"></span></span>
+            </label>
+            <div style="padding: 14px 16px; background: #F8FAFB; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 13px; line-height: 1.7; color: #334155;">미국 현지에서 구매해 보내 드리는 상품입니다. 통관을 거쳐 받기까지 영업일 기준 7~14일이 걸리며, 주문 시 개인통관고유부호가 필요합니다.</div>
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+              <button type="button" style="height: 34px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">문구 편집</button>
+              <button type="button" style="height: 34px; padding: 0 14px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">이 섹션 저장</button>
+            </div>
+          </section>
+
+          <section id="music" style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h2 style="margin: 0; font-size: 17px; font-weight: 800;">음원 라이브러리</h2>
+                <p style="margin: 2px 0 0; font-size: 13px; color: #475569;">숏폼 영상에 쓰는 음원입니다. Suno 등으로 만든 내 음원을 올리거나 기본 제공 음원을 씁니다.</p>
+              </div>
+              <button type="button" style="height: 34px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 600; color: #0F172A; cursor: pointer;">음원 올리기</button>
+            </div>
+            <div role="tablist" aria-label="음원 출처" style="display: flex; gap: 20px; border-bottom: 1px solid #E2E8F0;">
+              <button type="button" role="tab" aria-selected="true" style="padding: 8px 2px; border: 0; background: transparent; font-family: inherit; font-size: 14px; font-weight: 700; color: #0F172A; box-shadow: inset 0 -2px 0 #00C9A7; cursor: pointer;">내 음원 3</button>
+              <button type="button" role="tab" aria-selected="false" style="padding: 8px 2px; border: 0; background: transparent; font-family: inherit; font-size: 14px; color: #475569; cursor: pointer;">기본 제공 40</button>
+            </div>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; font-size: 14px;">
+              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #E2E8F0;"><span style="flex: 1; font-weight: 600;">Winter Cabin Loop</span><span style="font-size: 12px; color: #475569;">따뜻함 · 잔잔함</span><span style="font-size: 13px; color: #475569; font-variant-numeric: tabular-nums;">0:32</span><span style="font-size: 12px; font-weight: 600; color: #991B1B; background: #FEE2E2; border-radius: 999px; padding: 2px 8px;">파일 없음</span></li>
+              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #E2E8F0;"><span style="flex: 1; font-weight: 600;">Morning Camp Acoustic</span><span style="font-size: 12px; color: #475569;">밝음 · 어쿠스틱</span><span style="font-size: 13px; color: #475569; font-variant-numeric: tabular-nums;">0:58</span><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 8px;">사용 가능</span></li>
+              <li style="display: flex; align-items: center; gap: 12px; padding: 10px 0;"><span style="flex: 1; font-weight: 600;">Cozy Kitchen Beat</span><span style="font-size: 12px; color: #475569;">경쾌함 · 로파이</span><span style="font-size: 13px; color: #475569; font-variant-numeric: tabular-nums;">0:45</span><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 8px;">사용 가능</span></li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

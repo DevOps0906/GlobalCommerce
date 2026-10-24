@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>워크플로우 캔버스</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="workflows" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 12px 24px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0;">
+      <a href="Workflows.dc.html" style="font-size: 13px; color: #475569; text-decoration: none;">워크플로우</a>
+      <span style="color: #CBD5E1;">/</span>
+      <h1 style="margin: 0; font-size: 16px; font-weight: 800;">가을 시즌 상품 자동화</h1>
+      <span style="font-size: 12px; color: #475569; background: #F1F5F9; border-radius: 999px; padding: 2px 10px;">버전 3 · 저장됨</span>
+      <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #1E40AF; background: #DBEAFE; border-radius: 999px; padding: 2px 10px;"><span style="width: 6px; height: 6px; border-radius: 50%; background: #1D4ED8;"></span>실행 중 · 4 / 7 노드</span>
+      <div style="margin-left: auto; display: flex; gap: 8px;">
+        <a href="Runs.dc.html" style="height: 36px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-size: 14px; color: #0F172A; text-decoration: none; display: inline-flex; align-items: center;">실행 기록</a>
+        <button type="button" style="height: 36px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">버전 기록</button>
+        <button type="button" style="height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">실행</button>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; flex: 1; align-items: stretch;">
+      <aside aria-label="노드 팔레트" style="flex: 1 1 200px; max-width: 100%; background: #FFFFFF; border-right: 1px solid #E2E8F0; padding: 16px; display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+        <p style="margin: 0 0 4px; font-size: 12px; font-weight: 700; color: #64748B;">수집</p>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">아마존 URL 수집</button>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">위탁 엑셀 수집</button>
+        <p style="margin: 10px 0 4px; font-size: 12px; font-weight: 700; color: #64748B;">가공</p>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">AI 상품명</button>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">이미지 생성</button>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">상세페이지 조립</button>
+        <p style="margin: 10px 0 4px; font-size: 12px; font-weight: 700; color: #64748B;">콘텐츠·배포</p>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">숏폼 영상</button>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">블로그 발행</button>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">마켓 배포</button>
+        <button type="button" style="text-align: left; padding: 8px 10px; border: 1px solid #E2E8F0; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: grab;">SNS 업로드</button>
+      </aside>
+
+      <section aria-label="캔버스" style="flex: 4 1 560px; min-width: 0; position: relative; background-color: #F8FAFB; background-image: radial-gradient(#CBD5E1 1px, transparent 1.2px); background-size: 20px 20px;">
+        <div style="overflow-x: auto; height: 100%;">
+          <div style="position: relative; width: 940px; height: 520px; margin: 40px 24px;">
+            <!-- connectors: A to B/C -->
+            <div style="position: absolute; left: 200px; top: 151px; width: 25px; height: 2px; background: #00C9A7;"></div>
+            <div style="position: absolute; left: 224px; top: 92px; width: 2px; height: 142px; background: #00C9A7;"></div>
+            <div style="position: absolute; left: 225px; top: 91px; width: 25px; height: 2px; background: #00C9A7;"></div>
+            <div style="position: absolute; left: 225px; top: 231px; width: 25px; height: 2px; background: #00C9A7;"></div>
+            <!-- B/C to D -->
+            <div style="position: absolute; left: 420px; top: 91px; width: 25px; height: 2px; background: #00C9A7;"></div>
+            <div style="position: absolute; left: 420px; top: 231px; width: 25px; height: 2px; background: #00C9A7;"></div>
+            <div style="position: absolute; left: 444px; top: 92px; width: 2px; height: 142px; background: #00C9A7;"></div>
+            <div style="position: absolute; left: 445px; top: 161px; width: 25px; height: 2px; background: #00C9A7;"></div>
+            <!-- D to E/F -->
+            <div style="position: absolute; left: 640px; top: 161px; width: 25px; height: 2px; background: #94A3B8;"></div>
+            <div style="position: absolute; left: 664px; top: 82px; width: 2px; height: 152px; background: #94A3B8;"></div>
+            <div style="position: absolute; left: 665px; top: 81px; width: 25px; height: 2px; background: #94A3B8;"></div>
+            <div style="position: absolute; left: 665px; top: 231px; width: 25px; height: 2px; background: #94A3B8;"></div>
+            <!-- F to G -->
+            <div style="position: absolute; left: 774px; top: 264px; width: 2px; height: 116px; background: #94A3B8;"></div>
+            <!-- E to G, product URL -->
+            <div style="position: absolute; left: 860px; top: 81px; width: 32px; height: 0; border-top: 2px dashed #94A3B8;"></div>
+            <div style="position: absolute; left: 890px; top: 82px; width: 0; height: 330px; border-left: 2px dashed #94A3B8;"></div>
+            <div style="position: absolute; left: 860px; top: 411px; width: 32px; height: 0; border-top: 2px dashed #94A3B8;"></div>
+            <span style="position: absolute; left: 898px; top: 230px; font-size: 12px; color: #475569; background: #F8FAFB; padding: 2px 4px; writing-mode: vertical-rl;">상품 URL 전달</span>
+
+            <!-- nodes -->
+            <div style="position: absolute; left: 30px; top: 120px; width: 170px; height: 64px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">수집</span><span style="font-size: 14px; font-weight: 700;">아마존 URL 수집</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #166534;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #15803D;"></span>성공</span>
+            </div>
+            <div style="position: absolute; left: 250px; top: 60px; width: 170px; height: 64px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">가공</span><span style="font-size: 14px; font-weight: 700;">AI 상품명</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #166534;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #15803D;"></span>성공</span>
+            </div>
+            <div style="position: absolute; left: 250px; top: 200px; width: 170px; height: 64px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">가공</span><span style="font-size: 14px; font-weight: 700;">이미지 생성</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #166534;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #15803D;"></span>성공</span>
+            </div>
+            <div style="position: absolute; left: 470px; top: 130px; width: 170px; height: 64px; background: #FFFFFF; border: 1px solid #93C5FD; box-shadow: 0 0 0 3px #DBEAFE; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">가공</span><span style="font-size: 14px; font-weight: 700;">상세페이지 조립</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #1E40AF;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #1D4ED8;"></span>실행</span>
+            </div>
+            <div style="position: absolute; left: 690px; top: 50px; width: 170px; height: 64px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">배포 · 계정 3개</span><span style="font-size: 14px; font-weight: 700;">마켓 배포</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #475569;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #94A3B8;"></span>대기</span>
+            </div>
+            <div style="position: absolute; left: 690px; top: 200px; width: 170px; height: 64px; background: #FFFFFF; border: 2px solid #00C9A7; box-shadow: 0 0 0 3px #E6FBF7; border-radius: 10px; padding: 9px 11px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">콘텐츠 · 30초</span><span style="font-size: 14px; font-weight: 700;">숏폼 영상</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #475569;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #94A3B8;"></span>대기</span>
+            </div>
+            <div style="position: absolute; left: 690px; top: 380px; width: 170px; height: 64px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 2px;">
+              <span style="font-size: 11px; color: #64748B;">배포 · 쇼츠, 릴스</span><span style="font-size: 14px; font-weight: 700;">SNS 업로드</span>
+              <span style="position: absolute; right: 10px; top: 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #475569;"><span style="width: 7px; height: 7px; border-radius: 50%; background: #94A3B8;"></span>대기</span>
+            </div>
+          </div>
+        </div>
+        <div style="position: absolute; left: 16px; bottom: 16px; display: flex; flex-direction: column; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; overflow: hidden;">
+          <button type="button" aria-label="확대" style="width: 34px; height: 34px; border: 0; border-bottom: 1px solid #E2E8F0; background: #FFFFFF; font-family: inherit; font-size: 18px; color: #334155; cursor: pointer;">+</button>
+          <button type="button" aria-label="축소" style="width: 34px; height: 34px; border: 0; border-bottom: 1px solid #E2E8F0; background: #FFFFFF; font-family: inherit; font-size: 18px; color: #334155; cursor: pointer;">−</button>
+          <button type="button" aria-label="화면에 맞추기" style="width: 34px; height: 34px; border: 0; background: #FFFFFF; display: grid; place-items: center; color: #334155; cursor: pointer;"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
+        <div aria-label="미니맵" style="position: absolute; right: 16px; bottom: 16px; width: 160px; height: 100px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; padding: 8px;">
+          <div style="position: relative; width: 100%; height: 100%;">
+            <span style="position: absolute; left: 4%; top: 30%; width: 16%; height: 14%; background: #CBD5E1; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 27%; top: 15%; width: 16%; height: 14%; background: #CBD5E1; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 27%; top: 45%; width: 16%; height: 14%; background: #CBD5E1; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 50%; top: 30%; width: 16%; height: 14%; background: #CBD5E1; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 73%; top: 12%; width: 16%; height: 14%; background: #CBD5E1; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 73%; top: 45%; width: 16%; height: 14%; background: #00C9A7; border-radius: 2px;"></span>
+            <span style="position: absolute; left: 73%; top: 80%; width: 16%; height: 14%; background: #CBD5E1; border-radius: 2px;"></span>
+            <span style="position: absolute; inset: 0 20% 10% 0; border: 1.5px solid #0F172A; border-radius: 3px;"></span>
+          </div>
+        </div>
+      </section>
+
+      <aside aria-label="노드 설정" style="flex: 1 1 280px; max-width: 100%; background: #FFFFFF; border-left: 1px solid #E2E8F0; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+        <div>
+          <p style="margin: 0; font-size: 12px; color: #64748B;">선택한 노드</p>
+          <h2 style="margin: 2px 0 0; font-size: 17px; font-weight: 800;">숏폼 영상</h2>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <span style="font-size: 13px; font-weight: 600;">길이</span>
+          <div role="radiogroup" aria-label="길이" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;">
+            <button type="button" role="radio" aria-checked="false" style="height: 34px; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">15초</button>
+            <button type="button" role="radio" aria-checked="true" style="height: 34px; border: 2px solid #00C9A7; border-radius: 6px; background: #E6FBF7; font-family: inherit; font-size: 13px; font-weight: 700; color: #0F172A; cursor: pointer;">30초</button>
+            <button type="button" role="radio" aria-checked="false" style="height: 34px; border: 1px solid #CBD5E1; border-radius: 6px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">50초</button>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="tpl" style="font-size: 13px; font-weight: 600;">모션 템플릿</label>
+          <select id="tpl" style="height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-family: inherit; font-size: 14px; background: #FFFFFF;"><option>줌인 강조</option><option>좌우 팬</option><option>분할 비교</option></select>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <label for="music" style="font-size: 13px; font-weight: 600;">음원</label>
+          <select id="music" style="height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 10px; font-family: inherit; font-size: 14px; background: #FFFFFF;"><option>랜덤 · 기본 제공 음원</option><option>내 음원에서 고르기</option></select>
+        </div>
+        <label style="display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 13px; font-weight: 600;">TTS 자막
+          <span style="width: 40px; height: 22px; border-radius: 11px; background: #007A64; position: relative; flex: none;"><span style="position: absolute; top: 3px; left: 21px; width: 16px; height: 16px; border-radius: 50%; background: #FFFFFF;"></span></span>
+        </label>
+        <div style="border-top: 1px solid #E2E8F0; padding-top: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13px;">
+          <p style="margin: 0; font-weight: 700;">입력</p>
+          <p style="margin: 0; color: #475569;">상세페이지 조립 → 대표 이미지 4장, 특징 문구 3개</p>
+          <p style="margin: 6px 0 0; font-weight: 700;">출력</p>
+          <p style="margin: 0; color: #475569;">mp4 1개 → SNS 업로드</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

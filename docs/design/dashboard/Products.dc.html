@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>상품 관리</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&amp;family=Bebas+Neue&amp;display=swap">
+<style>
+body{margin:0;background:#F2F6F6}
+a{color:#007A64}a:hover{color:#005A4A}
+*{box-sizing:border-box}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-weight:600;color:#64748B;font-size:12px;padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFB;white-space:nowrap}
+.tbl td{padding:10px 14px;border-bottom:1px solid #E2E8F0;vertical-align:top;line-height:1.5}
+.tbl tr:last-child td{border-bottom:0}
+.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #00C9A7;outline-offset:2px}
+</style>
+</helmet>
+<div style="display: flex; flex-wrap: wrap; min-height: 100vh; background: #F2F6F6; font-family: 'Noto Sans KR', system-ui, sans-serif; color: #0F172A;">
+  <div style="flex: 1 1 240px; background: #F8FAFB; border-right: 1px solid #E2E8F0;">
+    <dc-import name="Sidebar" active="products" hint-size="240px,900px"></dc-import>
+  </div>
+  <div style="flex: 999 1 560px; min-width: 0; display: flex; flex-direction: column;">
+    <dc-import name="TopBar" hint-size="100%,60px"></dc-import>
+    <main style="width: 100%; max-width: 1240px; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          <p style="margin: 0; font-size: 13px; color: #64748B;">상품</p>
+          <h1 style="margin: 0; font-size: 24px; font-weight: 800;">상품 관리</h1>
+          <p style="margin: 0; font-size: 14px; color: #475569;">GPT-4o가 번역하고 키워드를 조합한 상품명을 검토합니다. 금지어는 사전에 따라 자동으로 바뀝니다.</p>
+        </div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" style="height: 38px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 14px; color: #0F172A; cursor: pointer;">열 설정</button>
+          <button type="button" style="height: 38px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;">선택 상품 가공</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+        <label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);">상품 검색</label>
+        <input id="q" type="search" placeholder="상품명, ASIN 검색" style="flex: 0 1 280px; height: 36px; border: 1px solid #CBD5E1; border-radius: 8px; padding: 0 12px; font-family: inherit; font-size: 14px;">
+        <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 999px; padding: 5px 12px; color: #0F172A; cursor: pointer;">출처: 전체</button>
+        <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #0F172A; background: #0F172A; border-radius: 999px; padding: 5px 12px; color: #FFFFFF; cursor: pointer;">가공: 검토 대기</button>
+        <button type="button" style="font-family: inherit; font-size: 13px; border: 1px solid #CBD5E1; background: #FFFFFF; border-radius: 999px; padding: 5px 12px; color: #0F172A; cursor: pointer;">금지어 치환 있음</button>
+        <span style="margin-left: auto; font-size: 13px; color: #64748B;">저장한 보기: <a href="#" style="font-weight: 600; text-decoration: none;">이번 주 시즌 상품</a></span>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start;">
+        <section style="flex: 999 1 640px; min-width: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; overflow: hidden;">
+          <div style="overflow-x: auto;">
+            <table class="tbl" style="min-width: 860px;">
+              <thead><tr><th style="width: 40px;"><input type="checkbox" aria-label="전체 선택"></th><th>원문 상품명</th><th>AI 상품명 <span style="font-weight: 400;">· 눌러서 수정</span></th><th class="num">금지어</th><th class="num">글자 수</th><th>상태</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" checked aria-label="선택"></td>
+                  <td style="color: #475569; max-width: 240px;">Folding Camping Chair with Side Table, Supports 300 lbs</td>
+                  <td style="font-weight: 600;">접이식 캠핑 의자 사이드 테이블 일체형 최대 하중 136kg 휴대용 캠핑체어</td>
+                  <td class="num" style="color: #64748B;">0</td><td class="num">38</td>
+                  <td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px; white-space: nowrap;">검토 완료</span></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" checked aria-label="선택"></td>
+                  <td style="color: #475569;">Heated Throw Blanket, 50x60 Inch, 6 Heat Levels</td>
+                  <td style="font-weight: 600; background: #E6FBF7; box-shadow: inset 2px 0 0 #00C9A7;">전기 담요 무릎 담요 127×152cm 6단계 온도 조절 자동 꺼짐 <span style="display: block; font-size: 11px; font-weight: 600; color: #007A64;">수정됨 · 저장 전</span></td>
+                  <td class="num" style="color: #64748B;">0</td><td class="num">33</td>
+                  <td><span style="font-size: 12px; font-weight: 600; color: #92400E; background: #FEF3C7; border-radius: 999px; padding: 2px 10px; white-space: nowrap;">검토 대기</span></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" aria-label="선택"></td>
+                  <td style="color: #475569;">Vitamin C Serum 30ml for Acne Treatment and Dark Spots</td>
+                  <td style="font-weight: 600;">비타민C 세럼 30ml <span style="text-decoration: underline; text-decoration-style: wavy; text-decoration-color: #B45309; text-underline-offset: 4px;" title="원문의 '여드름 치료'를 바꿨습니다">피부 고민 케어</span> 데일리 앰플 <span style="display: block; font-size: 11px; font-weight: 500; color: #92400E;">화장품 금지어 '여드름 치료' → '피부 고민 케어'</span></td>
+                  <td class="num" style="font-weight: 700; color: #92400E;">1</td><td class="num">24</td>
+                  <td><span style="font-size: 12px; font-weight: 600; color: #92400E; background: #FEF3C7; border-radius: 999px; padding: 2px 10px; white-space: nowrap;">검토 대기</span></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" aria-label="선택"></td>
+                  <td style="color: #475569;">Magnesium Glycinate 400mg, 120 Capsules, Sleep Support</td>
+                  <td style="font-weight: 600; background: #E6FBF7; box-shadow: inset 2px 0 0 #00C9A7;">마그네슘 글리시네이트 400mg 120캡슐 데일리 미네랄 <span style="display: block; font-size: 11px; font-weight: 500; color: #92400E;">건기식 금지어 '수면 개선' 삭제</span><span style="display: block; font-size: 11px; font-weight: 600; color: #007A64;">수정됨 · 저장 전</span></td>
+                  <td class="num" style="font-weight: 700; color: #92400E;">1</td><td class="num">28</td>
+                  <td><span style="font-size: 12px; font-weight: 600; color: #92400E; background: #FEF3C7; border-radius: 999px; padding: 2px 10px; white-space: nowrap;">검토 대기</span></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" aria-label="선택"></td>
+                  <td style="color: #475569;">Cool Mist Humidifier 4L, Quiet for Bedroom</td>
+                  <td style="font-weight: 600; color: #64748B;">생성 중…</td>
+                  <td class="num" style="color: #64748B;">–</td><td class="num" style="color: #64748B;">–</td>
+                  <td><span style="font-size: 12px; font-weight: 600; color: #1E40AF; background: #DBEAFE; border-radius: 999px; padding: 2px 10px; white-space: nowrap;">생성 중</span></td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" aria-label="선택"></td>
+                  <td style="color: #475569;">Insulated Stainless Steel Water Bottle 32oz</td>
+                  <td style="font-weight: 600;">보온 보냉 스테인리스 텀블러 946ml 대용량 손잡이 물병</td>
+                  <td class="num" style="color: #64748B;">0</td><td class="num">27</td>
+                  <td><span style="font-size: 12px; font-weight: 600; color: #166534; background: #DCFCE7; border-radius: 999px; padding: 2px 10px; white-space: nowrap;">검토 완료</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 16px; border-top: 1px solid #E2E8F0; background: #F8FAFB;">
+            <span style="font-size: 13px; font-weight: 600;">바뀐 셀 2개</span>
+            <span style="font-size: 13px; color: #64748B;">저장하기 전까지 마켓에 반영되지 않습니다.</span>
+            <button type="button" style="margin-left: auto; height: 34px; padding: 0 14px; border: 1px solid #CBD5E1; border-radius: 8px; background: #FFFFFF; font-family: inherit; font-size: 13px; color: #0F172A; cursor: pointer;">되돌리기</button>
+            <button type="button" style="height: 34px; padding: 0 16px; border: 0; border-radius: 8px; background: #007A64; color: #FFFFFF; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;">변경 저장</button>
+          </div>
+        </section>
+
+        <aside style="flex: 1 1 280px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">금지어 사전</h2>
+            <button type="button" style="border: 0; background: transparent; font-family: inherit; font-size: 13px; font-weight: 600; color: #007A64; cursor: pointer;">단어 추가</button>
+          </div>
+          <div role="tablist" aria-label="카테고리" style="display: flex; gap: 6px;">
+            <button type="button" role="tab" aria-selected="true" style="flex: 1; height: 32px; border: 1px solid #0F172A; background: #0F172A; color: #FFFFFF; border-radius: 6px; font-family: inherit; font-size: 13px; cursor: pointer;">화장품 <span style="font-variant-numeric: tabular-nums;">142</span></button>
+            <button type="button" role="tab" aria-selected="false" style="flex: 1; height: 32px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #0F172A; border-radius: 6px; font-family: inherit; font-size: 13px; cursor: pointer;">건기식 <span style="font-variant-numeric: tabular-nums;">96</span></button>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; font-size: 13px;">
+            <li style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid #E2E8F0;"><span style="font-weight: 600;">여드름 치료</span><span style="color: #64748B;">→</span><span>피부 고민 케어</span></li>
+            <li style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid #E2E8F0;"><span style="font-weight: 600;">주름 개선</span><span style="color: #64748B;">→</span><span>탄력 케어</span></li>
+            <li style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid #E2E8F0;"><span style="font-weight: 600;">미백</span><span style="color: #64748B;">→</span><span>톤 케어</span></li>
+            <li style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid #E2E8F0;"><span style="font-weight: 600;">재생</span><span style="color: #64748B;">→</span><span style="color: #64748B;">삭제</span></li>
+            <li style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; padding: 9px 0;"><span style="font-weight: 600;">아토피</span><span style="color: #64748B;">→</span><span style="color: #64748B;">삭제</span></li>
+          </ul>
+          <p style="margin: 0; font-size: 12px; color: #64748B;">사전을 바꾸면 검토 대기 상품에만 다시 적용됩니다. 등록 끝난 상품은 그대로 둡니다.</p>
+        </aside>
+      </div>
+
+    </main>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
