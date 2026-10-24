@@ -29,8 +29,8 @@ tools: Read, Grep, Glob
 1. `products/CLAUDE.md`(제품 절대 규칙)와 task 의 **할 것 / 안 할 것 / 완료 조건**, 로그의 `[DECISION]`.
 2. 계획이 건드리는 영역 스킬의 `references/pitfalls.md` (`.claude/skills/{nextjs-expert, supabase-expert, worker-expert}`).
 3. 계획이 언급한 파일 · 함수 · 테이블 · 잡 타입이 **실제로 있는지** Glob/Grep 으로 확인한다 (테이블 · 잡 이름은 `00_DECISIONS.md` 5.3 · 5.4 정본 목록과도 대조).
-4. 관련 정본 문서: 결정 `products/00_DECISIONS.md`, 데이터 · RLS `products/supabase/monolith/`, API · 오류 · 잡 `products/04_API.md`,
-   작업 계획 `products/06_AGENT_PLAN.md`, 마켓 규격 `docs/spec/MARKET_*.md`. 열린 결정(O-01 ~ O-08)에 걸리는 부분이 있는지 본다.
+4. 관련 정본 문서: 결정 `products/00_DECISIONS.md`, 구조 `products/02_ARCHITECTURE.md`, 데이터 · RLS `products/05_DATA_MODEL.md` · `products/supabase/monolith/`,
+   API · RPC · 잡 payload · 오류 `products/04_API.md`, 작업 계획 `products/06_AGENT_PLAN.md`(해당 행의 소유 경로 · 의존 · 수용 기준), 마켓 규격 `docs/spec/MARKET_*.md`. 열린 결정(O-01 ~ O-08)에 걸리는 부분이 있는지 본다.
 
 ## 공격 차원
 
@@ -40,8 +40,8 @@ tools: Read, Grep, Glob
 | 누락 경우 | 실패 · 중복 · 동시 · 만료일 때? | 크레딧 선차감 후 잡 실패(환불), 같은 잡 두 번 실행, 워커 중단 시 `running`에 남은 잡, Toss 웹훅 재전송 · 순서 뒤바뀜, 마켓 키 만료(GC009), 배치 일부 실패(실패 건만 재전송), 429 |
 | 보안 | 악의적 사용자가 이걸 어떻게 쓰나? | 다른 조직 데이터(RLS), 클라이언트 과금 판단, 키 localStorage · `NEXT_PUBLIC_`, 공개 AI 프록시, 수집 URL 로 SSRF(GC010), 상품 설명 속 프롬프트 인젝션, 쿠키 역할 판정 (GC-D-21) |
 | 비가역성 · 경계 | 되돌릴 수 있나? | 마이그레이션 · 코어 lite, 크레딧 원장 구조, `job_type` 이름, 마켓 어댑터 인터페이스, 암호화 키 · 방식, 결제 상태 값, 배포 순서(마이그레이션 → 워커 → 웹) |
-| 규칙 | 제품 절대 규칙을 어기나? | 서버 판정, 금지어 FAIL 차단 · WARN 확인 기록(GC-D-11), 한글을 이미지 모델에 요청(GC-D-09), LLM 추정 환율(GC-D-16), 기존 마이그레이션 수정, 후기 · 평점 · "전문가 추천" 문구 생성 |
-| 검증 | 완료를 무엇으로 증명하나? | task 완료 조건이 GC-F 수용 기준과 연결되는가, 외부 API 없이 가짜 어댑터로 재현 가능한가, RLS 를 다른 조직으로 시험하는가 |
+| 규칙 | 제품 절대 규칙 · 소유 경계를 어기나? | 소유 경로 밖 파일 수정(→ `[REQUEST]`), 공용 인덱스 파일, 서버 판정, 금지어 FAIL 차단 · WARN 확인 기록(GC-D-11), 한글을 이미지 모델에 요청(GC-D-09), LLM 추정 환율(GC-D-16), 기존 마이그레이션 수정, 후기 · 평점 · "전문가 추천" 문구 생성 |
+| 검증 | 완료를 무엇으로 증명하나? | 계획이 06장 수용 기준을 하나씩 확인하는가, GC-F 와 연결되는가, 외부 API 없이 가짜 어댑터로 재현 가능한가, RLS 를 다른 조직으로 시험하는가 |
 | 복잡도 | 실제 문제를 푸는가? | 릴리스 밖 기능을 미리 만드는가 (R1 에 캔버스 · 18슬롯 · FastAPI · RAG — GC-D-02 · GC-D-08 · GC-D-10) |
 
 ## 반박 (보고 전 필수)

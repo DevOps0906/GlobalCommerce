@@ -2,6 +2,7 @@
 name: worker-expert
 description: >-
   `services/worker`(Node 22 잡 워커 — 잡 루프 · 디스패처 · 크론) · `packages/{sourcing,markets,render,ai}` 작업 규약.
+  공유 패키지 `packages/{domain,compliance,net}`(상수 · zod · 마진 · 마켓 규격 · nav, 금지어 매처, 안전 fetch)도 이 규약을 따른다.
   잡 핸들러, 멱등 · 재시도 · 크레딧 환불 · 실행 기록 갱신, 외부 API 어댑터(아마존 데이터 · 위탁 엑셀 · 쿠팡 Wing · 네이버 커머스 · OpenAI/Anthropic/fal ·
   수출입은행 환율 · 데이터랩 · YouTube · Instagram · WordPress), Sharp 이미지 합성, Puppeteer HTML → PNG, FFmpeg 숏폼 렌더를 만들거나 고칠 때 반드시 먼저 읽을 것.
   "잡", "워커", "크론", "수집", "업로드", "어댑터", "누끼", "합성", "상세페이지 렌더", "내보내기", "숏폼", "SNS 업로드", "AI 라우터" 요청도 여기서 시작한다.
@@ -39,7 +40,9 @@ description: >-
 
 ## 2. 핵심 규칙
 
-- 폴더 구조 · 모듈 경계는 `develop/globalcommerce_develop.md`를 따른다. 새 최상위 폴더 · 새 패키지를 만들지 않는다 (필요하면 팀장에게 보고).
+- 폴더 구조 · 모듈 경계는 `products/02_ARCHITECTURE.md` 2절과 `products/CLAUDE.md` 3장(소유 경계)을 따른다. 새 최상위 폴더 · 새 패키지를 만들지 않는다 (필요하면 팀장에게 보고).
+- 앱과 워커는 `packages/*`로만 코드를 공유한다. 워커가 `apps/web`을, 앱이 워커 코드를 import 하지 않는다.
+- 핸들러 `services/worker/src/<영역>/handler.ts` · 크론 `cron.ts`는 런타임이 자동 로드하고, AI 체인은 `packages/ai/chains/<기능>/`. 공용 인덱스 파일을 만들지 않는다.
 - 핸들러는 얇게: payload 검증(zod, `packages/domain`) → 자격증명 로드 → 어댑터 호출 → 결과 저장 · 실행 기록 갱신. 마켓 필드 매핑 · HTTP 는 어댑터 안에만.
 - 외부 실패는 결과 타입(성공 / 일시 실패 / 영구 실패 + 사유)으로 받아 실행 기록에 "다음 행동" 한 줄로 남긴다 (예외를 삼키지 않는다).
 - 외부 URL 요청은 `packages/net`(허용 도메인 · 타임아웃 · 재시도)을 거친다. 허용 도메인 밖은 GC010.

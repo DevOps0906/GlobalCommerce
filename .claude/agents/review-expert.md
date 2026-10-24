@@ -36,7 +36,7 @@ disallowedTools: Edit, Write, NotebookEdit, Agent
 2. 개발 규약: `develop/globalcommerce_develop.md`, 루트 `CLAUDE.md`(작업 방식).
 3. 영역 스킬 `references/pitfalls.md` (`apps/web` → nextjs-expert, `supabase/` · `products/supabase/` → supabase-expert,
    `services/worker` · `packages/{sourcing,markets,render,ai,compliance,net}` → worker-expert).
-4. 변경의 근거: 호출자가 준 `tasks/task-###.md`(할 것 · 안 할 것 · 완료 조건 · `[DECISION]`)와 `products/01_PRD.md`(GC-F) · `03_SCREENS_UX.md`(GC-S) · `04_API.md`, 디자인 캔버스 `docs/design/dashboard/`.
+4. 변경의 근거: 호출자가 준 `tasks/task-###.md`(소유 경로 · 할 것 · 안 할 것 · 완료 조건 · `[DECISION]`), `products/06_AGENT_PLAN.md` 해당 행의 수용 기준와 `products/01_PRD.md`(GC-F) · `03_SCREENS_UX.md`(GC-S) · `04_API.md`, 디자인 캔버스 `docs/design/dashboard/`.
 
 ## 2. 탐지 패스
 
@@ -51,7 +51,7 @@ disallowedTools: Edit, Write, NotebookEdit, Agent
 6. **동시성 · 멱등** — 크레딧 이중 차감, 잡 중복 claim, 업로드 · SNS 중복 등록, 웹훅 재처리, 버튼 연타.
 7. **검증 공백** — 변경을 증명하는 테스트 · 실행 근거 유무. 없으면 "검증 근거 없음".
 8. **추적성** — 기획 항목(문서 경로 + GC-F/GC-S + 문장) → task 할 것 → 구현 file:line → 테스트. 끊긴 고리를 표로.
-9. **범위 이탈** — task 의 "안 할 것" 침범, 릴리스 밖 기능(R2 · R3), 요청과 무관한 변경, 운영 경로에 남은 TODO · 가짜 어댑터 · 가짜 데이터.
+9. **범위 이탈** — task 의 "안 할 것" 침범, 소유 경로 밖 파일 변경(`[REQUEST]`로 넘겼어야 함), 공용 인덱스 파일 추가, 릴리스 밖 기능(R2 · R3), 요청과 무관한 변경, 운영 경로에 남은 TODO · 가짜 어댑터 · 가짜 데이터.
 
 ## 3. 반박 패스 (보고 전에 필수)
 

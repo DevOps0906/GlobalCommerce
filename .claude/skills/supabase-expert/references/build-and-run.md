@@ -9,7 +9,8 @@ CLI 나 Docker 가 없으면 "미검증"으로 보고한다. 설치 · 연결은
 | 마이그레이션 생성 | `supabase migration new <name>` | 새 파일만 추가 |
 | 로컬 DB 재현 | `supabase db reset` | 로컬 데이터 초기화 — 로컬 한정 |
 | DB 테스트 | `supabase test db` | `supabase/tests/` pgTAP |
-| 타입 생성 | `supabase gen types typescript --local` | 출력 경로는 GC-06-001 · 002 에서 정함 |
+| 타입 생성 | `supabase gen types typescript --local > apps/web/types/supabase.ts` | 커밋 대상 (GC-06-002) |
+| RLS 회귀 | `pnpm test:rls` | `tests/rls/` (GC-06-003, 스크립트 이름은 GC-06-001 확정) |
 | 정적 점검 | `/check db` | RLS 누락 · `true` 정책 · 실수 금액 컬럼 · `search_path` |
 | 원격 적용 | `supabase db push` | **원격 변경 — 실행하지 않고 제시만** |
 

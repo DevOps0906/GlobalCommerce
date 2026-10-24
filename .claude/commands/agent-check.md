@@ -13,6 +13,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls:*), Bash(cat:*), Bash(grep:*), Bash(sed
 4. 아래를 점검해 어긋난 것을 보고한다.
    - 파일명과 `name`이 같은가
    - `.claude/agents/README.md` 표 · `develop/MULTI_AGENT.md` 2장 표의 이름 · 모델이 frontmatter 와 같은가
+   - `products/06_AGENT_PLAN.md` 1.1절 · 2절 "담당" 열에 나오는 에이전트 이름이 모두 `.claude/agents/`에 있는가
    - 읽기 전용이어야 하는 에이전트(advisor · plan-challenger · review-expert · contract-reviewer · security-auditor)에 `Write` · `Edit`가 없는가
    - 에이전트 · 스킬 · 명령이 가리키는 문서 경로(`products/*`, `develop/*`, `docs/design/*`, `docs/spec/*`, `tasks/*`, `.claude/commands/check.md`)가 실제로 있는가
      — 아직 없는 코드 경로(`apps/web`, `services/worker`, `packages/*`, `supabase/`)는 "코드 착수 전"으로 따로 표시하고 오류로 세지 않는다

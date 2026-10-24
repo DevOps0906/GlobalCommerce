@@ -30,7 +30,7 @@ RLS 는 service role 로 테스트하면 통과해 버리고, 외부 마켓 API 
 ## 기준 로드
 
 1. `products/CLAUDE.md`, `products/00_DECISIONS.md`(5.3 테이블 · 5.4 잡 타입 · 5.5 오류 코드 — 이름 정본),
-   데이터 · RLS `products/supabase/monolith/`, API · RPC · 잡 payload `products/04_API.md`.
+   데이터 · RLS `products/05_DATA_MODEL.md` · `products/supabase/monolith/`, API · RPC(3장) · 잡 payload(4장) · 외부 어댑터(6장) · Realtime(7장) · 오류(8장) `products/04_API.md`.
 2. 외부 마켓 계약은 `docs/spec/MARKET_REGISTER_FORM.md` · `MARKET_IMAGE_SPEC.md`와 어댑터에 적힌 공식 문서 링크가 정본이다 (확인 못 한 필드는 ❓).
 3. 코드 양쪽이 서로 맞아도 **정본 문서와 다르면** 그것도 불일치다.
 
@@ -39,9 +39,9 @@ RLS 는 service role 로 테스트하면 통과해 버리고, 외부 마켓 API 
 | 계약 | 생산자 → 소비자 | 볼 것 |
 |---|---|---|
 | DB 스키마 → 웹 · 워커 | `supabase/migrations/*.sql` → 생성 타입 → `apps/web` · `services/worker` 쿼리 | 재생성 여부, 컬럼 이름 · null · enum · 정수 금액, 이름 바뀐 컬럼 참조 |
-| RPC · 서버 함수 | SQL 함수 시그니처 → `rpc('fn', {...})` (웹 · 워커) | 인자 **이름**까지 일치, `security definer` · `search_path`, 반환 오류 코드 |
+| RPC · 서버 함수 | 코어(`consume_credits` · `refund_credits` · `enqueue_job` · `claim_jobs` 등)와 제품 `gc_*` 시그니처 → `rpc('fn', {...})` (웹 · 워커) | 인자 **이름**까지 일치, `security definer` · `search_path = ''` · 호출자 판정, 반환 오류 코드 |
 | RLS ↔ 호출 주체 | 정책(`org_id` · 역할) → 사용자 세션(웹) · service role(워커 · 웹훅) | service role 로만 통과하는 경로, 사용자 세션이 읽으면 안 되는 컬럼(`encrypted_credentials`) |
-| 잡 큐 | 생산자(Route Handler · 서버 액션 · 크론 · 실행 엔진) → `jobs`(큐 `gc.*` · `job_type` · payload) → 워커 디스패처 · 핸들러 | 이름이 5.4 정본과 같은가, payload zod 스키마를 양쪽이 같은 `packages/domain` 정의로 쓰는가, 핸들러 없는 `job_type` |
+| 잡 큐 | 생산자(Route Handler · 크론 · 실행 엔진) → `enqueue_job`(큐 `gc.*` · `job_type` · payload · `credit_ledger_id`) → 워커 런타임 자동 로드 핸들러(`services/worker/src/<영역>/handler.ts`) | 이름이 5.4 정본과 같은가, payload 가 `04_API.md` 4장 · `packages/domain` zod 와 같은가, 핸들러 없는 `job_type`, 환불에 쓸 `credit_ledger_id` 전달 |
 | 실행 기록 | 워커가 쓰는 `workflow_runs` · `workflow_run_steps` 상태 · 진행률 → 실행 기록 · 업로드 화면 · Realtime 구독 | 상태 값 집합, 진행률 단위, 실패 사유 필드 |
 | 오류 코드 | DB · 서버의 `GC0##` · `CR001` → HTTP 상태(5.5) → 화면 문구 매핑 | 코드 · HTTP 일치, 매핑 누락(GC003 → 추가 슬롯 단계 안내 등) |
 | 공유 패키지 → 앱 | `packages/domain`(상수 · zod · 플랜 features · 단가) → 웹 · 워커 · DB 시드(`plans` · `credit_packs`) | 값 일치(GC-D-04), 서버 전용 패키지(`ai` · `markets` · `net` · `sourcing`)를 클라이언트가 import 하지 않는가 |

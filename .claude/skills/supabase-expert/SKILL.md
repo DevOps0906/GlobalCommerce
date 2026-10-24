@@ -19,14 +19,14 @@ description: >-
 2. 스키마 변경은 새 마이그레이션 파일로만. 기존 파일 · 코어 lite 복사본은 수정하지 않는다.
 3. 판정(역할 · 플랜 · 크레딧 · 한도)은 DB 가 한다 — RPC · 트리거 · `session_context`, 오류는 `GC0##` · `CR001` (GC-D-21, 5.5).
 4. 금액 · 크레딧은 정수. 마켓 키 · SNS 토큰은 `encrypted_credentials`에 암호화, 사용자는 마스킹 값만 읽는다.
-5. 원격 DB 적용 · 삭제는 실행하지 않고 제시만 한다. 테이블 이름 정본은 `00_DECISIONS.md` 5.3, 설계 SQL 정본은 `products/supabase/monolith/`.
+5. 원격 DB 적용 · 삭제는 실행하지 않고 제시만 한다. 테이블 이름 정본은 `00_DECISIONS.md` 5.3, 설계 정본은 `products/05_DATA_MODEL.md` · `products/supabase/monolith/`, RPC 계약은 `products/04_API.md` 3장.
 
 ## 1. 요청 판별
 
 | 요청 | 시작 위치 |
 |---|---|
-| 새 테이블 · 컬럼 | `00_DECISIONS.md` 5.3 → `products/supabase/monolith/` → `references/conventions.md` §마이그레이션 |
-| 권한 · 정책 | `products/supabase/monolith/` 정책 → `references/conventions.md` §RLS |
+| 새 테이블 · 컬럼 | `00_DECISIONS.md` 5.3 → `products/05_DATA_MODEL.md` 2장 → `products/supabase/monolith/` → `references/conventions.md` §마이그레이션 |
+| 권한 · 정책 | `products/05_DATA_MODEL.md` 4장 → `references/conventions.md` §RLS |
 | 크레딧 · 플랜 한도 · 결제 기록 | `references/conventions.md` §크레딧 · 결제 · 동시성 → `products/04_API.md` |
 | 잡 큐 · 실행 기록 | `00_DECISIONS.md` 5.4 · GC-D-18 → `references/conventions.md` §잡 |
 | 마켓 키 · SNS 토큰 | `references/conventions.md` §자격증명 |

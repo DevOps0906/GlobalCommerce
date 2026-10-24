@@ -9,8 +9,9 @@
 ```
 
 - 상태 값 · 컬럼 이름은 코어 `jobs` 정본을 따른다 (위 이름은 설명용).
-- claim 은 DB 에서 한 워커만 가져가게 한다 (`skip locked` · 조건부 갱신, supabase-expert 담당). 워커는 lease 를 주기적으로 연장하고, 만료된 `실행 중` 잡은 다시 대기로 돌린다.
-- 디스패처는 `job_type` → 핸들러 표 하나. 표에 없는 `job_type`은 영구 실패로 기록한다 (조용히 건너뛰지 않는다).
+- 런타임(GC-06-007)은 코어 `claim_jobs` · `heartbeat_job` · `complete_job` · `fail_job` · `reap_stale_jobs`만 쓴다. 한 워커만 가져가게 하는 일은 DB(supabase-expert)가, 하트비트 · 만료 회수는 런타임이 맡는다.
+- payload 계약은 `products/04_API.md` 4장. 유료 잡 payload 에는 `credit_ledger_id`가 있다.
+- 핸들러는 `services/worker/src/<영역>/handler.ts`, 크론은 같은 폴더 `cron.ts`로 런타임이 자동 로드한다 (공용 핸들러 목록 파일 없음). 로드된 핸들러가 없는 `job_type`은 영구 실패로 기록한다 (조용히 건너뛰지 않는다).
 - 동시 실행 한도(플랜 GC-D-04 동시 생성 수, GC008)는 DB 가 판정한다. 워커는 결과를 따른다.
 - 사용자에게 보이는 진행은 `workflow_runs` · `workflow_run_steps`(R1 은 `system` 파이프라인)와 업로드 배치 항목 상태로 남긴다. 실패 단계부터 재실행할 수 있게 단계 입력 · 출력 참조를 저장한다 (GC-F-401).
 - 종료 신호(SIGTERM)를 받으면 새 claim 을 멈추고, 진행 중 잡을 끝내거나 lease 를 풀고 나간다.
@@ -20,7 +21,7 @@
 - 멱등 키는 잡 id 가 아니라 **업무 단위**로 정한다: 업로드는 (상품, 마켓 계정), SNS 는 (영상, 채널), 결제 후처리는 Toss 이벤트 id.
 - 외부에 만들기 전에 "이미 만들었는가"를 확인한다: `market_listings`의 외부 id, 마켓 판매자 상품 코드 조회, 저장된 SNS 게시물 id.
 - 파일 산출물은 결정적 경로(조직/대상/버전)에 덮어쓰기로 저장해 재실행이 파일을 늘리지 않게 한다.
-- 크레딧은 등록 시 선차감(웹 · RPC), 최종 실패 시 환불 RPC 1회. 워커가 잔액을 계산하지 않는다.
+- 크레딧은 Route Handler 가 등록 시 선차감(`consume_credits`), 워커는 최종 실패 시 payload 의 `credit_ledger_id`로 `refund_credits` 1회. 워커가 잔액을 계산하지 않는다.
 
 ## 재시도
 
@@ -31,6 +32,10 @@
 | 자격증명 | 401/403, 키 만료 | 즉시 실패 + GC009, 계정 상태를 "검증 필요"로 |
 | 부분 | 배치 일부 실패 | 항목 단위 상태, 실패 항목만 재전송 가능 (GC-F-302) |
 
+## 안전 fetch (`packages/net`, GC-06-007)
+
+- 사용자가 준 URL · 외부 API 는 이 패키지로만: 허용 도메인(밖이면 GC010), DNS 해석 후 사설 · 메타데이터 IP 차단(169.254.169.254, 10.0.0.0/8, 루프백 등), 리다이렉트 제한, 응답 크기 · 시간 제한, 리바인딩 차단. 수치는 06장 GC-06-007 수용 기준.
+
 ## 어댑터 (`packages/sourcing` · `packages/markets` · `packages/ai`, R2 SNS · 블로그)
 
 - 인터페이스는 업무 언어로: `register(product, account)`, `pollStatus(listing)`, `generateTitle(input)`. 외부 필드 이름은 어댑터 안에만.
@@ -38,7 +43,8 @@
 - 아마존 데이터는 서드파티 상품 데이터 API · PA-API 어댑터로만 (O-02). 직접 스크래핑 금지.
 - R1 마켓은 쿠팡 Wing Open API · 네이버 커머스 API + 엑셀(플레이오토 호환) · ZIP 내보내기 (GC-D-03).
 - AI: 기본 OpenAI, 대체 Anthropic (GC-D-08). 이미지는 배경 제거 · 이미지 생성 어댑터 (GC-D-09, O-04). 호출마다 `ai_usage` 기록.
-- 프롬프트는 체인별 파일에 두고, 수집 텍스트는 데이터 구획으로 넣는다 (지시와 섞지 않는다). 후기 · 평점 · "전문가 추천" · "단순 변심 반품 불가" · 건기식 부정 문구를 만들지 않게 지시하고, 결과는 금지어 판정을 거친다 (GC-D-11).
+- `packages/ai`는 `server-only`를 import 한다. 체인은 `packages/ai/chains/<기능>/`. 제공자 키는 서버 env 에만, 키가 없을 때 가짜 응답으로 조용히 넘어가지 않는다 (0키 폴백 금지).
+- 프롬프트는 체인별 파일에 두고, 수집 텍스트는 데이터 구획으로 넣는다 (지시와 섞지 않는다). 마켓 · SNS 키는 AI 입력에 넣지 않는다. 후기 · 평점 · "전문가 추천" · "단순 변심 반품 불가" · 건기식 부정 문구를 만들지 않게 지시하고, 결과는 금지어 판정을 거친다 (GC-D-11).
 - 가짜 어댑터는 같은 인터페이스로 성공 · 반려 · 429 · 타임아웃을 흉내 낸다.
 
 ## 렌더 (`packages/render`)
@@ -55,15 +61,19 @@
 - 내보내기 파일 만료 정리(`export.expire`).
 - 크론 표현식의 시간대를 명시한다 (서버는 UTC 라고 가정하지 말고 설정 확인).
 
+## 실행 이미지
+
+- 워커 Docker 이미지(`services/worker/Dockerfile`, GC-06-007 소유)는 Node 22 · Sharp · Noto Sans KR 을 포함한다. FFmpeg 는 GC-06-040 이 1줄 요청으로 추가한다 (06장 2.1절).
+
 ## 실행
 
 패키지 매니저는 pnpm, 명령은 각 `package.json` `scripts`가 정본이다.
 
 | 목적 | 명령 | 비고 |
 |---|---|---|
-| 워커 개발 실행 | `pnpm --filter ./services/worker dev` | 로컬 Supabase 필요, 가짜 어댑터 기본 |
+| 워커 개발 실행 | `pnpm --filter ./services/worker dev` | 로컬 Supabase 필요, 가짜 어댑터 기본 (스크립트 이름은 GC-06-001 확정) |
 | 타입체크 · 린트 · 테스트 | `pnpm --filter ./services/worker typecheck` · `lint` · `test` | |
-| 패키지 | `pnpm --filter "./packages/{sourcing,markets,render,ai}" typecheck` · `test` | 바꾼 패키지만 |
+| 패키지 | `pnpm --filter ./packages/<이름> typecheck` · `test` | 바꾼 패키지만 (domain · compliance · net 포함) |
 | 바이너리 확인 | `node -v`(22), `ffmpeg -version` | 없으면 렌더 테스트 NOT_RUN |
 
 - 환경 변수 목록은 `.env.example`이 정본이다. 외부 API 실 계정 키로 개발 실행하지 않는다.

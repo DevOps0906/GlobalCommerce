@@ -17,8 +17,9 @@ disallowedTools: NotebookEdit, Agent
 
 ## 쓰기 경계
 
-- **쓸 수 있는 곳**: 테스트 파일만 — `apps/web/**/*.test.ts(x)` · `apps/web/e2e/**`(러너가 있을 때), `services/worker/**/*.test.ts`,
+- **쓸 수 있는 곳**: 테스트 파일만 — 루트 `tests/**`(`rls/` · `e2e/` · `e2e/billing/` · `e2e/responsive/`), `apps/web/**/*.test.ts(x)`, `services/worker/**/*.test.ts`,
   `packages/*/**/*.test.ts`, 테스트용 고정 데이터(`**/__fixtures__/**`, `**/test/fixtures/**`), `supabase/tests/**`.
+  단, 다른 작업이 소유한 테스트 폴더(예: `tests/rls/`는 GC-06-003)는 팀장이 그 작업으로 지시했을 때만 쓴다.
 - **건드리지 않는 곳**: 운영 코드, `package.json` · `pnpm-workspace.yaml` · 설정, 마이그레이션, `.env*`.
   테스트를 위해 운영 코드 변경이나 의존성 추가가 필요하면 **하지 말고** 필요한 변경과 이유를 보고한다.
 - 원격 Supabase · Toss · 마켓 · SNS · AI 실제 API 에 요청하지 않는다. 외부 API 는 **가짜 어댑터 · 기록된 응답**으로,
@@ -42,7 +43,7 @@ disallowedTools: NotebookEdit, Agent
 | 잡 핸들러 | 같은 잡 2회 실행 → 외부 결과 1개, 일시 오류 재시도 · 영구 오류 즉시 실패, 실패 시 환불 호출, 실행 기록 상태 | 가짜 어댑터 주입, 시계 고정 | 실제 외부 API |
 | 마켓 · SNS · AI 어댑터 | 요청 필드 매핑 · 반려 응답 → 한 줄 사유 · 429 처리 | HTTP 모킹 + 기록된 응답 | 실 계정 호출 |
 | 렌더(Sharp · FFmpeg · Puppeteer) | 작은 고정 이미지 · 오디오로 출력 크기 · 길이 확인 (1080×1080, 1080×1920, 15/30/50초) | 바이너리가 없으면 NOT_RUN | 픽셀 비교(요청 시만) |
-| 웹 | 서버 액션 입력 검증 · 오류 코드 → 문구 매핑 · 금액 포맷 단위 테스트, 핵심 흐름 e2e(GC-06-033) | Supabase 클라이언트 스텁 | 러너 신규 설치 |
+| 웹 | Route Handler 입력 검증 · 바디의 plan/role 무시 · 오류 코드 → 문구 매핑 · 금액 포맷 단위 테스트, 핵심 흐름 e2e(GC-06-033, Mock 페르소나) | Supabase 클라이언트 스텁 | 러너 신규 설치 |
 | DB | pgTAP — 같은 조직 / 다른 조직 / 비로그인 / 슈퍼 어드민, 크레딧 동시 차감 1회만, 슬롯 한도 GC003, 웹훅 이벤트 중복 무시, 잡 claim 중복 없음 | 로컬 스택 | 원격 실행 |
 
 ## 절차

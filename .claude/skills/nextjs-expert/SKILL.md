@@ -5,7 +5,8 @@ description: >-
   페이지 · 레이아웃 · 서버/클라이언트 컴포넌트 · 서버 액션 · Route Handler · `proxy.ts` · Supabase SSR 세션(@supabase/ssr) ·
   잡 등록 · Realtime 진행률 · Toss 결제 화면 · 노드 캔버스(@xyflow/react) · 디자인 토큰(`apps/web/styles/tokens.css`) · 반응형 3구간을
   만들거나 고칠 때 반드시 먼저 읽을 것. "대시보드", "화면", "셸", "사이드바", "업로드 화면", "플랜 · 결제 화면", "설정 화면" 요청도 여기서 시작한다.
-  DB 스키마 · RLS · RPC 는 supabase-expert, 잡 처리 · 외부 API 어댑터 · 렌더는 worker-expert 다. Pages Router 로 만들지 않는다.
+  nextjs-expert 와, 화면 · 컴포넌트 · 셸을 맡은 대리(sub-agent-1)가 함께 쓴다.
+  DB 스키마 · RLS · RPC 는 supabase-expert, 잡 처리 · `packages/*` · 외부 API 어댑터 · 렌더는 worker-expert 다. Pages Router 로 만들지 않는다.
 ---
 
 # nextjs-expert — `apps/web` 작업 규약
@@ -37,7 +38,9 @@ description: >-
 
 - 라우트 파일 규약(`page` · `layout` · `loading` · `error` · `route`)을 따른다.
 - 폼은 서버 측 검증(zod, `packages/domain` 스키마)이 정본, 클라이언트 검증은 보조. 에러 · 로딩 · 빈 상태를 항상 처리한다.
-- 서버 액션 · Route Handler 는 입력을 신뢰하지 않는다 (검증 · 세션 · 조직 소속 확인). 오류는 `GC0##` · `CR001` 코드로 받아 한 곳에서 문구로 바꾼다.
+- 모든 `/api/*`(웹훅 · `/api/dev/login` 제외)는 첫 줄에서 `requireSession('globalcommerce', { roles })`. 입력은 zod 로 검증하고 바디 · 쿠키 · 쿼리의 plan · role · model · provider 는 읽지 않는다.
+- 유료 작업은 `withCredits`(코어 `consume_credits`) → `enqueue_job(..., credit_ledger_id)` → 실패 시 `refund_credits`. 별도 차감 API 금지.
+- 오류는 `GC0##` · `CR001` 코드로 받아 `apps/web/lib/copy/errors.ts` 한 곳에서 문구로 바꾼다. 화면 문구는 `lib/copy/<화면>.ts`.
 - 스타일 값은 CSS 변수 토큰으로만 (hex · 임의 값 직접 사용 금지). Tailwind v4 문법, `tailwind.config.js` 금지.
 - 금액 · 크레딧은 서버가 준 정수를 표시만 포맷한다. 핵심 숫자는 Bebas Neue, JetBrains Mono 는 로그 · 코드에만.
 

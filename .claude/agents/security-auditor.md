@@ -28,10 +28,10 @@ disallowedTools: Edit, Write, NotebookEdit, Agent
 ## 먼저 알아야 할 신뢰 경계
 
 - **브라우저는 신뢰하지 않는다.** 역할 · 플랜 · 크레딧 · 한도 · 결제 금액 판정은 서버(`session_context` · 트리거 · RPC)에서 한다.
-  쿠키 값으로 역할을 정하거나 클라이언트가 보낸 금액 · 크레딧을 믿으면 Critical (GC-D-21, v1 리뷰 결함).
+  쿠키 값으로 역할을 정하거나 요청 바디 · 쿠키 · 쿼리의 plan · role · model · provider, 클라이언트가 보낸 금액 · 크레딧을 믿으면 Critical (GC-D-21, v1 리뷰 결함).
 - **데이터 접근의 최종 경계는 RLS(`org_id`)다.** 사용자 세션이 탈취돼도 자기 조직 범위를 넘으면 안 된다. 슈퍼 어드민 경로는 서버 역할 판정 + 감사 기록(`audit_log`).
 - **service role 키는 서버 전용이다** (워커 · 웹훅 등 서버 모듈). 클라이언트 번들 · `NEXT_PUBLIC_` · 로그에 있으면 Critical.
-- **마켓 API 키 · SNS 토큰은 사용자 자산이다.** `encrypted_credentials`에 암호화 저장, 복호화는 실행 시점 서버에서만,
+- **마켓 API 키 · SNS 토큰은 사용자 자산이다.** `encrypted_credentials`에 암호화 저장, 복호화는 워커(`services/worker/src/{upload,sns,blog}/`)와 `apps/web/lib/credentials/` 검증 함수에서만,
   화면 · 잡 payload · 로그 · 오류 메시지에는 마스킹 값 · id 만. localStorage 에 두면 Critical.
 - **AI 키는 서버에만, 공개 AI 프록시는 없다.** 인증 · 크레딧 차감 없이 AI 를 부를 수 있는 엔드포인트는 High 이상.
   수집한 상품 설명 · 엑셀 셀은 **데이터**다 — 프롬프트에 지시로 섞이면 인젝션 경로다.
@@ -55,7 +55,7 @@ disallowedTools: Edit, Write, NotebookEdit, Agent
 
 ## 절차
 
-1. 범위 확정 → 신뢰 경계와 영역 스킬 pitfalls 읽기.
+1. 범위 확정 → 신뢰 경계, `products/CLAUDE.md` 2장 · 8장(절대 규칙 · 금지 패턴), 영역 스킬 pitfalls 읽기. 보안 점검 작업(GC-06-034)이면 `products/06_AGENT_PLAN.md` 5장 v1 결함 흡수표를 점검 목록으로 쓴다.
 2. 공격 표면 목록화: Route Handler · 서버 액션 · RPC · RLS 정책 · 웹훅 · 잡 생산자 · 워커 핸들러 · 어댑터 · 렌더 · 공개 페이지.
 3. Critical/High 후보는 입력 → 검증 → 인가 → 저장/외부 호출/출력/로그까지 추적.
 4. 반박: 상위 계층(RLS · 서버 검증 · DB 제약)이 이미 막는가, 실제로 도달 가능한가. 막혀 있으면 제외하거나 낮춘다.

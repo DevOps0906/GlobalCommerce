@@ -3,7 +3,7 @@
 | # | 함정 | 증상 · 위험 | 확인 방법 |
 |---|---|---|---|
 | 1 | 테이블에 RLS 미설정 | 공개 키로 전 조직 데이터 접근 | `enable row level security` 유무 (`/check db`) |
-| 2 | 정책이 `true`로 열려 있음 | 사실상 무방비 | 정책 using/with check |
+| 2 | 정책이 `true`로 열려 있음 · `FOR ALL` 정책 | 사실상 무방비, 동작별 의도 불명 | 정책 using/with check, `for all` |
 | 3 | 조직 · 역할 판정 출처가 사용자 수정 가능 값 | 다른 조직 데이터 접근, 슈퍼 어드민 사칭 | `user_metadata` · 쿠키 사용 여부 |
 | 4 | update 정책에 with check 누락 | 행을 다른 조직으로 옮김 | update 정책 |
 | 5 | 정책 컬럼 인덱스 없음 | 전 쿼리 지연 | `org_id` 인덱스 |
