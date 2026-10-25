@@ -21,8 +21,20 @@ describe("loadWorkerEnv", () => {
     expect(() => loadWorkerEnv(rest)).toThrow(key);
   });
 
-  it("NEXT_PUBLIC 비밀 이름을 거부한다", () => {
-    const name = "NEXT_PUBLIC_OPENAI_API_KEY";
+  it.each([
+    "NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY",
+    "NEXT_PUBLIC_OPENAI_API_KEY",
+    "NEXT_PUBLIC_ANTHROPIC_API_KEY",
+    "NEXT_PUBLIC_TOSS_SECRET_KEY",
+    "NEXT_PUBLIC_CREDENTIALS_KEY_V1",
+    "NEXT_PUBLIC_DEV_SEED_PASSWORD",
+    "NEXT_PUBLIC_TOSS_WEBHOOK_SECRET",
+    "NEXT_PUBLIC_FAL_KEY",
+    "NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET",
+    "NEXT_PUBLIC_META_APP_SECRET",
+    "NEXT_PUBLIC_SOME_SECRET",
+    "NEXT_PUBLIC_DB_PASSWORD",
+  ])("NEXT_PUBLIC 비밀 이름 %s 를 거부한다", (name) => {
     expect(findForbiddenPublicEnvNames({ [name]: "x" })).toEqual([name]);
     expect(() => loadWorkerEnv({ ...valid, [name]: "x" })).toThrow(name);
   });

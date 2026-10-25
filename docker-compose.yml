@@ -18,16 +18,20 @@ services:
       dockerfile: apps/web/Dockerfile.dev
     working_dir: /app
     command: >-
-      sh -c "pnpm install --frozen-lockfile &&
+      sh -c "pnpm install --frozen-lockfile --filter @gc/web... &&
       pnpm --filter @gc/web exec next dev --hostname 0.0.0.0 --port 3000"
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       # 소스 마운트: 저장 즉시 반영(hot reload)
       - .:/app
       # 호스트의 node_modules · 빌드 산출물과 섞이지 않게 컨테이너 전용 볼륨으로 가린다
       - web_root_node_modules:/app/node_modules
       - web_app_node_modules:/app/apps/web/node_modules
+      # 설치 대상이 아닌 워크스페이스(worker · packages)의 node_modules 도 호스트와 분리 (익명 볼륨).
+      # packages/<이름> 이 생기고 web 이 의존하면 같은 방식으로 한 줄씩 추가한다.
+      - /app/services/worker/node_modules
+      - /app/packages/domain/node_modules
       - web_next_cache:/app/apps/web/.next
       - pnpm_store:/root/.local/share/pnpm/store
 

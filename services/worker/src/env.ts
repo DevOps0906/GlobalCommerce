@@ -29,10 +29,6 @@ export const workerEnvSchema = z.object({
 
   AMAZON_DATA_PROVIDER: providerSchema.default("fake"),
   AMAZON_DATA_API_KEY: z.string().min(1).optional(),
-  MARKETS_PROVIDER: providerSchema.default("fake"),
-  AI_PROVIDER: providerSchema.default("fake"),
-  EXCHANGE_RATE_PROVIDER: providerSchema.default("fake"),
-  DATALAB_PROVIDER: providerSchema.default("fake"),
   IMAGE_COMPOSE_PROVIDER: z.enum(["openai-image", "fal-flux"]).default("openai-image"),
 
   CREDENTIALS_KEY_VERSION: z.string().min(1).optional(),
@@ -50,7 +46,8 @@ export const workerEnvSchema = z.object({
 export type WorkerEnv = z.infer<typeof workerEnvSchema>;
 
 /** NEXT_PUBLIC_ 에 두면 안 되는 이름 조각 (GC-D-21). */
-const FORBIDDEN_PUBLIC_NAME = /SERVICE_ROLE|OPENAI|ANTHROPIC|TOSS_SECRET/i;
+const FORBIDDEN_PUBLIC_NAME =
+  /CREDENTIALS_KEY|DEV_SEED_PASSWORD|WEBHOOK_SECRET|FAL_KEY|CLIENT_SECRET|APP_SECRET|SECRET|PASSWORD|SERVICE_ROLE|OPENAI|ANTHROPIC|TOSS_SECRET/i;
 
 export function findForbiddenPublicEnvNames(env: RawEnv = process.env): string[] {
   return Object.keys(env).filter(

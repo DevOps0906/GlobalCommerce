@@ -72,3 +72,4 @@ pnpm 루트 모노레포와 Next.js 16 · 워커 골격, env 검증, CI를 만�
 - 2026-10-25 [REVIEW] review-expert: 수정 필요(Medium) — worker Dockerfile 부재로 compose up 실패(007 범위), 정본 밖 *_PROVIDER 이름, 컨테이너 설치가 호스트 node_modules 오염 가능 — 팀장
 - 2026-10-25 [DECISION] 빌드 단계 mock 가드는 001이 넣고 /api/dev/login 404 가드는 006. `*_PROVIDER`는 02장 8절 이름(AMAZON_DATA·IMAGE_COMPOSE)만 두고 가짜/실제는 키 유무로 판단(GC-D-26). worker Dockerfile이 없으면 dev:docker는 web만 기동(007 이후 함께) — 팀장
 - 2026-10-25 [DELEGATE] 리뷰 지적 반영 nextjs-expert(sonnet) — 팀장
+- 2026-10-25 [DONE] 리뷰 지적 반영 — 빌드 단계 mock 가드(VERCEL_ENV·RAILWAY_ENVIRONMENT=production이면 빌드 실패 확인), 127.0.0.1:3000, NEXT_PUBLIC 금지 이름 확대, provider 이름 정본화, worker Dockerfile 없으면 web만 기동, db reset --local, .env.local 자동 생성(빈 Supabase 값만), 컨테이너 설치 범위 축소. web 26·worker 16 테스트 통과 — 팀장

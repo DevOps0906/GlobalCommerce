@@ -19,8 +19,6 @@ function withoutEmpty(env: RawEnv): RawEnv {
   return out;
 }
 
-const providerSchema = z.enum(["fake", "live"]);
-
 export const publicEnvSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
@@ -37,9 +35,6 @@ export const serverEnvSchema = publicEnvSchema
     AUTH_MODE: z.enum(["mock", "live"]).default("live"),
     AUTH_PROVIDERS: z.string().optional(),
     DEV_SEED_PASSWORD: z.string().min(1).optional(),
-
-    AI_PROVIDER: providerSchema.default("fake"),
-    PAYMENT_PROVIDER: providerSchema.default("fake"),
 
     TOSS_CLIENT_KEY: z.string().min(1).optional(),
     TOSS_SECRET_KEY: z.string().min(1).optional(),
@@ -78,7 +73,8 @@ export type PublicEnv = z.infer<typeof publicEnvSchema>;
 export type ServerEnv = z.infer<typeof serverEnvSchema>;
 
 /** NEXT_PUBLIC_ 에 두면 안 되는 이름 조각 (GC-D-21). */
-const FORBIDDEN_PUBLIC_NAME = /SERVICE_ROLE|OPENAI|ANTHROPIC|TOSS_SECRET/i;
+const FORBIDDEN_PUBLIC_NAME =
+  /CREDENTIALS_KEY|DEV_SEED_PASSWORD|WEBHOOK_SECRET|FAL_KEY|CLIENT_SECRET|APP_SECRET|SECRET|PASSWORD|SERVICE_ROLE|OPENAI|ANTHROPIC|TOSS_SECRET/i;
 
 export function findForbiddenPublicEnvNames(env: RawEnv = process.env): string[] {
   return Object.keys(env).filter(
@@ -93,6 +89,19 @@ export function assertNoPublicSecretNames(env: RawEnv = process.env): void {
     throw new Error(
       `NEXT_PUBLIC_ 변수는 브라우저에 노출됩니다. 비밀 값 이름을 쓸 수 없습니다: ${bad.join(", ")}`,
     );
+  }
+}
+
+/**
+ * 운영(VERCEL_ENV · RAILWAY_ENVIRONMENT = production)에서 AUTH_MODE=mock 이면 던진다.
+ * 필수 키 검증 없이 빌드 단계에서도 호출한다 (mock 이 운영 빌드에 들어가는 것을 막음).
+ */
+export function assertNoMockInProduction(env: RawEnv = process.env): void {
+  if (
+    env.AUTH_MODE === "mock" &&
+    (env.VERCEL_ENV === "production" || env.RAILWAY_ENVIRONMENT === "production")
+  ) {
+    throw new Error("운영 환경(production)에서는 AUTH_MODE=mock 을 쓸 수 없습니다");
   }
 }
 
