@@ -61,7 +61,7 @@
 | GC-06-001 | W0 | R1 | 모노레포 · CI | — | Sonnet · nextjs-expert | 진행 |
 | GC-06-002 | W0 | R1 | DB 마이그레이션 (코어 lite + 도메인 R1) | — | Fable · supabase-expert | 진행 |
 | GC-06-003 | W0 | R1 | RLS · 권한 회귀 테스트 | 002 | Fable · supabase-expert | 대기 |
-| GC-06-004 | W0 | R1 | 디자인 토큰 · 공용 셸 | 001 | Sonnet · sub-agent-1 | 대기 |
+| GC-06-004 | W0 | R1 | 디자인 토큰 · 공용 셸 | 001 | Sonnet · sub-agent-1 | 진행 |
 | GC-06-005 | W0 | R1 | 도메인 패키지 (상수 · zod · 플랜 features · 단가 · 마진) | — | Opus · worker-expert | 진행 |
 | GC-06-006 | W0 | R1 | 인증 Stage A · `proxy.ts` · 세션 | 001, 002 | Fable · nextjs-expert | 대기 |
 | GC-06-007 | W0 | R1 | 워커 런타임 (잡 루프 · 크론 · 안전 fetch) | 002, 005 | Opus · worker-expert | 대기 |

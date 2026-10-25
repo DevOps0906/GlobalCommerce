@@ -66,3 +66,8 @@
 - 2026-10-25 [FOUND] 문서 불일치 6건: 단가(01 vs 02·04), 파이프라인 키(01 밑줄 vs 02·04·05·SQL 점 표기), features 키(01·04 vs seed), 04 images_confirmed 상태, 크론 payload run_id, 06 nav 경로 — 팀장
 - 2026-10-25 [DECISION] 단가는 01장 4.2(O-09 정본), 파이프라인 키는 DB와 같은 점 표기로 통일하고 01장 3.8을 고침, features 키는 seed 정본, images_confirmed는 활동 kind + images_confirmed_at. 문서는 sub-agent-1이 고침 — 팀장
 - 2026-10-25 [REQUEST] GC-06-004/006 apps/web: 처음 @gc/domain을 import하는 작업이 의존성 추가 + next.config transpilePackages. GC-06-007 services/worker: TS 원본 워크스페이스 패키지 실행(번들 또는 tsx) — 팀장
+- 2026-10-25 [DONE] 1차 커밋 261e0e0 — 파이프라인 키 02장 4.3 점 표기, 테스트 192건 — 팀장
+- 2026-10-25 [REVIEW] contract-reviewer: 상태·잡·오류·플랜 값·단가 일치. 위험 3(-1 무제한 거부, 누락 키 기본값이 SQL 집행과 다름, node_type 없음) + 02장 4.3 단계 키 불일치 — 팀장
+- 2026-10-25 [REVIEW] review-expert: 통과(🟡3 · 🟢2) — 정본 밖 단가 키, 단가 테스트가 정본을 안 읽음, 모르는 enum 값에 전체 실패, 행 범위 밖 헬퍼, 죽은 테스트 코드 — 팀장
+- 2026-10-25 [DECISION] 기본값은 SQL처럼 닫힘(fail-closed), -1 무제한 허용, 모르는 enum 값은 걸러냄, 단가 키는 01장 4.2 이름만, 호출처 없는 헬퍼 제거. 02장 4.3 단계 키 정리는 GC-06-007(실행 기록 헬퍼) 착수 때 함께 — 팀장
+- 2026-10-25 [DELEGATE] 리뷰 지적 반영 worker-expert(opus) — 팀장

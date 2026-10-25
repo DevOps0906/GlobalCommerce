@@ -10,7 +10,7 @@
 - **실제 배치 (팀장)**: 구현 `sub-agent-1` / 호출 모델 sonnet / 하위 지시 문구 · 체크리스트는 팀장이 별도 전달
 - **검증**: 착수 전 없음 · 변경 후 review-expert
 - **확인 위치**: Docker Desktop(GC-D-26)에서 최종 기동 확인; 클라우드 작업 환경은 이미지 저장소 차단으로 PGlite·문법 검사까지. 브라우저 375 / 768 / 1200 폭 셸 확인
-- **상태**: 대기
+- **상태**: 진행
 
 ## 목표
 
@@ -58,3 +58,6 @@
 
 ## 로그
 
+- 2026-10-25 [PLAN] 선행 001 완료로 착수 — 팀장
+- 2026-10-25 [DELEGATE] 구현 sub-agent-1(sonnet, nextjs-expert 스킬) — 06장 GC-06-004 행 — 팀장
+- 2026-10-25 [DECISION] GC-06-005 [REQUEST] 수용: 004가 apps/web에 @gc/domain 의존성 + next.config transpilePackages 추가(001 파일 최소 수정) — 팀장
