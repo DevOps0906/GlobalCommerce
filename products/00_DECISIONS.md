@@ -56,6 +56,7 @@
 | GC-D-23 | 업로드 배치는 상세페이지 `confirmed`부터 받지만, 실제 전송 잡은 상세페이지가 `ready`(마켓 이미지 변환 완료)가 된 뒤 시작한다 | 04장 `gc_create_upload_batch`, 05장 3절 | - |
 | GC-D-24 | "저장한 보기"는 R1에서 서버 테이블 `saved_views`(사용자별)로 저장한다. 브라우저 저장소에 두지 않는다 | 01장 GC-F-106 | - |
 | GC-D-25 | 제품 RPC는 `gc_` 접두사를 쓴다(`gc_features`, `gc_limit`, `gc_create_upload_batch`, `gc_apply_product_edits`, `gc_acknowledge_compliance_warning`, `gc_release_held_jobs`, `gc_record_step_outcome`, `gc_dashboard_summary`, `gc_admin_set_plan`, R3 `gc_hybrid_search` 등). 정본은 04장 3절과 `0002_globalcommerce_domain.sql` | 코어 함수와 이름 충돌 방지 | - |
+| GC-D-26 | 로컬 개발·테스트 기준은 Docker Desktop이다. Supabase 로컬 스택(CLI가 컨테이너로 기동)과 `docker-compose.yml`의 `web`·`worker` 서비스를 명령 하나(`pnpm dev:docker`, 제안)로 띄운다. 외부 API는 로컬 기본값이 가짜 어댑터이고 키를 넣으면 실제 호출로 바뀐다. 워커 이미지는 로컬과 배포(Railway)가 같은 Dockerfile을 쓴다. Windows는 WSL2 백엔드 | 사용자 지정(2026-10-25). 혼자 운영하므로 한 명령으로 전체를 재현할 수 있어야 한다 | - |
 
 ## 4. 열린 결정
 
@@ -256,4 +257,5 @@ O-09~O-15의 근거와 영향은 `01_PRD.md` 8장에 있다.
 | 날짜 | 변경 | 작업 |
 |---|---|---|
 | 2026-10-25 | 최초 작성 | 기획서·개발서 구축 |
+| 2026-10-25 | GC-D-26 추가(Docker Desktop 로컬 기준, 사용자 지정). 06장 GC-06-001·007 수용 기준에 반영 | W0 착수 준비 |
 | 2026-10-25 | 교차 검토 반영: GC-D-22~25, O-09~O-15, GC-F-305, 하위 경로 4개, `oauth_states`·`saved_views`, 작업 GC-06-048(랜딩·약관)·049(18슬롯), ID 형식 GC-DF·gc_ RPC | 기획서·개발서 구축 |

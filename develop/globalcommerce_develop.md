@@ -59,13 +59,39 @@ nomad-commerce와 다른 점은 00장 3절 "nomad-commerce와 차이" 열에 있
 | git, GitHub CLI(`gh`) | 저장소, PR | 처음부터 | `git --version`, `gh --version` |
 | Node.js 22 LTS | `apps/web`, `services/worker`, `packages/*` | W0 | `node -v` |
 | pnpm(corepack, 버전은 루트 `package.json`의 `packageManager`로 고정, 제안) | 모노레포 | W0 | `pnpm -v` |
-| Docker Desktop(또는 Docker Engine) | 로컬 Supabase | W0 | `docker version` |
+| Docker Desktop(기준 환경, GC-D-26) | 로컬 Supabase 스택 + web·worker 컨테이너(`docker compose`) | W0 | `docker version`, `docker compose version` |
 | Supabase CLI | `supabase start`, `db reset`, `test db`, `gen types` | W0 | `supabase --version` |
 | Playwright 브라우저 | E2E(GC-06-033), 반응형 스크린샷(035) | W5 | `pnpm exec playwright --version` |
 | FFmpeg | 숏폼 렌더 워커(GC-06-040) | R2(W6) | `ffmpeg -version` |
 | Claude Code | 팀장 세션과 에이전트 | 처음부터 | `claude --version` |
 
 Python은 R1에 필요하지 않습니다(FastAPI 없음, GC-D-08).
+
+### 2.3 Docker Desktop 기준 로컬 환경(GC-D-26)
+
+로컬 테스트의 기준은 Docker Desktop입니다. 명령 하나로 Supabase 로컬 스택, 웹, 워커가 함께 뜨고 시드 계정으로 바로 화면을 확인할 수 있어야 합니다(GC-06-001, 007 수용 기준).
+
+| 구성 | 실행 방식 | 포트(기본) |
+|---|---|---|
+| Supabase(Postgres, Auth, Storage, Realtime, Studio) | Supabase CLI가 Docker 컨테이너로 기동(`supabase start`) | API 54321, DB 54322, Studio 54323 |
+| 웹 `apps/web` | `docker-compose.yml`의 `web` 서비스(개발 모드, 소스 마운트로 즉시 반영) | 3000 |
+| 워커 `services/worker` | `docker-compose.yml`의 `worker` 서비스(`services/worker/Dockerfile`, Sharp·Puppeteer·Noto Sans KR 포함, FFmpeg는 R2) | 없음(헬스체크만) |
+| 외부 API(마켓, 결제, AI, 환율, 데이터랩) | 로컬 기본값은 가짜 어댑터(`*_PROVIDER=fake`). 키를 `.env.local`에 넣으면 실제 호출 | - |
+
+| 순서 | 명령 | 설명 |
+|---|---|---|
+| 1 | `cp .env.example .env.local` | 로컬 값만. 실제 키는 넣지 않아도 가짜 어댑터로 동작 |
+| 2 | `pnpm dev:docker` | `supabase start` → `supabase db reset` → 페르소나 시드 → `docker compose up` 순서를 묶은 스크립트(제안 이름) |
+| 3 | `http://localhost:3000/login` | 개발용 로그인 패널에서 페르소나(owner, pro 등) 선택 |
+| 4 | `pnpm dev:docker:down` | 컨테이너 정지(`docker compose down` + `supabase stop`) |
+
+| 주의 | 내용 |
+|---|---|
+| Windows | Docker Desktop의 WSL2 백엔드를 쓰고, 저장소를 WSL 파일 시스템(예: `~/work/GlobalCommerce`)에 둔다. `D:\` 같은 Windows 드라이브에 두면 파일 감시와 빌드가 느리다(제안) |
+| 컨테이너에서 Supabase 접속 | 웹·워커 컨테이너는 `host.docker.internal:54321`로 Supabase에 접속한다. 브라우저는 `localhost:54321` |
+| 비밀 값 | `.env.local`은 커밋하지 않는다. 이미지에 키를 굽지 않는다(빌드 인자 금지, 런타임 env만) |
+| 배포와의 관계 | 배포는 Vercel(web)·Railway(worker)다(02장 7절). 워커 Docker 이미지는 로컬과 Railway가 같은 Dockerfile을 쓴다 |
+| 이 저장소를 만든 클라우드 작업 환경 | Docker 이미지 저장소 접근이 막혀 있어 컨테이너 기동은 확인하지 못한다. 설정 문법 검사(`docker compose config`)까지만 하고, 실제 기동 확인은 Docker Desktop에서 한다 |
 
 ### 2.2 계정·키 체크리스트(웨이브별)
 
@@ -111,6 +137,7 @@ GlobalCommerce/
 ├── CLAUDE.md                       루트 운영 규칙(팀장·팀원 공통, 커밋 형식)
 ├── README.md
 ├── package.json  pnpm-workspace.yaml  .env.example        [001]
+├── docker-compose.yml  .dockerignore  apps/web/Dockerfile.dev   Docker Desktop 로컬 실행(GC-D-26)   [001]
 ├── .github/workflows/ci.yml        lint · typecheck · test · supabase test db      [001]
 ├── .claude/
 │   ├── settings.json               팀장(주 세션) 모델 claude-opus-5-5
@@ -170,7 +197,7 @@ GC-06-002가 이 절차를 처음 수행하고, 그 뒤 모든 개발자가 같�
 |---|---|---|
 | 1 | `supabase init` | 저장소 루트에 `supabase/config.toml`이 없을 때만(002가 1회) |
 | 2 | `products/supabase/monolith/0001_core_lite.sql` → `supabase/migrations/20261025000001_core_lite.sql`, `0002_globalcommerce_domain.sql` → `20261025000002_globalcommerce_domain.sql`, `seed.sql` → `supabase/seed.sql` 복사 | 002가 1회. 타임스탬프 이름은 제안 |
-| 3 | `supabase start` | Docker로 로컬 Supabase 기동(`http://127.0.0.1:54321`) |
+| 3 | `supabase start` | Docker Desktop에서 로컬 Supabase 기동(`http://127.0.0.1:54321`). 평소에는 2.3절 `pnpm dev:docker`가 3~7번을 함께 한다 |
 | 4 | `supabase db reset` | 마이그레이션을 이름순으로 적용하고 `seed.sql`(플랜 4종, 크레딧팩, 기본 금지어 사전, `apps` 행 등)을 넣음 |
 | 5 | `supabase gen types typescript --local > packages/domain/src/database.ts` | 타입 생성(경로 제안, 02장에 지정이 없음). 스키마를 바꾼 task는 반드시 다시 생성 |
 | 6 | `supabase test db` | RLS 회귀(003 이후) |
