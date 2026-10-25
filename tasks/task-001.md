@@ -65,3 +65,10 @@ pnpm 루트 모노레포와 Next.js 16 · 워커 골격, env 검증, CI를 만�
 ## 로그
 
 - 2026-10-25 [PLAN] 사용자 승인("진행해줘")으로 W0 착수 — 팀장
+- 2026-10-25 [DELEGATE] 구현 nextjs-expert(sonnet) — 06장 GC-06-001 행 + GC-D-26 — 팀장
+- 2026-10-25 [DECISION] 버전 고정: Next 16.2.7 · React 19.2.9 · Tailwind CSS 4.3.3 · TypeScript 5.9.3 · zod 4.6.7 · ESLint 9.39.5 · Vitest 5.0.5 · Supabase CLI 2.122.0(npx 폴백) — 팀장
+- 2026-10-25 [DONE] 1차 커밋 195bf32 — web·worker typecheck·lint·build·test 19건, docker compose config 통과 — 팀장
+- 2026-10-25 [REVIEW] security-auditor: Critical/High 0, Medium 3(빌드 단계 mock 가드 꺼짐, 3000 포트 0.0.0.0, NEXT_PUBLIC 금지 이름 누락), Low 3 — 팀장
+- 2026-10-25 [REVIEW] review-expert: 수정 필요(Medium) — worker Dockerfile 부재로 compose up 실패(007 범위), 정본 밖 *_PROVIDER 이름, 컨테이너 설치가 호스트 node_modules 오염 가능 — 팀장
+- 2026-10-25 [DECISION] 빌드 단계 mock 가드는 001이 넣고 /api/dev/login 404 가드는 006. `*_PROVIDER`는 02장 8절 이름(AMAZON_DATA·IMAGE_COMPOSE)만 두고 가짜/실제는 키 유무로 판단(GC-D-26). worker Dockerfile이 없으면 dev:docker는 web만 기동(007 이후 함께) — 팀장
+- 2026-10-25 [DELEGATE] 리뷰 지적 반영 nextjs-expert(sonnet) — 팀장
