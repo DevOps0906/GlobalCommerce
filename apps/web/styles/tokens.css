@@ -1,0 +1,96 @@
+/*
+ * 디자인 토큰 정본 (GC-D-19). 값 출처: docs/design/dashboard/README.md 토큰 표.
+ * 컴포넌트에는 hex · 임의 값(bg-[#...])을 쓰지 않고 이 토큰의 유틸리티만 쓴다.
+ * 구간(GC-D-20): 모바일 ~767px · 태블릿 768~1199px · 데스크탑 1200px~. 기본 sm/md/lg 중단점은 쓰지 않는다.
+ */
+
+@theme static {
+  /* 중단점: 두 개만 */
+  --breakpoint-*: initial;
+  --breakpoint-tablet: 768px;
+  --breakpoint-desktop: 1200px;
+
+  /* 색 (라이트 기본, O-08) */
+  --color-bg: #f2f6f6;
+  --color-surface: #ffffff;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
+  --color-ink: #0f172a;
+  --color-ink-sub: #475569;
+  --color-ink-faint: #64748b;
+  --color-accent: #00c9a7; /* 채움 전용. 이 위의 글자는 --color-on-accent */
+  --color-accent-strong: #007a64; /* 글자 · 버튼 (AA) */
+  --color-accent-tint: #e6fbf7;
+  --color-success: #15803d;
+  --color-info: #1d4ed8;
+  --color-danger: #b91c1c;
+  --color-warning: #b45309;
+  /* 민트 채움 위 글자 · 흰 글자(README 표 밖 파생: 기존 토큰 재사용) */
+  --color-on-accent: var(--color-ink);
+  --color-on-strong: var(--color-surface);
+
+  /* 서체 */
+  --font-sans: "Noto Sans KR", system-ui, sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* 글자 크기: 구간에 따라 아래 :root 에서 덮어쓴다(모바일 기준값) */
+  --text-body: 14px;
+  --text-body--line-height: 1.6;
+  --text-table: 13px;
+  --text-table--line-height: 1.5;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.5;
+  --text-section: 15px;
+  --text-section--line-height: 1.4;
+  --text-title: 20px;
+  --text-title--line-height: 1.3;
+  --text-metric: 44px;
+  --text-metric--line-height: 1;
+  --text-metric-sub: 28px;
+  --text-metric-sub--line-height: 1;
+
+  /* 셸 치수 */
+  --spacing-sidebar: 240px;
+  --spacing-rail: 64px;
+  --spacing-tabbar: 56px;
+  --spacing-topbar: 60px;
+  --spacing-touch: 44px;
+}
+
+/* 구간별 글자 크기 (GC-D-20, 03장 6.2절) */
+@media (width >= theme(--breakpoint-tablet)) {
+  :root {
+    --text-section: 16px;
+    --text-title: 22px;
+    --text-metric: 52px;
+    --text-metric-sub: 30px;
+  }
+}
+@media (width >= theme(--breakpoint-desktop)) {
+  :root {
+    --text-title: 24px;
+    --text-metric: 68px;
+    --text-metric-sub: 40px;
+  }
+}
+
+/* 다크: 토큰 정의만 (O-08). 값은 제안이며 화면에는 아직 켜지 않는다. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+[data-theme="dark"] {
+  --color-bg: #0b1213;
+  --color-surface: #131c1e;
+  --color-line: #243034;
+  --color-line-strong: #34454a;
+  --color-ink: #e6edf0;
+  --color-ink-sub: #a8b5bb;
+  --color-ink-faint: #8a979d;
+  --color-accent-strong: #2dd4b6;
+  --color-accent-tint: #0f2a27;
+  --color-success: #4ade80;
+  --color-info: #60a5fa;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+  --color-on-strong: #0b1213;
+}

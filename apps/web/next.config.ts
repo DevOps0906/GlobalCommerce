@@ -11,6 +11,7 @@ loadEnvConfig(repoRoot);
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  transpilePackages: ["@gc/domain"],
   turbopack: { root: repoRoot },
 };
 
