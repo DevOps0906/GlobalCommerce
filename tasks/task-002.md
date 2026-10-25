@@ -1,0 +1,64 @@
+# GC-06-002 DB 마이그레이션 (코어 lite + 도메인 R1)
+
+- **웨이브 · 릴리스 · 규모**: W0 · R1 · L
+- **선행 작업**: 없음
+- **소유 경로**: `supabase/migrations/0001_core_lite.sql`, `supabase/migrations/0002_gc_domain_r1.sql`, `supabase/seed.sql`, `supabase/config.toml`, `apps/web/types/supabase.ts`(생성물) — 이 밖의 파일은 고치지 않고 로그에 `[REQUEST]`
+- **기능 ID**: GC-F-002, GC-F-004, GC-F-005
+- **화면 ID**: 없음
+- **관련 결정**: GC-D-04 (플랜 4종 · 한도 · 가격 정본) · GC-D-21 (서버 판정) · GC-D-26 (로컬 Supabase 스택)
+- **담당 (06장)**: Fable · `supabase-expert` / 검증 `plan-challenger`, `contract-reviewer`, `security-auditor`
+- **실제 배치 (팀장)**: 구현 `supabase-expert` / 호출 모델 fable / 하위 지시 없음
+- **검증**: 착수 전 `plan-challenger`(DB·RLS 계획 공격) · 변경 후 review-expert + `contract-reviewer` + `security-auditor`(마이그레이션은 둘 다)
+- **확인 위치**: Docker Desktop(GC-D-26)에서 최종 기동 확인; 클라우드 작업 환경은 이미지 저장소 차단으로 PGlite·문법 검사까지
+- **상태**: 진행
+
+## 목표
+
+코어 lite 스키마(platform-docs 원본과 diff 0)와 GlobalCommerce R1 도메인 테이블, RLS, 한도·상태 트리거, seed, 생성 타입을 한 번에 세워 이후 모든 작업이 같은 DB 기준 위에서 돌게 한다.
+
+## 참고 문서
+
+- `products/06_AGENT_PLAN.md` 2장 GC-06-002 행 (소유 경로 · 수용 기준)
+- `products/CLAUDE.md` 1절
+- `products/00_DECISIONS.md` GC-D-04 (플랜 한도 · 가격)
+- `products/00_DECISIONS.md` 5.3절 (R1 도메인 테이블)
+- `products/00_DECISIONS.md` GC-F-002, GC-F-004, GC-F-005 (5.1절)
+
+## 할 것
+
+- [ ] `0001_core_lite.sql`: platform-docs 코어 lite 원본 복사 (diff 0)
+- [ ] `0002_gc_domain_r1.sql`: 5.3절 R1 도메인 테이블, `org_id`·RLS·`with check`, `FOR ALL` 정책 0
+- [ ] 읽기 공개 · 쓰기 service_role: `fx_rates`, `trend_keywords`, `season_picks`
+- [ ] 트리거: 상품 수 GC002, 마켓 슬롯(플랜 + `slot_addons`) GC003, 상태 전이 GC001, 동시 실행 GC008
+- [ ] `seed.sql`: `plans` 4행을 GC-D-04 값과 스냅샷 일치, `apps.id='globalcommerce'`, `banned_words` 기본 사전(org null)
+- [ ] `supabase/config.toml`, `supabase gen types` 결과를 `apps/web/types/supabase.ts`에 커밋
+
+## 안 할 것 (범위 밖)
+
+- 소유 경로 밖 파일 (필요하면 `[REQUEST]`)
+- 다음 작업의 범위: GC-06-003 RLS · 권한 회귀 테스트(`tests/rls/`), GC-06-005 도메인 패키지(`packages/domain/`), GC-06-006 인증(`apps/web/lib/auth/`)
+- R2·R3 테이블(해당 작업이 새 마이그레이션 파일 1개씩 소유)
+- 원격 DB 적용 · 삭제 (사용자 확인 없이 금지)
+
+## 완료 조건
+
+- [ ] `supabase db reset` 2회 연속 성공 — 확인: 로컬 Supabase에서 `supabase db reset` two times, 종료 코드 0
+- [ ] 코어 lite가 platform-docs 원본과 diff 0 — 확인: `diff` 원본 대 `supabase/migrations/0001_core_lite.sql` 결과 없음
+- [ ] 00장 5.3절 R1 도메인 테이블 전부 `org_id`·RLS·`with check`, `FOR ALL` 정책 0 — 확인: 테이블별 `pg_policies` 조회, `FOR ALL` 0건, `with check` 존재 확인
+- [ ] `fx_rates`·`trend_keywords`·`season_picks`는 읽기 공개·쓰기 service_role만 — 확인: anon `select` 성공, anon `insert` 거부
+- [ ] 트리거: 상품 수 GC002, 마켓 슬롯(플랜 + `slot_addons`) GC003, 상태 전이 GC001, 동시 실행 GC008 — 확인: 한도 초과 INSERT·잘못된 상태 전이가 각 에러 코드로 거부
+- [ ] seed의 `plans` 4행이 GC-D-04 값과 스냅샷 일치 (free 0/15/30, starter 29000, pro 69000, enterprise 149000 및 슬롯·상품·동시 생성) — 확인: `select * from plans` 결과를 GC-D-04와 대조
+- [ ] `apps.id='globalcommerce'`, `banned_words` 기본 사전(org null) 존재 — 확인: `select id from apps`, `select count(*) from banned_words where org_id is null` > 0
+- [ ] `supabase gen types` 결과 커밋 — 확인: `apps/web/types/supabase.ts`가 재생성 결과와 일치
+- [ ] `/check` 해당 영역 통과 (SQL · typecheck)
+- [ ] plan-challenger 계획 판정 기록, review-expert ACCEPT, `contract-reviewer`·`security-auditor` 판정 기록
+
+## 완료 보고
+
+| 완료 조건 | 결과 | 확인 방법 | 담당 |
+|---|---|---|---|
+| | | | |
+
+## 로그
+
+- 2026-10-25 [PLAN] 사용자 승인("진행해줘")으로 W0 착수 — 팀장
