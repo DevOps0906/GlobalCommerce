@@ -42,6 +42,10 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # GC-06-002: 생성 타입이 supabase/migrations 와 같은지(PGlite, Docker 불필요)
+      - name: DB types up to date
+        run: node scripts/db/gen-types.mjs --check
+
       # GC-06-003 이 추가한다: supabase test db (Supabase CLI 설치 + supabase start 필요)
       # - name: Supabase RLS tests
       #   run: supabase test db

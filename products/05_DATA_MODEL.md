@@ -240,7 +240,7 @@ R1은 `kind='system'`만 쓴다. 두 표는 R1에 만들고 R2 캔버스가 같�
 | `gc_release_held_jobs(max)` | service_role(디스패처) | `run_after='infinity'` 보류 잡을 `features.concurrency`만큼 해제(GC008) |
 | `gc_record_step_outcome(step, 'done'\|'failed'\|'skipped', message)` | service_role(워커) | 단계·실행 상태와 진행 카운트 |
 | `gc_dashboard_summary(org)` | authenticated | 오늘 처리 대기(가공·업로드), 최근 실행 5, 크레딧, USD·CAD 최근 2일 |
-| `gc_admin_set_plan(org, plan_code, reason)` | service_role(관리자) | 엔타이틀먼트·구독 플랜 변경 + 감사 `admin.plan_change` |
+| `gc_admin_set_plan(org, plan_code, reason, actor_id)` | service_role(관리자) | actor의 `platform_role` DB 재확인(42501), 엔타이틀먼트·구독 플랜 변경 + 감사 `admin.plan_change`(metadata.actor_id) |
 | `gc_hybrid_search(org, embedding, text, semantic_weight, filters, limit)` | service_role(R3) | 키워드·의미 가중 합산, 필터 source/category/registered_only |
 
 ## 7. v1 결함 차단 (데이터·보안)
@@ -261,7 +261,7 @@ R1은 `kind='system'`만 쓴다. 두 표는 R1에 만들고 R2 캔버스가 같�
 
 ## 8. R2·R3 표 추가 시점과 미결
 
-R2·R3 표는 R1 마이그레이션에 함께 만든다(빈 표). 이유: 1인 운영에서 마이그레이션 순서 충돌을 줄이고, `workflow_runs`의 R2 FK를 처음부터 걸 수 있다. 쓰기는 플랜 기능 게이트가 막고(seed free 플랜은 전부 false), 화면·잡은 릴리스 때 켠다. `products/CLAUDE.md` 3절이 R2·R3 마이그레이션을 "작업별 새 파일"로 둔 것과 다르므로, 팀이 분리를 원하면 0002의 "-- R2"(1497행~)·"-- R3"(1767행~) 절과 해당 트리거·GRANT 줄을 `0003_globalcommerce_r2.sql`, `0004_globalcommerce_r3.sql`로 그대로 옮기면 된다(R3 절이 `create extension vector`를 포함).
+R2·R3 표는 R1 마이그레이션에 넣지 않고 해당 작업의 새 마이그레이션 파일에서 만든다(`products/CLAUDE.md` 3절, 06장 1절. 037 `workflows`·`workflow_versions`(+`workflow_runs` FK), 039 `publish_targets`·`posts`, 040 `videos`, 042 `sns_accounts`·`sns_posts`, 045 `product_embeddings`(+`create extension vector`), 046 `jsonld_snapshots`). 기획 스냅샷 `products/supabase/monolith/0002`의 "-- R2"·"-- R3" 절이 그 설계 원본이다. 쓰기는 플랜 기능 게이트(`gc_r2_gate`·`gc_r3_gate`, 해당 작업이 만든다)가 막고, 화면·잡은 릴리스 때 켠다.
 
 | # | 미결 | 기본안 |
 |---|---|---|
@@ -301,7 +301,7 @@ R2·R3 표는 R1 마이그레이션에 함께 만든다(빈 표). 이유: 1인 �
 | `no_app` | `signup_app` 없이 가입 | 모놀리스는 처음부터 `entitled=true`, free | OAuth 첫 로그인 부트스트랩, 재로그인 3회 뒤 원장 행 수 같음 |
 | `suspended` | 가입 후 service_role로 `profiles.status=suspended` | 403 | 차단 화면 |
 | `ops` | 가입 후 service_role로 `platform_role=platform_admin` | 운영자 | `/admin/users`, `gc_admin_set_plan` 경로와 감사 행 |
-| `pro`(제품, 제안) | 가입 후 `gc_admin_set_plan(org, 'pro', 'dev seed')` + `grant_credits(350, 멱등 키 'dev:pro:<org>')` | plan `pro`, concurrency 2, market_slots 10, workflow_canvas·search true | 동시 생성 2건 보류 해제, 엑셀 내보내기, R2 게이트 통과 |
+| `pro`(제품, 제안) | 가입 후 `gc_admin_set_plan(org, 'pro', 'dev seed', ops.id)` + `grant_credits(350, 멱등 키 'dev:pro:<org>')` | plan `pro`, concurrency 2, market_slots 10, workflow_canvas·search true | 동시 생성 2건 보류 해제, 엑셀 내보내기, R2 게이트 통과 |
 
 시드 스크립트는 두 번 실행해도 크레딧을 두 번 주지 않는다(멱등 키 `signup:<org>:globalcommerce`, `dev:pro:<org>`). 기능 코드는 페르소나 이메일로 분기하지 않는다(권한은 `session_context`로만). `pending` 페르소나는 open 앱이라 만들지 않는다.
 

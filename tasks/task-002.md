@@ -73,3 +73,4 @@
 - 2026-10-25 [DECISION] DB 정본은 supabase/migrations. 아직 어디에도 적용 전이라 20261025000002를 제자리 수정. 재투입은 failed/rejected/canceled만, 게이트에서 슬롯 초과 GC003, gc_admin_set_plan에 p_actor_id + DB 역할 확인, 조직 금지어는 기본 FAIL 단어를 약화 불가, 게이트가 해지된 자격증명 · 만료 계정 거부. 전역 참조 표는 authenticated만(06장 기준 수정). GC008은 디스패처 보류(202) — 팀장
 - 2026-10-25 [REQUEST] GC-06-021 · 027 · 028: 금지어 매처가 상품명뿐 아니라 brand · attributes · tags · category_path(마켓 payload 전체)를 검사 — 팀장
 - 2026-10-25 [FOUND] 상품 hard delete 시 market_listings 이력 cascade 삭제, detail_pages verdict null 상태 전이(게이트가 막아 영향 낮음) → tasks/README 발견한 문제 — 팀장
+- 2026-10-25 [DONE] 리뷰 · 보안 반영 — 재투입 failed/rejected/canceled만(skipped_ids), 롤업 old·new 배치, 재시도 전환도 게이트 검사, 슬롯 초과 GC003, gc_admin_set_plan p_actor_id + platform_admin DB 확인, 기본 FAIL 약화 GC004, 해지 · 만료 자격증명 GC009, 상세-상품 불일치 42501, CI gen-types --check, 06 · 04 · 05 문서. check 5/5, smoke-r1 146/146 — 팀장

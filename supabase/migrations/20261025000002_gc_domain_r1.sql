@@ -34,6 +34,9 @@
 --   - 상태 전이는 gc_status_guard 가 gc_transition_allowed 표로 강제(GC001). service_role 쓰기에도 적용.
 --   - 플랜 한도는 트리거: 상품 수 GC002, 마켓 슬롯 GC003, 기능 GC007. 금지어 게이트 GC004/GC005. 배송 규칙 GC006.
 --     GC008(동시 실행)은 디스패처(gc_release_held_jobs), GC009(키 검증)는 게이트 + 워커, GC010(허용 도메인)은 Route Handler 가 낸다.
+-- 리뷰 · 보안 감사 반영(2026-10-25, 적용 전 파일 수정): 업로드 배치 재시도 범위 축소 + skipped_ids, 롤업 양쪽 배치 재집계,
+--   게이트에 슬롯 초과 GC003 · 자격증명 상태/만료 GC009 · 재시도 전환 검사, gc_admin_set_plan(p_actor_id) 관리자 재확인,
+--   banned_words_guard(기본 FAIL 단어 약화 금지 GC004), gc_assert_compliance 의 상세페이지-상품 일치(42501).
 -- 반복 실행해도 안전하다(if not exists, create or replace, drop ... if exists). `supabase db reset` 2회 연속 통과가 수용 기준.
 -- =====================================================================
 
@@ -686,6 +689,30 @@ create table if not exists public.banned_words (
 create unique index if not exists banned_words_global_uniq on public.banned_words (category, word) where org_id is null;
 create unique index if not exists banned_words_org_uniq on public.banned_words (org_id, category, word) where org_id is not null;
 
+-- 조직 사전은 기본 사전의 fail 단어를 약화(warn · 비활성)할 수 없다(GC004 — 기본 사전은 법규 기준이라 조직이 FAIL 을 풀 수 없다).
+-- 정규화: 소문자 + 공백 제거. 매처(packages/compliance)도 같은 정규화를 쓴다.
+create or replace function public.banned_words_guard()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_norm text := lower(regexp_replace(new.word, '\s+', '', 'g'));
+begin
+  if new.org_id is null then
+    return new;
+  end if;
+  if (new.severity <> 'fail' or not new.is_active) and exists (
+       select 1 from public.banned_words d
+       where d.org_id is null and d.is_active and d.severity = 'fail'
+         and lower(regexp_replace(d.word, '\s+', '', 'g')) = v_norm) then
+    raise exception 'banned_words: "%" is a default FAIL word and cannot be weakened by an org dictionary', new.word using errcode = 'GC004';
+  end if;
+  return new;
+end;
+$$;
+
 -- 상품명 이력(되돌리기용). 서버만 쓰고 고치지 않는다.
 create table if not exists public.title_revisions (
   id             bigint generated always as identity primary key,
@@ -851,7 +878,7 @@ create table if not exists public.upload_batches (
   sending_count   integer not null default 0,
   failed_count    integer not null default 0,
   waiting_count   integer not null default 0,
-  skipped_count   integer not null default 0,              -- 이미 등록돼 다시 보내지 않은 건
+  skipped_count   integer not null default 0,              -- 이미 등록됐거나 다른 배치가 진행 중이라 다시 보내지 않은 건
   done_count      integer generated always as (registered_count + failed_count) stored,
   idempotency_key text unique,
   workflow_run_id uuid,
@@ -933,6 +960,9 @@ begin
   end if;
   if p_detail_page_id is not null then
     select * into v_page from public.detail_pages d where d.id = p_detail_page_id and d.org_id = p_org_id;
+    if found and v_page.product_id <> p_product_id then
+      raise exception 'compliance: detail page % belongs to another product', p_detail_page_id using errcode = '42501';
+    end if;
   else
     select * into v_page from public.detail_pages d
     where d.product_id = p_product_id and d.org_id = p_org_id and d.status <> 'archived'
@@ -957,8 +987,12 @@ begin
 end;
 $$;
 
--- 업로드 게이트: 계정 유효(GC009), 플랜 마켓 API(GC007), 상품명·상세페이지 판정(GC004/GC005), 상세페이지 ready(GC001).
--- INSERT(배치 생성, 상세페이지 confirmed 이상)와 → sending 전환(워커 전송 직전, 상세페이지 ready)에서 검사한다.
+-- 업로드 게이트: 계정 유효(GC009), 슬롯 한도(GC003, 다운그레이드 뒤 초과 계정 전송 차단), 플랜 마켓 API(GC007),
+-- 상품명·상세페이지 판정(GC004/GC005), 상세페이지 상태(GC001).
+-- 검사 시점: INSERT(배치 생성, 상세페이지 confirmed 이상), 재시도 전환(failed/rejected/canceled → waiting, confirmed 이상),
+-- → sending 전환(워커 전송 직전, 상세페이지 ready). 그 밖의 UPDATE 는 통과.
+-- GC009 는 계정 상태(active 아님 · credential 없음 · expires_at 지남)와 자격증명 상태(encrypted_credentials.status active 아님 ·
+-- expires_at 지남)를 모두 덮는다(00장 5.5 "마켓 계정 키 검증 실패 또는 만료").
 create or replace function public.market_listings_gate()
 returns trigger
 language plpgsql
@@ -966,28 +1000,53 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_acc public.market_accounts;
+  v_acc    public.market_accounts;
+  v_cred   public.encrypted_credentials;
+  v_limit  integer;
+  v_count  integer;
+  v_min    text;
 begin
-  if tg_op = 'UPDATE' and not (new.status = 'sending' and old.status is distinct from 'sending') then
-    return new;
+  if tg_op = 'UPDATE' then
+    if new.status = 'sending' and old.status is distinct from 'sending' then
+      v_min := 'ready';
+    elsif new.status = 'waiting' and old.status in ('failed', 'rejected', 'canceled') then
+      v_min := 'confirmed';
+    else
+      return new;
+    end if;
+  else
+    v_min := 'confirmed';
   end if;
   select * into v_acc from public.market_accounts a where a.id = new.market_account_id;
   if not found or v_acc.org_id <> new.org_id or v_acc.market <> new.market then
     raise exception 'market_listings: market account mismatch' using errcode = '42501';
   end if;
-  if v_acc.status <> 'active' or v_acc.credential_id is null then
+  if v_acc.status <> 'active' or v_acc.credential_id is null
+     or (v_acc.expires_at is not null and v_acc.expires_at <= now()) then
     raise exception 'market_listings: market account key invalid or expired (%)', v_acc.status using errcode = 'GC009';
+  end if;
+  select * into v_cred from public.encrypted_credentials c where c.id = v_acc.credential_id;
+  if not found or v_cred.status <> 'active' or v_cred.org_id <> new.org_id
+     or (v_cred.expires_at is not null and v_cred.expires_at <= now()) then
+    raise exception 'market_listings: market account credential % (%)', coalesce(v_cred.status, 'missing'), v_acc.id using errcode = 'GC009';
+  end if;
+  -- 다운그레이드 뒤 슬롯 초과(계정은 자동 비활성화하지 않는다. 사용자가 계정을 줄이거나 추가 슬롯을 사야 전송된다)
+  v_limit := public.gc_market_slot_limit(new.org_id);
+  if v_limit >= 0 then
+    select count(*) into v_count from public.market_accounts a where a.org_id = new.org_id and a.status <> 'disabled';
+    if v_count > v_limit then
+      raise exception 'market_listings: market slot quota exceeded (%/%), disable accounts or buy slots', v_count, v_limit using errcode = 'GC003';
+    end if;
   end if;
   if not coalesce(public.gc_features(new.org_id) -> 'market_api' ? new.market, false) then
     raise exception 'market_listings: plan does not allow % api upload', new.market using errcode = 'GC007';
   end if;
-  perform public.gc_assert_compliance(new.org_id, new.product_id, new.detail_page_id,
-                                      case when new.status = 'sending' then 'ready' else 'confirmed' end);
+  perform public.gc_assert_compliance(new.org_id, new.product_id, new.detail_page_id, v_min);
   return new;
 end;
 $$;
 
--- 배치 카운터 다시 세기(AFTER 트리거, 서버 쓰기에서만 돈다).
+-- 배치 카운터 다시 세기(AFTER 트리거, 서버 쓰기에서만 돈다). batch_id 가 바뀌면 이전 배치와 새 배치를 모두 다시 센다.
 create or replace function public.market_listings_rollup()
 returns trigger
 language plpgsql
@@ -995,21 +1054,25 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_batch uuid := coalesce(new.batch_id, old.batch_id);
+  v_batch uuid;
 begin
-  if v_batch is null then
-    return null;
-  end if;
-  update public.upload_batches b set
-    registered_count = s.registered, sending_count = s.sending, failed_count = s.failed, waiting_count = s.waiting
-  from (
-    select count(*) filter (where l.status = 'registered')                 as registered,
-           count(*) filter (where l.status in ('sending', 'submitted'))    as sending,
-           count(*) filter (where l.status in ('failed', 'rejected'))      as failed,
-           count(*) filter (where l.status = 'waiting')                    as waiting
-    from public.market_listings l where l.batch_id = v_batch
-  ) s
-  where b.id = v_batch;
+  for v_batch in
+    select distinct b from unnest(array[
+      case when tg_op in ('INSERT', 'UPDATE') then new.batch_id end,
+      case when tg_op in ('UPDATE', 'DELETE') then old.batch_id end]) as b
+    where b is not null
+  loop
+    update public.upload_batches b set
+      registered_count = s.registered, sending_count = s.sending, failed_count = s.failed, waiting_count = s.waiting
+    from (
+      select count(*) filter (where l.status = 'registered')                 as registered,
+             count(*) filter (where l.status in ('sending', 'submitted'))    as sending,
+             count(*) filter (where l.status in ('failed', 'rejected'))      as failed,
+             count(*) filter (where l.status = 'waiting')                    as waiting
+      from public.market_listings l where l.batch_id = v_batch
+    ) s
+    where b.id = v_batch;
+  end loop;
   return null;
 end;
 $$;
@@ -1067,8 +1130,8 @@ create table if not exists public.workflow_runs (
   org_id              uuid not null references public.organizations(id) on delete cascade,
   kind                text not null default 'system' constraint workflow_runs_kind_check check (kind in ('system', 'workflow')),
   pipeline            text constraint workflow_runs_pipeline_check check (pipeline is null or pipeline ~ '^[a-z_]+(\.[a-z_]+)?$'),  -- sourcing.amazon, products.process, upload ...
-  workflow_id         uuid,                                -- R2 FK(아래 R2 절에서 추가)
-  workflow_version_id uuid,                                -- R2 FK
+  workflow_id         uuid,                                -- R2 FK 는 GC-06-037 마이그레이션이 건다(workflows 표와 함께)
+  workflow_version_id uuid,                                -- R2 FK (GC-06-037)
   name                text not null constraint workflow_runs_name_check check (char_length(btrim(name)) between 1 and 120),
   status              text not null default 'queued'
                       constraint workflow_runs_status_check check (status in ('scheduled', 'queued', 'running', 'succeeded', 'failed', 'canceled')),
@@ -1144,7 +1207,7 @@ create index if not exists workflow_run_steps_run_idx on public.workflow_run_ste
 -- =====================================================================
 -- R1-7. RPC (04_API.md 3절 계약). 모두 SECURITY DEFINER, search_path '', 함수별 EXECUTE.
 --   authenticated: gc_acknowledge_compliance_warning, gc_dashboard_summary
---   service_role : gc_apply_product_edits, gc_create_upload_batch, gc_release_held_jobs, gc_record_step_outcome, gc_admin_set_plan
+--   service_role : gc_apply_product_edits, gc_create_upload_batch, gc_release_held_jobs, gc_record_step_outcome, gc_admin_set_plan(p_actor_id = 플랫폼 관리자)
 -- =====================================================================
 
 -- WARN 확인(상품명 p_target_type = 'product', 상세페이지 'detail_page'). FAIL 은 확인으로 넘길 수 없다.
@@ -1272,8 +1335,10 @@ begin
 end;
 $$;
 
--- 업로드 배치 생성(S06 "선택한 N건 전송"). 멱등(request_id). 이미 registered 인 (상품, 계정)은 건너뛴다.
--- 행마다 market_listings_gate 가 GC009/GC007/GC004/GC005/GC001(상세페이지 confirmed 이상) 을 검사한다.
+-- 업로드 배치 생성(S06 "선택한 N건 전송"). 멱등(request_id).
+-- (상품, 계정) 행이 이미 있으면: failed/rejected/canceled 만 waiting 으로 되돌려 다시 보낸다(재시도도 게이트를 지난다).
+-- registered(이미 등록) · waiting/sending/submitted(다른 배치가 진행 중) 는 건너뛰고 skipped_ids 로 돌려준다.
+-- 행마다 market_listings_gate 가 GC009/GC003/GC007/GC004/GC005/GC001(상세페이지 confirmed 이상) 을 검사한다.
 create or replace function public.gc_create_upload_batch(p_org_id uuid, p_actor_id uuid, p_product_ids uuid[], p_account_ids uuid[], p_request_id text)
 returns jsonb
 language plpgsql
@@ -1290,6 +1355,7 @@ declare
   v_page_id  uuid;
   v_listing  public.market_listings;
   v_ids      uuid[] := '{}';
+  v_skip_ids uuid[] := '{}';
   v_skipped  integer := 0;
 begin
   if not public.is_service_caller() then
@@ -1305,7 +1371,7 @@ begin
     end if;
     return jsonb_build_object('batch_id', v_batch.id, 'run_id', v_batch.workflow_run_id, 'replayed', true,
       'listing_ids', coalesce((select jsonb_agg(l.id) from public.market_listings l where l.batch_id = v_batch.id), '[]'::jsonb),
-      'skipped_registered', v_batch.skipped_count);
+      'skipped_registered', v_batch.skipped_count, 'skipped_ids', '[]'::jsonb);
   end if;
 
   insert into public.workflow_runs (org_id, kind, pipeline, name, status, trigger_source, subject, created_by)
@@ -1326,14 +1392,16 @@ begin
         raise exception 'gc_create_upload_batch: market account not in org' using errcode = '42501';
       end if;
       select * into v_listing from public.market_listings l where l.product_id = v_pid and l.market_account_id = v_acc.id for update;
-      if found and v_listing.status = 'registered' then
+      if found and v_listing.status not in ('failed', 'rejected', 'canceled') then
+        -- registered(이미 등록) 또는 waiting/sending/submitted(진행 중): 다시 큐에 넣지 않는다
         v_skipped := v_skipped + 1;
+        v_skip_ids := v_skip_ids || v_listing.id;
         continue;
       elsif found then
+        -- 재시도: status 전환이 market_listings_gate(GC009/GC003/GC007/GC004/GC005/GC001) 와 gc_status_guard 를 다시 지난다
         update public.market_listings set
           batch_id = v_batch.id, detail_page_id = coalesce(v_page_id, detail_page_id),
-          status = case when status in ('failed', 'rejected', 'canceled') then 'waiting' else status end,
-          error_code = null, error_message = null
+          status = 'waiting', error_code = null, error_message = null
         where id = v_listing.id;
         v_ids := v_ids || v_listing.id;
       else
@@ -1348,7 +1416,8 @@ begin
   update public.upload_batches set total_count = cardinality(v_ids), skipped_count = v_skipped where id = v_batch.id;
   update public.workflow_runs set progress_summary = jsonb_build_object('done', 0, 'total', cardinality(v_ids), 'unit', '건')
   where id = v_run_id;
-  return jsonb_build_object('batch_id', v_batch.id, 'run_id', v_run_id, 'listing_ids', to_jsonb(v_ids), 'skipped_registered', v_skipped);
+  return jsonb_build_object('batch_id', v_batch.id, 'run_id', v_run_id, 'listing_ids', to_jsonb(v_ids),
+                            'skipped_registered', v_skipped, 'skipped_ids', to_jsonb(v_skip_ids));
 end;
 $$;
 
@@ -1502,8 +1571,11 @@ begin
 end;
 $$;
 
--- 슈퍼 어드민 플랜 조정(S15). 호출 전 Route Handler 가 is_platform_admin 을 확인한다. 결제 없이 엔타이틀먼트만 바꾼다.
-create or replace function public.gc_admin_set_plan(p_org_id uuid, p_plan_code text, p_reason text)
+-- 슈퍼 어드민 플랜 조정(S15). Route Handler(service_role)가 세션 사용자 id 를 p_actor_id 로 넘기고, DB 가 그 사용자의
+-- profiles.platform_role = 'platform_admin' · status = 'active' 를 다시 확인한다(42501). 결제 없이 엔타이틀먼트만 바꾼다.
+-- 감사 행의 actor 는 p_actor_id (write_audit 의 auth.uid() 는 service_role 세션에서 null 이라 metadata 에도 넣는다).
+drop function if exists public.gc_admin_set_plan(uuid, text, text);
+create or replace function public.gc_admin_set_plan(p_org_id uuid, p_plan_code text, p_reason text, p_actor_id uuid)
 returns void
 language plpgsql
 security definer
@@ -1515,6 +1587,11 @@ declare
 begin
   if not public.is_service_caller() then
     raise exception 'gc_admin_set_plan: service_role only' using errcode = '42501';
+  end if;
+  if p_actor_id is null or not exists (
+       select 1 from public.profiles pr
+       where pr.id = p_actor_id and pr.platform_role = 'platform_admin' and pr.status = 'active') then
+    raise exception 'gc_admin_set_plan: actor is not an active platform admin' using errcode = '42501';
   end if;
   if char_length(coalesce(btrim(p_reason), '')) < 5 then
     raise exception 'gc_admin_set_plan: reason required' using errcode = '22023';
@@ -1532,7 +1609,7 @@ begin
   where org_id = p_org_id and app_id = 'globalcommerce';
   perform public.write_audit(p_org_id, 'admin.plan_change', 'organization', p_org_id::text,
                              jsonb_build_object('plan', v_old), jsonb_build_object('plan', p_plan_code),
-                             jsonb_build_object('reason', left(p_reason, 200)));
+                             jsonb_build_object('reason', left(p_reason, 200), 'actor_id', p_actor_id));
 end;
 $$;
 
@@ -1589,6 +1666,8 @@ drop trigger if exists market_listings_rollup on public.market_listings;
 create trigger market_listings_rollup after insert or update of status, batch_id or delete on public.market_listings for each row execute function public.market_listings_rollup();
 drop trigger if exists export_files_gate on public.export_files;
 create trigger export_files_gate before insert on public.export_files for each row execute function public.export_files_gate();
+drop trigger if exists banned_words_guard on public.banned_words;
+create trigger banned_words_guard before insert or update of word, severity, is_active, org_id on public.banned_words for each row execute function public.banned_words_guard();
 drop trigger if exists title_revisions_immutable on public.title_revisions;
 create trigger title_revisions_immutable before update on public.title_revisions for each row execute function public.gc_immutable_row();
 
@@ -1772,10 +1851,10 @@ begin
     'public.gc_market_slot_limit(uuid)', 'public.market_accounts_enforce()', 'public.shipping_templates_validate()',
     'public.products_enforce_quota()', 'public.products_guard()', 'public.detail_pages_guard()',
     'public.gc_assert_compliance(uuid,uuid,uuid,text)', 'public.market_listings_gate()', 'public.market_listings_rollup()',
-    'public.export_files_gate()', 'public.gc_acknowledge_compliance_warning(text,uuid,text)',
+    'public.export_files_gate()', 'public.banned_words_guard()', 'public.gc_acknowledge_compliance_warning(text,uuid,text)',
     'public.gc_apply_product_edits(uuid,uuid,jsonb)', 'public.gc_create_upload_batch(uuid,uuid,uuid[],uuid[],text)',
     'public.gc_release_held_jobs(integer)', 'public.gc_record_step_outcome(uuid,text,text)',
-    'public.gc_dashboard_summary(uuid)', 'public.gc_admin_set_plan(uuid,text,text)',
+    'public.gc_dashboard_summary(uuid)', 'public.gc_admin_set_plan(uuid,text,text,uuid)',
     'public.gc_immutable_row()'] loop
     if to_regprocedure(s) is not null then
       execute format('revoke all on function %s from public, anon, authenticated', s);

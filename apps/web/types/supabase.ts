@@ -3220,6 +3220,7 @@ export type Database = {
           p_org_id: string
           p_plan_code: string
           p_reason: string
+          p_actor_id: string
         }
         Returns: undefined
       }
