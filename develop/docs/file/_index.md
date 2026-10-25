@@ -37,12 +37,12 @@
 | DOC-IMP-004 | 에이전트 정의와 팀장 모델 | 04 구현 | 원문 확인 | 초안 | 1.0 | .claude/agents/, .claude/settings.json | DOC-MGT-005 |
 | DOC-IMP-005 | 작업 명령(agent-check, check, next-task, sync-design) | 04 구현 | 원문 확인 | 초안 | 1.0 | .claude/commands/ | DOC-MGT-005 |
 | DOC-IMP-006 | 분야 스킬(nextjs-expert, supabase-expert, worker-expert) | 04 구현 | 원문 확인 | 초안 | 1.0 | .claude/skills/ | DOC-IMP-001 |
-| DOC-IMP-007 | DB 마이그레이션(실행본) | 04 구현 | 미확인 | 예정 | - | supabase/migrations/, supabase/seed.sql | DOC-DES-005 |
+| DOC-IMP-007 | DB 마이그레이션(실행본, **DB 정본**) | 04 구현 | 원문 확인 | 초안 | 1.0 | supabase/migrations/, supabase/seed.sql, supabase/config.toml, scripts/db/gen-types.mjs | DOC-DES-005 |
 
 <!-- 상태: 예정 | 초안 | 검토 | 승인 | 폐기 | 참고.  출처 상태: 원문 확인 | 공개 요약 | 미확인 -->
 
 - "예정"은 아직 파일이 없고 작업이 만들 산출물입니다. DOC-DSN-004는 GC-06-004, DOC-IMP-007은 GC-06-002가 만들고, 만든 커밋에서 상태를 "초안"으로 바꿉니다.
-- DOC-DES-005와 DOC-IMP-007의 관계(제안): 002가 복사한 뒤 `products/supabase/monolith/`는 기획 시점 스냅샷으로 고정하고, 이후 DB 정본은 DOC-IMP-007 + DOC-DES-004입니다.
+- DOC-DES-005와 DOC-IMP-007의 관계(확정, GC-06-002 2026-10-25): 002가 복사한 뒤 `products/supabase/monolith/`는 기획 시점 스냅샷으로 고정하고, DB 정본은 `supabase/migrations/`(DOC-IMP-007) + DOC-DES-004입니다. 이후 스키마 변경은 새 마이그레이션 파일 + 05장 갱신으로 합니다.
 - DOC-DSN-001은 00장 7절 "디자인 캔버스에서 고칠 곳"이 반영되기 전입니다. 구현할 때는 캔버스 수치보다 00장 GC-D-04가 우선합니다.
 
 ## 참고 산출물(입력 자료, 고치지 않음)

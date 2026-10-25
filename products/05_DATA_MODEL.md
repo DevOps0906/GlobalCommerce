@@ -278,6 +278,8 @@ R2·R3 표는 R1 마이그레이션에 함께 만든다(빈 표). 이유: 1인 �
 | `0002_globalcommerce_domain.sql` | 절: R1-0 헬퍼, R1-1 설정, R1-2 전역 캐시, R1-3 소싱·상품, R1-4 상세페이지, R1-5 업로드, R1-6 실행, R1-7 RPC, R2, R3, 트리거 연결, RLS·GRANT, EXECUTE, Realtime(`source_imports`, `import_rows`, `products`, `product_images`, `detail_pages`, `upload_batches`, `market_listings`, `export_files`, `workflow_runs`, `workflow_run_steps`, `videos`, `sns_posts`) |
 | `seed.sql` | upsert라 반복 적용 가능 |
 
+실행본(GC-06-002, 2026-10-25): `supabase/migrations/20261025000001_core_lite.sql`(0001과 diff 0) · `20261025000002_gc_domain_r1.sql`(0002의 R1 절만. R2 표 `workflows`·`workflow_versions`·`publish_targets`·`posts`·`videos`·`sns_accounts`·`sns_posts`와 R3 `product_embeddings`·`jsonld_snapshots`, `gc_r2_gate`·`gc_r3_gate`·`gc_hybrid_search`는 037/039/040/042/045/046 마이그레이션에서 만든다. `gc_transition_allowed`의 R2 행은 남겨 둔다) · `supabase/seed.sql`. 전역 캐시 3표의 select 정책은 `using (true)` 대신 `using (auth.uid() is not null)`(0002 스냅샷도 같이 고침). 타입은 `apps/web/types/supabase.ts`(`pnpm db:types`).
+
 검증(2026-10-25, platform-docs `_tools-sqlcheck` PGlite, `--vector`):
 
 | 검사 | 결과 |

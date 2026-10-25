@@ -1973,11 +1973,12 @@ begin
                    'using (public.is_org_member(org_id) and public.has_entitlement(org_id, ''globalcommerce''))', t);
   end loop;
 
-  -- 전역 캐시: 로그인 사용자 공용 읽기(조직 무관). 쓰기는 크론(service_role)만
+  -- 전역 캐시: 로그인 사용자 공용 읽기(조직 무관). 쓰기는 크론(service_role)만.
+  --   using (true) 리터럴은 쓰지 않는다(supabase-expert 규칙). authenticated 역할에서 auth.uid() is not null 과 같은 뜻.
   foreach t in array array['fx_rates', 'trend_keywords', 'season_picks'] loop
     execute format('grant select on table public.%I to authenticated', t);
     execute format('drop policy if exists %1$s_select on public.%1$s', t);
-    execute format('create policy %1$s_select on public.%1$s for select to authenticated using (true)', t);
+    execute format('create policy %1$s_select on public.%1$s for select to authenticated using (auth.uid() is not null)', t);
   end loop;
 end $$;
 

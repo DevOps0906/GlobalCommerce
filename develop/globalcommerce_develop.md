@@ -196,10 +196,10 @@ GC-06-002가 이 절차를 처음 수행하고, 그 뒤 모든 개발자가 같�
 | 순서 | 명령 | 설명 |
 |---|---|---|
 | 1 | `supabase init` | 저장소 루트에 `supabase/config.toml`이 없을 때만(002가 1회) |
-| 2 | `products/supabase/monolith/0001_core_lite.sql` → `supabase/migrations/20261025000001_core_lite.sql`, `0002_globalcommerce_domain.sql` → `20261025000002_globalcommerce_domain.sql`, `seed.sql` → `supabase/seed.sql` 복사 | 002가 1회. 타임스탬프 이름은 제안 |
+| 2 | `products/supabase/monolith/0001_core_lite.sql` → `supabase/migrations/20261025000001_core_lite.sql`(diff 0), `0002_globalcommerce_domain.sql`의 R1 절 → `20261025000002_gc_domain_r1.sql`, `seed.sql` → `supabase/seed.sql` | 002가 수행함(2026-10-25). R2·R3 표는 037/039/040/042/045/046이 새 파일로 만든다 |
 | 3 | `supabase start` | Docker Desktop에서 로컬 Supabase 기동(`http://127.0.0.1:54321`). 평소에는 2.3절 `pnpm dev:docker`가 3~7번을 함께 한다 |
 | 4 | `supabase db reset` | 마이그레이션을 이름순으로 적용하고 `seed.sql`(플랜 4종, 크레딧팩, 기본 금지어 사전, `apps` 행 등)을 넣음 |
-| 5 | `supabase gen types typescript --local > packages/domain/src/database.ts` | 타입 생성(경로 제안, 02장에 지정이 없음). 스키마를 바꾼 task는 반드시 다시 생성 |
+| 5 | `supabase gen types typescript --local > apps/web/types/supabase.ts` (Docker 없으면 `pnpm db:types` = `scripts/db/gen-types.mjs`, PGlite 기반 동일 모양) | 타입 생성(06장 002 소유 경로). 스키마를 바꾼 task는 반드시 다시 생성 |
 | 6 | `supabase test db` | RLS 회귀(003 이후) |
 | 7 | `node scripts/dev/seed-users.mjs --app globalcommerce` | 개발용 로그인 페르소나 시드. 006이 만들기 전에는 건너뜀(14.2절) |
 

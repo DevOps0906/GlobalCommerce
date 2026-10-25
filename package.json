@@ -14,9 +14,11 @@
     "lint": "pnpm -r --if-present lint && eslint eslint.config.mjs scripts",
     "test": "pnpm -r --if-present test",
     "dev:docker": "node scripts/dev/docker.mjs up",
-    "dev:docker:down": "node scripts/dev/docker.mjs down"
+    "dev:docker:down": "node scripts/dev/docker.mjs down",
+    "db:types": "node scripts/db/gen-types.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.3.15",
     "@eslint/js": "9.39.5",
     "eslint": "9.39.5",
     "globals": "17.13.0",
