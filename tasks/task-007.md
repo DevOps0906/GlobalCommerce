@@ -10,7 +10,7 @@
 - **실제 배치 (팀장)**: 구현 `worker-expert` / 호출 모델 opus / 하위 지시 없음
 - **검증**: 착수 전 `plan-challenger`(잡 큐 계획 공격) · 변경 후 review-expert + `security-auditor`, `test-writer`
 - **확인 위치**: Docker Desktop(GC-D-26)에서 최종 기동 확인; 클라우드 작업 환경은 이미지 저장소 차단으로 PGlite·문법 검사까지
-- **상태**: 대기
+- **상태**: 진행
 
 ## 목표
 
@@ -65,3 +65,5 @@
 
 ## 로그
 
+- 2026-10-25 [PLAN] 005 완료 · 002의 jobs/workflow 부분 확정으로 착수. 먼저 계획서만 작성 → plan-challenger 공격 → 구현 — 팀장
+- 2026-10-25 [DELEGATE] 계획 worker-expert(opus) — 팀장

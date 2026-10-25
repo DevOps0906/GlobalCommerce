@@ -10,7 +10,7 @@
 - **실제 배치 (팀장)**: 구현 `worker-expert` / 호출 모델 opus / 하위 지시 없음
 - **검증**: 착수 전 없음 · 변경 후 review-expert + `contract-reviewer`, `test-writer`
 - **확인 위치**: Docker Desktop(GC-D-26)에서 최종 기동 확인; 클라우드 작업 환경은 이미지 저장소 차단으로 PGlite·문법 검사까지
-- **상태**: 진행
+- **상태**: 완료
 
 ## 목표
 
@@ -73,3 +73,4 @@
 - 2026-10-25 [DELEGATE] 리뷰 지적 반영 worker-expert(opus) — 팀장
 - 2026-10-25 [DONE] 리뷰 반영 — -1 무제한, 기본값은 SQL 집행값과 키별 동일(테스트가 R1 SQL을 읽어 대조), 모르는 enum 걸러냄, 모든 단계 nodeType, 단가 테스트가 01장 4.2를 직접 읽음, 호출처 없는 헬퍼 삭제. 테스트 210건 — 팀장
 - 2026-10-25 [DECISION] review-expert가 지목한 단가 키 일부(AI 다시 쓰기 · 다듬기 · 업로드/내보내기)는 01장 4.2에 실제 있는 행이라 유지하고 01장 행과 1:1로 맞춤 — 팀장
+- 2026-10-25 [DONE] 완료 — 커밋 261e0e0 · 1722d64, review-expert 통과 · contract-reviewer 지적 반영 — 팀장
