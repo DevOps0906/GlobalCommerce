@@ -116,7 +116,7 @@ GC-D-10의 18슬롯 이미지형 상세페이지는 R2 결정이 나면 `detail_
 
 | 테이블 | 컬럼 요약 | 제약 | 화면 |
 |---|---|---|---|
-| `workflow_runs` | kind(system/workflow), pipeline(`sourcing.amazon`, `products.process`, `upload` 등 점 표기), workflow_id·workflow_version_id(R2 FK), name, status, trigger_source, steps_total/done("4 / 7 노드"), current_step_label("상세페이지 조립 중"), progress_summary(`{done,total,unit}` "24 / 24건"), subject, parent_run_id, resume_from_step, error_message, cancel_requested_at, credit_ledger_id, scheduled_at("예약 11:30"), started/finished_at, duration_ms(생성 열) | system ⇔ pipeline 있고 workflow 없음, steps_done ≤ steps_total, scheduled면 scheduled_at 필수 | S11 목록·상세, S01 최근 실행 |
+| `workflow_runs` | kind(system/workflow), pipeline(`sourcing.amazon`, `process`, `upload` 등 점 표기), workflow_id·workflow_version_id(R2 FK), name, status, trigger_source, steps_total/done("4 / 7 노드"), current_step_label("상세페이지 조립 중"), progress_summary(`{done,total,unit}` "24 / 24건"), subject, parent_run_id, resume_from_step, error_message, cancel_requested_at, credit_ledger_id, scheduled_at("예약 11:30"), started/finished_at, duration_ms(생성 열) | system ⇔ pipeline 있고 workflow 없음, steps_done ≤ steps_total, scheduled면 scheduled_at 필수 | S11 목록·상세, S01 최근 실행 |
 | `workflow_run_steps` | position, node_key, node_type(잡 타입), label("음원 합성"), status, summary("장면 21개"), attempts, max_attempts, error_code, error_message(해결 문구), log_tail(≤64KB "원문 로그"), log_path(전체 로그 Storage), output, job_id, started/finished_at, duration_ms | unique(run, position), unique(run, node_key) | S11 노드별 로그, "음원 합성부터 다시 실행" |
 
 R1은 `kind='system'`만 쓴다. 두 표는 R1에 만들고 R2 캔버스가 같은 표에 `kind='workflow'` 행을 더한다.

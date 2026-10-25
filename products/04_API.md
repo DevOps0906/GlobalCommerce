@@ -43,14 +43,16 @@
 
 ### 2.2 이미지·상세페이지 (R1)
 
+크레딧 열 값은 01장 4.2절이 정본이다.
+
 | 메서드 경로 | 화면 | 역할/플랜 | 입력(zod 요약) | 출력 | 크레딧 | RPC·잡 | 오류 |
 |---|---|---|---|---|---|---|---|
 | `POST /api/products/[id]/images/cutout` | S04 "누끼" | member+ | `{ request_id, source_image_id }` | `{ run_id, job_id }` | 1 | `enqueue_job(image.cutout)` 보류 가능 | 202 `GC008`, 402 |
 | `POST /api/products/[id]/images/compose` | S04 "합성 이미지 생성", "다시 만들기" | member+ | `{ request_id, cutout_image_id, background_prompt(1..300), product_ratio?(0.5..0.85, 기본 0.7), overlay_text?(≤20) }` | `{ run_id, job_id }` | 2 | `enqueue_job(image.compose)` | 202 `GC008`, 402, 422 금지어 FAIL 문구 |
 | `POST /api/products/[id]/images/upload-url` | S04 추가 이미지 "추가" | member+ | `{ filename, bytes(≤10MB), mime: jpeg/png/webp }` | `{ image_id, signed_upload_url }` | 0 | `product_images`(kind `extra`) | 413 |
-| `POST /api/products/[id]/images/confirm` | S04 "이미지 확정" | member+ | `{ main_image_id, extra_image_ids[≤9] }` | product | 0 | 상태 `images_confirmed` | 409 `GC001` |
+| `POST /api/products/[id]/images/confirm` | S04 "이미지 확정" | member+ | `{ main_image_id, extra_image_ids[≤9] }` | product | 0 | `images_confirmed_at` 기록 + `product_activities` kind `images_confirmed` | 409 `GC001` |
 | `DELETE /api/products/[id]/images/[imageId]` | S04 | member+ | - | 204 | 0 | - | 409 확정된 대표 이미지 |
-| `POST /api/detail-pages` | S05 진입 시 생성 | member+ | `{ request_id, product_id }` | `{ detail_page_id, run_id }`(이미 있으면 기존 행, 차감 0) | 3 | `enqueue_job(detail.assemble)` | 202 `GC008`, 402, 409 이미지 미확정 |
+| `POST /api/detail-pages` | S05 진입 시 생성 | member+ | `{ request_id, product_id }` | `{ detail_page_id, run_id }`(이미 있으면 기존 행, 차감 0) | 2 | `enqueue_job(detail.assemble)` | 202 `GC008`, 402, 409 이미지 미확정 |
 | `PATCH /api/detail-pages/[id]` | S05 자동 저장 | member+ | `{ expected_version, blocks: { hook, features[3], specs[], shipping } }`(문자열 sanitize) | `{ version, verdict, issues }` | 0 | 규칙 판정만(LLM 재판정 없음) | 409 `VERSION_CONFLICT`, 409 `GC001`(확정 후) |
 | `POST /api/detail-pages/[id]/blocks/[block]/rewrite` | S05 "AI로 다시 쓰기" | member+ | `{ request_id, instruction?(≤200) }`, `block: hook\|features\|specs` | `{ text, issues }`(저장 안 함, 에디터가 실행 취소 스택에 넣음) | 1 | 동기 `packages/ai` `detail.copy`, 실패 시 `refund_credits` | 402, 503 `AI_UNAVAILABLE`(환불됨) |
 | `POST /api/detail-pages/[id]/acknowledge` | S05 WARN 확인 | member+ | `{ note?(≤200) }` | page | 0 | `gc_acknowledge_compliance_warning` | 409 확인할 WARN 없음 |
@@ -105,12 +107,12 @@
 | `POST /api/workflows/[id]/versions` | S10 저장, "버전 기록" | member+ | `{ base_version, graph: { nodes[≤50], edges[≤100] } }` | `{ version }` | 0 | 02장 4.5절 저장 검증 | 422 `GRAPH_INVALID`(노드 id 목록), 409 `VERSION_CONFLICT` |
 | `POST /api/workflows/[id]/versions/[v]/restore` | S10 버전 기록 | member+ | - | `{ version }`(새 버전으로 복사) | 0 | - | 404 |
 | `POST /api/workflows/[id]/run` | S10 "실행" | member+ | `{ request_id, version?, inputs?: { urls?, import_id?, product_ids? } }` | `{ run_id }` | 노드 실행 시 항목별 차감(02장 4.5절) | `workflow_runs`(kind `workflow`) → `enqueue_job(workflow.step)` | 402(잔액 0), 403 `GC007` |
-| `POST /api/posts/generate` | S07 "상품에서 원고 만들기" | member+ | `{ request_id, product_id, detail_page_id? }` | `{ post_id, run_id }` | 3 | `enqueue_job(blog.generate)` | 202 `GC008`, 402 |
+| `POST /api/posts/generate` | S07 "상품에서 원고 만들기" | member+ | `{ request_id, product_id, detail_page_id? }` | `{ post_id, run_id }` | 2 | `enqueue_job(blog.generate)` | 202 `GC008`, 402 |
 | `PATCH /api/posts/[id]` | S07 편집 | member+ | `{ expected_version, title, body_md(≤20000), slug? }` | `{ version, verdict }` | 0 | 규칙 판정 | 409 `VERSION_CONFLICT` |
 | `POST /api/posts/[id]/polish` | S07 "AI로 다듬기" | member+ | `{ request_id, selection?(≤2000) }` | `{ text }`(저장 안 함) | 1 | 동기 `blog.polish` | 402, 503 |
 | `POST /api/posts/[id]/publish` | S07 "지금 발행", "예약" | member+ | `{ request_id, targets: [{ type: 'self'\|'wordpress', publish_target_id? }], scheduled_at? }` | `{ run_id }` | 0 | `enqueue_job(blog.publish, run_after=scheduled_at)` | 422 `GC004`, 422 `GC005` |
 | `POST /api/publish-targets` / `DELETE /api/publish-targets/[id]` | S07 발행처 | owner/admin | `{ kind: 'wordpress', site_url(https), username, app_password }` | 대상(마스킹) | 0 | `packages/net` 검사 → 검증 호출 → `encrypted_credentials` | 400 `GC010`(사설 IP 등), 422 인증 실패 |
-| `POST /api/videos` | S08 "렌더링 시작" | member+ / 월 숏폼 한도 | `{ request_id, product_id, seconds: 15\|30\|50, motion: 'zoom_in'\|'pan'\|'split', audio: { mode: 'mine'\|'stock'\|'random', track_id?, loop }, voice: string }` | `{ video_id, run_id }` | 5/8/12 | `enqueue_job(shorts.render)` 보류 가능 | 403 `GC007`(월 편수 초과), 202 `GC008`, 402 |
+| `POST /api/videos` | S08 "렌더링 시작" | member+ / 월 숏폼 한도 | `{ request_id, product_id, seconds: 15\|30\|50, motion: 'zoom_in'\|'pan'\|'split', audio: { mode: 'mine'\|'stock'\|'random', track_id?, loop }, voice: string }` | `{ video_id, run_id }` | 2/3/4 | `enqueue_job(shorts.render)` 보류 가능 | 403 `GC007`(월 편수 초과), 202 `GC008`, 402 |
 | `POST /api/videos/[id]/rerender` | S08 "설정 고치고 다시 렌더" | member+ | 위와 같은 필드 일부 + `request_id` | `{ video_id, run_id }` | 위와 같음 | 새 잡, 이전 결과 보존 | 409 렌더 중 |
 | `POST /api/videos/[id]/cancel` | S08 렌더 대기열 | member+ | - | video | 대기 시 환불 | `cancel_job` | 409 |
 | `POST /api/sns/accounts/connect` | S09 연결된 채널 | owner/admin / `features.sns` | `{ provider: 'youtube'\|'instagram' }` | `{ authorize_url }` | 0 | `create_oauth_state` | 403 `GC007` |

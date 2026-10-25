@@ -140,11 +140,11 @@ R1의 사용자 행동마다 `workflow_runs`(kind `system`) 1행과 단계별 `w
 
 | 파이프라인 키 | 시작 행동 | 단계(잡 타입) | 화면 표시 예 |
 |---|---|---|---|
-| `import_amazon` | 소싱 "N건 수집 시작" | ASIN 추출 → 상품 데이터 조회(`import.amazon`) → 상품 저장 | 아마존 URL 수집 · 3 / 3건 |
-| `import_excel` | 엑셀 파일 확인 후 저장 | 파싱·열 매핑 → 행 검증 → 상품 저장(`import.excel`) | 오너클랜 엑셀 수집 · 312 / 312행 |
-| `process_products` | 상품 관리 "선택 상품 가공" | 상품명(`title.generate`) → 누끼(`image.cutout`) → 합성(`image.compose`) → 상세 조립(`detail.assemble`) | 선택 상품 가공 · 상품 4개 |
-| `confirm_detail` | 상세페이지 확정 | 금지어 판정 → 마켓 규격 변환(`detail.render_market`) | 상세페이지 확정 · 쿠팡·스마트스토어 |
-| `upload_batch` | 업로드 "선택한 N건 전송" | 사전 검증 → 계정별 전송(`upload.coupang`, `upload.smartstore`) → 상태 확인(`upload.poll_status`) | 쿠팡 2호점 일괄 업로드 · 24 / 24건 |
+| `sourcing.amazon` | 소싱 "N건 수집 시작" | ASIN 추출 → 상품 데이터 조회(`import.amazon`) → 상품 저장 | 아마존 URL 수집 · 3 / 3건 |
+| `sourcing.excel` | 엑셀 파일 확인 후 저장 | 파싱·열 매핑 → 행 검증 → 상품 저장(`import.excel`) | 오너클랜 엑셀 수집 · 312 / 312행 |
+| `process` | 상품 관리 "선택 상품 가공" | 상품명(`title.generate`) → 누끼(`image.cutout`) → 합성(`image.compose`) → 상세 조립(`detail.assemble`) | 선택 상품 가공 · 상품 4개 |
+| `detail` | 상세페이지 확정 | 금지어 판정 → 마켓 규격 변환(`detail.render_market`) | 상세페이지 확정 · 쿠팡·스마트스토어 |
+| `upload` | 업로드 "선택한 N건 전송" | 사전 검증 → 계정별 전송(`upload.coupang`, `upload.smartstore`) → 상태 확인(`upload.poll_status`) | 쿠팡 2호점 일괄 업로드 · 24 / 24건 |
 | `export` | 엑셀·ZIP 내보내기 | 파일 생성(`export.excel`, `export.zip`) → 서명 URL | 엑셀 내보내기 · 상품 30개 |
 
 ### 3.9 입력 자료끼리 다른 곳 정리

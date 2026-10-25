@@ -87,7 +87,7 @@ nomad-commerce와 크게 다른 점은 아래 표의 네 가지다. 나머지(�
 
 ### 4.2 잡 표
 
-크레딧 값은 제안이며 정본은 01장 4절(요금·크레딧)이다. 둘이 다르면 01장 값을 `packages/domain` `CREDIT_COST`에 넣는다.
+크레딧 값은 제안이며 정본은 01장 4.2절(크레딧 단가)이다. 둘이 다르면 01장 값을 `packages/domain` `CREDIT_COST`에 넣는다.
 
 | `job_type` | 큐 | 런타임 | 크레딧 선차감 | 재시도 | 환불 조건 |
 |---|---|---|---|---|---|
@@ -96,16 +96,16 @@ nomad-commerce와 크게 다른 점은 아래 표의 네 가지다. 나머지(�
 | `title.generate` | `gc.ai` | TS 워커 + `packages/ai` | 상품 1개당 1(제안) | 3회(제공자 5xx·429·타임아웃만) | 최종 실패·대기 중 취소 시 자동 환불 |
 | `image.cutout` | `gc.ai` | TS 워커 + fal birefnet | 1(제안) | 3회 | 같음 |
 | `image.compose` | `gc.ai` | TS 워커 + 이미지 어댑터(O-04) + Sharp | 2(제안, "다시 만들기"도 2) | 2회 | 같음. 안전 필터 거절은 재시도 없이 실패·환불 |
-| `detail.assemble` | `gc.detail` | TS 워커 + `packages/ai`(블록 1~3 카피, 판정) | 3(제안) | 3회 | 같음. verdict `fail`은 오류가 아니다(상세페이지는 `draft`, 확정·업로드가 GC004로 막힘) |
+| `detail.assemble` | `gc.detail` | TS 워커 + `packages/ai`(블록 1~3 카피, 판정) | 2(제안) | 3회 | 같음. verdict `fail`은 오류가 아니다(상세페이지는 `draft`, 확정·업로드가 GC004로 막힘) |
 | `detail.render_market` | `gc.detail` | TS 워커(Puppeteer HTML → Sharp 분할) | 0 | 2회 | - |
 | `upload.coupang` / `upload.smartstore` | `gc.upload` | TS 워커 + `packages/markets` | 0 | 3회(5xx·429·네트워크만), 4xx는 즉시 실패(사유 한 줄) | - |
 | `upload.poll_status` | `gc.upload` | TS 워커(크론 10분) | 0 | - | - |
 | `export.excel` / `export.zip` | `gc.export` | TS 워커 | 0 | 2회 | - |
 | `fx.fetch` / `trend.fetch` / `export.expire` | `gc.cron` | TS 워커 크론 | 0 | 2회 / 2회 / 1회 | - |
 | `workflow.step`(R2) | `gc.workflow` | TS 워커(노드 실행기) | 노드가 부르는 기능 단가를 항목마다 워커가 차감 | 노드 설정 `retry`(기본 2, 최대 5) | 항목 실패분만 그 항목 원장으로 환불 |
-| `blog.generate`(R2) | `gc.content` | TS 워커 + `packages/ai` | 3(제안) | 3회 | 자동 환불 |
+| `blog.generate`(R2) | `gc.content` | TS 워커 + `packages/ai` | 2(제안) | 3회 | 자동 환불 |
 | `blog.publish`(R2) | `gc.content` | TS 워커(자체 블로그 / WordPress REST) | 0 | 3회(5xx·429) | - |
-| `shorts.render`(R2) | `gc.content`(미디어 워커만 claim) | TS 워커 + FFmpeg + TTS 어댑터 | 15/30/50초 = 5/8/12(제안, O-05). 월 편수 한도 별도(GC-D-04) | 2회(단계 단위 재개) | 최종 실패·대기 중 취소 시 자동 환불. TTS 제공자는 작업 도중 바꾸지 않는다 |
+| `shorts.render`(R2) | `gc.content`(미디어 워커만 claim) | TS 워커 + FFmpeg + TTS 어댑터 | 15/30/50초 = 2/3/4(제안, O-05). 월 편수 한도 별도(GC-D-04) | 2회(단계 단위 재개) | 최종 실패·대기 중 취소 시 자동 환불. TTS 제공자는 작업 도중 바꾸지 않는다 |
 | `sns.upload`(R2) | `gc.content` | TS 워커(YouTube Data API v3, Instagram Graph API) | 0 | 3회(5xx·429) | - |
 | `sns.link_insert`(R2) | `gc.content` | TS 워커 | 0 | 3회 | - |
 | `embed.product`(R3) | `gc.search` | TS 워커 + OpenAI 임베딩 | 0(제안: 운영사 부담, 비용 작음) | 3회 | - |
