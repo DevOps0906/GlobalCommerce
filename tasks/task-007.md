@@ -67,3 +67,8 @@
 
 - 2026-10-25 [PLAN] 005 완료 · 002의 jobs/workflow 부분 확정으로 착수. 먼저 계획서만 작성 → plan-challenger 공격 → 구현 — 팀장
 - 2026-10-25 [DELEGATE] 계획 worker-expert(opus) — 팀장
+- 2026-10-25 [REVIEW] plan-challenger: BLOCKED 1(핸들러 없음 → 영구 실패 + 번들 스캔 경로) · 🟡4(최종 실패 후 실행 기록 정리, last_error 테넌트 노출, 동시성이 업로드까지 셈 · -1 미해제, lease 잃은 핸들러) — 팀장
+- 2026-10-25 [DECISION] 로드된 잡 타입만 claim, 핸들러 0개면 유지 작업 · 크론만. 유지 주기에 failed 잡의 미완료 단계 정리. last_error는 사유 코드 + 고정 문구 + 값 패턴 가림. 하트비트 30초 · 오류 허용 60초 · 회수 120초(02장 4.4 수정), ctx.assertLease(). 미분류 오류는 일시(최대 3회). 실행 중 취소는 failed + 코어 환불, 단계 canceled. 크론은 잡 enqueue로만(멱등 키에 orgId + 시각). 폰트 fonts-noto-cjk. Railway 유예 · HEALTHCHECK 미확인 — 팀장
+- 2026-10-25 [DECISION] 동시성(GC-D-04)은 AI 가공 잡만 센다 — gc_release_held_jobs 수정, -1 전체 해제, 고아 보류 잡 취소, 시스템 조직 고정 id, DB 타입 packages/db 이동은 supabase-expert(002 후속)가 선행 — 팀장
+- 2026-10-25 [REQUEST] 승인: worker package.json · tsconfig · build.mjs · src/index.ts, docker-compose worker 서비스, SYSTEM_ORG_ID env, packages/domain 상수(CONCURRENCY_JOB_TYPES · MAX_ATTEMPTS) — 팀장
+- 2026-10-25 [DELEGATE] 구현 worker-expert(opus) — 팀장

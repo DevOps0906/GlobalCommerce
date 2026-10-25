@@ -10,7 +10,7 @@
 - **실제 배치 (팀장)**: 구현 `nextjs-expert` / 호출 모델 frontmatter(fable) / 하위 지시 없음
 - **검증**: 착수 전 `plan-challenger`(인증·권한 계획 공격) · 변경 후 review-expert + `security-auditor`, `test-writer`
 - **확인 위치**: Docker Desktop(GC-D-26)에서 최종 기동 확인; 클라우드 작업 환경은 이미지 저장소 차단으로 PGlite·문법 검사까지
-- **상태**: 대기
+- **상태**: 진행
 
 ## 목표
 
@@ -63,3 +63,5 @@ Mock 로그인(로컬 시드 계정으로 실제 Supabase JWT 발급)과 `proxy.
 
 ## 로그
 
+- 2026-10-25 [PLAN] 001 · 002 완료로 착수. 계획서 먼저(scratchpad/w0-006/PLAN.md) → plan-challenger — 팀장
+- 2026-10-25 [DELEGATE] 계획 nextjs-expert(fable) — 팀장

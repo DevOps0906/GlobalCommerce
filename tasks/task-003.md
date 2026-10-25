@@ -10,7 +10,7 @@
 - **실제 배치 (팀장)**: 구현 `supabase-expert` / 호출 모델 frontmatter(fable) / 하위 지시 없음
 - **검증**: 착수 전 없음(GC-06-002 계획 검토로 갈음) · 변경 후 review-expert + `security-auditor`, `test-writer`
 - **확인 위치**: Docker Desktop(GC-D-26)에서 최종 기동 확인; 클라우드 작업 환경은 이미지 저장소 차단으로 PGlite·문법 검사까지
-- **상태**: 대기
+- **상태**: 진행
 
 ## 목표
 
@@ -57,3 +57,5 @@
 
 ## 로그
 
+- 2026-10-25 [PLAN] 002 커밋으로 착수. Docker 없이 여기와 CI에서 돌도록 PGlite + vitest 역할 매트릭스로 작성, pgTAP(supabase test db)은 Docker Desktop용 선택 — 팀장
+- 2026-10-25 [DELEGATE] 구현 supabase-expert(fable) — 팀장
