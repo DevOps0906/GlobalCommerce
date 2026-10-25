@@ -116,4 +116,7 @@ task 파일을 만들면 작업 ID 를 링크로 바꿉니다 (예: `[GC-06-001]
 
 | 날짜 | 발견한 작업 | 내용 | 제안 |
 |---|---|---|---|
-| | | | |
+| 2026-10-25 | GC-06-002 | 사용자가 직접 고치는 brand · attributes · tags · category_path가 금지어 매처를 거치지 않음 | 021 매처 · 027/028 어댑터가 마켓 payload 전체를 검사 |
+| 2026-10-25 | GC-06-002 | 상품 hard delete 시 market_listings 이력이 cascade로 지워짐 | 상품 삭제는 deleted_at만 허용할지 008/012 착수 때 결정 |
+| 2026-10-25 | GC-06-002 | detail_pages가 verdict null로 ready까지 갈 수 있음(업로드 게이트가 막음) | 024 상세페이지 작업에서 전이 조건 보강 |
+| 2026-10-25 | GC-06-005 | 02장 4.3 단계 키(fetch · commit · build · poll)가 01장 3.8 · packages/domain과 다르고 step_key ≠ 컬럼 node_key | 007 실행 기록 헬퍼 착수 때 02장 정리 |

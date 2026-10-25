@@ -19,17 +19,26 @@ export type MarketApiCode = (typeof MARKET_API_CODES)[number];
 export const IMAGE_QUALITIES = ["draft", "standard", "pro", "ultra"] as const;
 export type ImageQuality = (typeof IMAGE_QUALITIES)[number];
 
+/** `plans.features` 수치 한도에서 -1 은 무제한(SQL `gc_limit`, R1 마이그레이션 "-1 은 무제한"). */
+export const UNLIMITED = -1;
+
 /**
- * 누락 키 기본값 = free 플랜 값(가장 좁은 권한). 키가 빠진 features 로 권한이 넓어지지 않게 한다(실패 시 닫힘).
- * seed.sql 의 free 행과 같다.
+ * 누락 키 기본값 = SQL 이 키가 없을 때 쓰는 값과 같다(supabase/migrations/20261025000002_gc_domain_r1.sql).
+ * - products 0: 상품 수 트리거 `gc_limit(org, 'products', 0)`
+ * - market_slots 1: `gc_market_slot_limit` 의 `gc_limit(org, 'market_slots', 1)`
+ * - concurrency 1: `gc_release_held_jobs` 의 `gc_limit(org, 'concurrency', 1)`
+ * - 불리언 false: `gc_flag` 는 키가 없으면 false(excel_export · zip_export 트리거 등)
+ * - market_api []: 트리거 `coalesce(gc_features -> 'market_api' ? market, false)` → 키가 없으면 업로드 거부
+ * - R1 SQL 이 읽지 않는 키(shorts_per_month 0, image_quality 'draft')는 가장 좁은 값.
+ * test/plans.test.ts 가 SQL 에서 기본값을 읽어 대조한다. 플랜 값(PLANS · seed.sql)과는 다르다.
  */
 export const DEFAULT_FEATURES = {
-  products: 30,
+  products: 0,
   market_slots: 1,
   concurrency: 1,
   excel_export: false,
-  zip_export: true,
-  market_api: ["coupang", "smartstore"] as MarketApiCode[],
+  zip_export: false,
+  market_api: [] as MarketApiCode[],
   image_quality: "draft" as ImageQuality,
   shorts_per_month: 0,
   workflow_canvas: false,
@@ -38,18 +47,29 @@ export const DEFAULT_FEATURES = {
   search: false,
 } as const;
 
-const nonNegativeInt = z.number().int().min(0);
+/** 수치 한도: 0 이상 정수 또는 -1(무제한) */
+const limit = z.number().int().min(UNLIMITED);
+
+/** 모르는 마켓 코드는 버린다(새 마켓이 DB 에 먼저 생겨도 전체 파싱이 깨지지 않게). 배열이 아니면 ZodError. */
+const marketApi = z
+  .array(z.string())
+  .transform((codes) => codes.filter((c): c is MarketApiCode => (MARKET_API_CODES as readonly string[]).includes(c)));
+
+/** 모르는 품질 값은 기본값('draft'). 문자열이 아니면 ZodError. */
+const imageQuality = z
+  .string()
+  .transform((q): ImageQuality => ((IMAGE_QUALITIES as readonly string[]).includes(q) ? (q as ImageQuality) : DEFAULT_FEATURES.image_quality));
 
 export const planFeaturesSchema = z.object({
-  products: nonNegativeInt.default(DEFAULT_FEATURES.products),
-  market_slots: nonNegativeInt.default(DEFAULT_FEATURES.market_slots),
-  concurrency: z.number().int().min(1).default(DEFAULT_FEATURES.concurrency),
+  products: limit.default(DEFAULT_FEATURES.products),
+  market_slots: limit.default(DEFAULT_FEATURES.market_slots),
+  concurrency: limit.default(DEFAULT_FEATURES.concurrency),
   excel_export: z.boolean().default(DEFAULT_FEATURES.excel_export),
   zip_export: z.boolean().default(DEFAULT_FEATURES.zip_export),
-  market_api: z.array(z.enum(MARKET_API_CODES)).default(() => [...DEFAULT_FEATURES.market_api]),
-  image_quality: z.enum(IMAGE_QUALITIES).default(DEFAULT_FEATURES.image_quality),
+  market_api: marketApi.default(() => [...DEFAULT_FEATURES.market_api]),
+  image_quality: imageQuality.default(DEFAULT_FEATURES.image_quality),
   /** R2(O-05 제안값) */
-  shorts_per_month: nonNegativeInt.default(DEFAULT_FEATURES.shorts_per_month),
+  shorts_per_month: limit.default(DEFAULT_FEATURES.shorts_per_month),
   /** R2 */
   workflow_canvas: z.boolean().default(DEFAULT_FEATURES.workflow_canvas),
   /** R2. 01장 4.4절의 `blog_publish` 는 이 키로 읽는다(seed.sql 머리 주석). */
@@ -65,8 +85,8 @@ export type PlanFeatures = z.output<typeof planFeaturesSchema>;
 
 /**
  * `plans.features`(jsonb) → 타입 있는 features.
- * - null · undefined · 빈 객체 → 전부 기본값(free).
- * - 누락 키 → 기본값.
+ * - null · undefined · 빈 객체 → 전부 DEFAULT_FEATURES(권한 없음).
+ * - 누락 키 → 기본값. 모르는 market_api 항목은 버리고, 모르는 image_quality 는 'draft'.
  * - 있는 키의 타입이 틀리면 ZodError(조용히 기본값으로 바꾸지 않는다: DB 오염을 숨기지 않기 위해).
  */
 export function parseFeatures(json: unknown): PlanFeatures {
@@ -76,9 +96,13 @@ export function parseFeatures(json: unknown): PlanFeatures {
 export type LimitKey = "products" | "market_slots" | "concurrency" | "shorts_per_month";
 export type BooleanFeatureKey = "excel_export" | "zip_export" | "workflow_canvas" | "blog" | "sns" | "search";
 
-/** 수치 한도. `market_slots`는 플랜 기본값이며 추가 슬롯(`slot_addons`)은 DB 가 더한다. */
+/** 수치 한도(-1 = 무제한, `isUnlimited`로 판별). `market_slots`는 플랜 기본값이며 추가 슬롯(`slot_addons`)은 DB 가 더한다. */
 export function getLimit(features: PlanFeatures, key: LimitKey): number {
   return features[key];
+}
+
+export function isUnlimited(limitValue: number): boolean {
+  return limitValue === UNLIMITED;
 }
 
 export function isFeatureEnabled(features: PlanFeatures, key: BooleanFeatureKey): boolean {

@@ -1,10 +1,11 @@
 /**
  * 원가 환산 · 마진 계산 · 원화 표시.
  *
- * 정본: products/01_PRD.md GC-F-101(마진 = (판매가 − 원가 환산 − 예상 관부가세 − 배송비) / 판매가,
- *       관부가세 기본 10%, 배송비 기본 3,000원, $39.99 × 1,384.50 = ₩55,366 원 단위 반올림),
- *       GC-F-305 · docs/spec/MARKET_REGISTER_FORM.md 4장(판매가 10원 단위, 계산 예시),
- *       0002_globalcommerce_domain.sql `products_sell_price_check`(sell_price_krw % 10 = 0).
+ * 정본: products/01_PRD.md 79행 GC-F-101 — "마진 = (판매가 − 원가 환산 − 예상 관부가세 − 배송비) / 판매가.
+ *       관부가세 기본 10%, 배송비 기본 3,000원", 수용 기준 "$39.99 × 1,384.50 = ₩55,366(원 단위 반올림)".
+ *       → 반올림은 원가 환산의 원 단위 반올림뿐이다(마진 공식 자체에 10원 반올림은 없다).
+ *       01_PRD.md 108행 GC-F-305 — "판매가(10원 단위)" → 판매가는 입력 검증만 한다(isValidSellPrice),
+ *       DB `products_sell_price_check`(sell_price_krw % 10 = 0)와 같다. 계산 예시는 docs/spec/MARKET_REGISTER_FORM.md 4장.
  *
  * 규칙: 금액은 정수(원). 외화 × 환율은 정수 연산(BigInt)으로 한 번만 반올림한다(부동소수 누적 오차 방지).
  * 환율은 수출입은행 값(`fx_rates`)만 넣는다. LLM 추정 환율 금지(GC-D-16).
@@ -57,19 +58,7 @@ export function applyRate(amountKrw: number, rate: number): number {
   return Number(roundHalfUp(BigInt(amountKrw) * toScaled(rate, RATE_SCALE), RATE_SCALE));
 }
 
-/** 10원 단위 반올림(5원 올림). */
-export function roundTo10(amountKrw: number): number {
-  assertFiniteNonNegative("amountKrw", amountKrw);
-  return Math.round(amountKrw / SELL_PRICE_UNIT_KRW) * SELL_PRICE_UNIT_KRW;
-}
-
-/** 10원 단위 올림(목표 마진을 밑돌지 않게 판매가를 제안할 때). */
-export function ceilTo10(amountKrw: number): number {
-  assertFiniteNonNegative("amountKrw", amountKrw);
-  return Math.ceil(amountKrw / SELL_PRICE_UNIT_KRW) * SELL_PRICE_UNIT_KRW;
-}
-
-/** DB CHECK 와 같은 판매가 규칙: 0 이상 정수, 10원 단위. */
+/** 판매가 규칙(01장 GC-F-305 "10원 단위", DB CHECK 와 같음): 0 이상 정수, 10원 단위. */
 export function isValidSellPrice(amountKrw: number): boolean {
   return Number.isSafeInteger(amountKrw) && amountKrw >= 0 && amountKrw % SELL_PRICE_UNIT_KRW === 0;
 }
@@ -134,23 +123,6 @@ export function calcMargin(input: MarginInput): MarginResult {
     marginRate,
     marginPct: permille / 10,
   };
-}
-
-/**
- * 목표 마진율을 만족하는 최소 판매가(10원 단위 올림).
- * targetMarginRate 는 0 이상 1 미만(예: 0.25 = 25%).
- */
-export function suggestSellPrice(totalCostKrw: number, targetMarginRate: number): number {
-  assertNonNegativeInt("totalCostKrw", totalCostKrw);
-  if (!Number.isFinite(targetMarginRate) || targetMarginRate < 0 || targetMarginRate >= 1) {
-    throw new RangeError(`목표 마진율은 0 이상 1 미만이어야 합니다: ${targetMarginRate}`);
-  }
-  // 판매가 ≥ 총원가 / (1 − m) 를 정수 연산으로: ceil(total * S / (S − mS))
-  const m = toScaled(targetMarginRate, RATE_SCALE);
-  const den = RATE_SCALE - m;
-  const num = BigInt(totalCostKrw) * RATE_SCALE;
-  const minPrice = (num + den - 1n) / den;
-  return ceilTo10(Number(minPrice));
 }
 
 const krwNumberFormat = new Intl.NumberFormat("ko-KR", { maximumFractionDigits: 0 });

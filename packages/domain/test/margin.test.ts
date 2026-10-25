@@ -4,12 +4,9 @@ import {
   DEFAULT_SHIPPING_KRW,
   applyRate,
   calcMargin,
-  ceilTo10,
   convertToKrw,
   formatKRW,
   isValidSellPrice,
-  roundTo10,
-  suggestSellPrice,
 } from "../src/margin";
 
 describe("원가 환산(원 단위 반올림)", () => {
@@ -103,35 +100,13 @@ describe("마진 = (판매가 − 원가 환산 − 관부가세 − 배송비) 
   });
 });
 
-describe("10원 단위", () => {
-  it("반올림 · 올림 · 유효성", () => {
-    expect(roundTo10(55366)).toBe(55370);
-    expect(roundTo10(55364)).toBe(55360);
-    expect(roundTo10(55365)).toBe(55370);
-    expect(ceilTo10(55361)).toBe(55370);
-    expect(ceilTo10(55360)).toBe(55360);
+describe("판매가 10원 단위(01장 GC-F-305)", () => {
+  it("유효성", () => {
     expect(isValidSellPrice(38900)).toBe(true);
+    expect(isValidSellPrice(0)).toBe(true);
     expect(isValidSellPrice(38905)).toBe(false);
     expect(isValidSellPrice(-10)).toBe(false);
     expect(isValidSellPrice(10.0000001)).toBe(false);
-  });
-
-  it("목표 마진 판매가 제안은 목표를 밑돌지 않는다", () => {
-    expect(suggestSellPrice(15000, 0.25)).toBe(20000);
-    expect(suggestSellPrice(25211, 0.35)).toBe(38790); // 38786.15… → 38,790
-    for (const [cost, m] of [
-      [25211, 0.35],
-      [12345, 0.3],
-      [999, 0.5],
-      [1, 0.99],
-    ] as const) {
-      const price = suggestSellPrice(cost, m);
-      expect(price % 10).toBe(0);
-      expect((price - cost) / price).toBeGreaterThanOrEqual(m);
-    }
-    expect(suggestSellPrice(0, 0.3)).toBe(0);
-    expect(() => suggestSellPrice(1000, 1)).toThrow(RangeError);
-    expect(() => suggestSellPrice(1000, -0.1)).toThrow(RangeError);
   });
 });
 

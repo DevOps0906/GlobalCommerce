@@ -14,10 +14,13 @@ export interface PipelineStep {
   key: string;
   /** 화면 단계 이름(`workflow_run_steps.label`) */
   label: string;
-  /** 이 단계가 잡이면 잡 타입(`workflow_run_steps.node_type`). 앱 · 워커 안의 동기 단계는 null */
-  jobType: JobType | null;
-  /** 같은 단계가 여러 잡 타입 중 하나로 실행될 때(계정별 전송, 엑셀/ZIP) */
-  jobTypes?: readonly JobType[];
+  /**
+   * `workflow_run_steps.node_type`(NOT NULL). 잡 1종 단계는 그 잡 타입(05장 "node_type(잡 타입)"),
+   * 잡이 없는 시스템 단계와 여러 잡 중 하나로 실행되는 단계(계정별 전송, 엑셀/ZIP)는 단계 키.
+   */
+  nodeType: string;
+  /** 이 단계를 실행하는 잡 타입(없으면 빈 배열). 01장 3.8절 괄호 안 잡 타입과 같다 */
+  jobTypes: readonly JobType[];
 }
 
 export interface SystemPipeline {
@@ -34,9 +37,9 @@ export const SYSTEM_PIPELINES = {
     key: "sourcing.amazon",
     trigger: "소싱 \"N건 수집 시작\"",
     steps: [
-      { key: "extract_asin", label: "ASIN 추출", jobType: null },
-      { key: "fetch_product", label: "상품 데이터 조회", jobType: "import.amazon" },
-      { key: "save_products", label: "상품 저장", jobType: null },
+      { key: "extract_asin", label: "ASIN 추출", nodeType: "extract_asin", jobTypes: [] },
+      { key: "fetch_product", label: "상품 데이터 조회", nodeType: "import.amazon", jobTypes: ["import.amazon"] },
+      { key: "save_products", label: "상품 저장", nodeType: "save_products", jobTypes: [] },
     ],
     nameExample: "아마존 URL 수집 · 3 / 3건",
   },
@@ -44,9 +47,9 @@ export const SYSTEM_PIPELINES = {
     key: "sourcing.excel",
     trigger: "엑셀 파일 확인 후 저장",
     steps: [
-      { key: "parse", label: "파싱·열 매핑", jobType: null },
-      { key: "validate_rows", label: "행 검증", jobType: null },
-      { key: "save_products", label: "상품 저장", jobType: "import.excel" },
+      { key: "parse", label: "파싱·열 매핑", nodeType: "parse", jobTypes: [] },
+      { key: "validate_rows", label: "행 검증", nodeType: "validate_rows", jobTypes: [] },
+      { key: "save_products", label: "상품 저장", nodeType: "import.excel", jobTypes: ["import.excel"] },
     ],
     nameExample: "오너클랜 엑셀 수집 · 312 / 312행",
   },
@@ -54,10 +57,10 @@ export const SYSTEM_PIPELINES = {
     key: "process",
     trigger: "상품 관리 \"선택 상품 가공\"",
     steps: [
-      { key: "title", label: "상품명", jobType: "title.generate" },
-      { key: "cutout", label: "누끼", jobType: "image.cutout" },
-      { key: "compose", label: "합성", jobType: "image.compose" },
-      { key: "assemble", label: "상세 조립", jobType: "detail.assemble" },
+      { key: "title", label: "상품명", nodeType: "title.generate", jobTypes: ["title.generate"] },
+      { key: "cutout", label: "누끼", nodeType: "image.cutout", jobTypes: ["image.cutout"] },
+      { key: "compose", label: "합성", nodeType: "image.compose", jobTypes: ["image.compose"] },
+      { key: "assemble", label: "상세 조립", nodeType: "detail.assemble", jobTypes: ["detail.assemble"] },
     ],
     nameExample: "선택 상품 가공 · 상품 4개",
   },
@@ -66,8 +69,8 @@ export const SYSTEM_PIPELINES = {
     trigger: "상품 이미지 \"누끼\", \"다시 만들기\"",
     // 한 실행은 둘 중 한 단계만 만든다(02장 4.3절 "cutout 또는 compose", 잡 1개).
     steps: [
-      { key: "cutout", label: "누끼", jobType: "image.cutout" },
-      { key: "compose", label: "합성", jobType: "image.compose" },
+      { key: "cutout", label: "누끼", nodeType: "image.cutout", jobTypes: ["image.cutout"] },
+      { key: "compose", label: "합성", nodeType: "image.compose", jobTypes: ["image.compose"] },
     ],
     nameExample: "누끼 · 상품 1개",
   },
@@ -75,8 +78,8 @@ export const SYSTEM_PIPELINES = {
     key: "detail",
     trigger: "상세페이지 확정",
     steps: [
-      { key: "compliance", label: "금지어 판정", jobType: null },
-      { key: "render_market", label: "마켓 규격 변환", jobType: "detail.render_market" },
+      { key: "compliance", label: "금지어 판정", nodeType: "compliance", jobTypes: [] },
+      { key: "render_market", label: "마켓 규격 변환", nodeType: "detail.render_market", jobTypes: ["detail.render_market"] },
     ],
     nameExample: "상세페이지 확정 · 쿠팡·스마트스토어",
   },
@@ -84,9 +87,9 @@ export const SYSTEM_PIPELINES = {
     key: "upload",
     trigger: "업로드 \"선택한 N건 전송\"",
     steps: [
-      { key: "precheck", label: "사전 검증", jobType: null },
-      { key: "send", label: "계정별 전송", jobType: null, jobTypes: ["upload.coupang", "upload.smartstore"] },
-      { key: "poll_status", label: "상태 확인", jobType: "upload.poll_status" },
+      { key: "precheck", label: "사전 검증", nodeType: "precheck", jobTypes: [] },
+      { key: "send", label: "계정별 전송", nodeType: "send", jobTypes: ["upload.coupang", "upload.smartstore"] },
+      { key: "poll_status", label: "상태 확인", nodeType: "upload.poll_status", jobTypes: ["upload.poll_status"] },
     ],
     nameExample: "쿠팡 2호점 일괄 업로드 · 24 / 24건",
   },
@@ -94,8 +97,8 @@ export const SYSTEM_PIPELINES = {
     key: "export",
     trigger: "엑셀 · ZIP 내보내기",
     steps: [
-      { key: "build_file", label: "파일 생성", jobType: null, jobTypes: ["export.excel", "export.zip"] },
-      { key: "signed_url", label: "서명 URL", jobType: null },
+      { key: "build_file", label: "파일 생성", nodeType: "build_file", jobTypes: ["export.excel", "export.zip"] },
+      { key: "signed_url", label: "서명 URL", nodeType: "signed_url", jobTypes: [] },
     ],
     nameExample: "엑셀 내보내기 · 상품 30개",
   },

@@ -4,8 +4,10 @@ import {
   DEFAULT_FEATURES,
   PLAN_CODES,
   PLANS,
+  UNLIMITED,
   getLimit,
   isFeatureEnabled,
+  isUnlimited,
   isMarketApiAllowed,
   parseFeatures,
   planDisplayName,
@@ -13,27 +15,77 @@ import {
 } from "../src/plans";
 import { readRepoFile } from "./helpers";
 
-describe("parseFeatures — 누락 키 기본값", () => {
-  it("null · undefined · {} 는 전부 free 기본값", () => {
-    for (const input of [null, undefined, {}]) {
-      expect(parseFeatures(input)).toEqual(PLANS.free.features);
+describe("누락 키 기본값 = SQL 기본값(R1 마이그레이션 파싱 대조)", () => {
+  const sql = readRepoFile("supabase/migrations/20261025000002_gc_domain_r1.sql");
+
+  it("gc_limit(org, key, 기본값) 호출의 기본값과 같다", () => {
+    const calls = [...sql.matchAll(/gc_limit\([^,()]+, '(\w+)', (-?\d+)\)/g)].map((m) => [m[1] as string, Number(m[2])] as const);
+    const keys = new Set(calls.map(([k]) => k));
+    expect([...keys].sort()).toEqual(["concurrency", "market_slots", "products"]);
+    for (const [key, def] of calls) {
+      expect(DEFAULT_FEATURES[key as "products" | "market_slots" | "concurrency"], key).toBe(def);
     }
   });
 
-  it("일부 키만 있으면 나머지는 기본값(가장 좁은 권한)", () => {
+  it("gc_flag 는 키가 없으면 false, 쓰는 키의 기본값도 false", () => {
+    expect(sql).toMatch(/function public\.gc_flag[\s\S]*?coalesce\(nullif\(public\.gc_features\(p_org_id\) ->> p_key, ''\)::boolean, false\)/);
+    const flags = [...sql.matchAll(/gc_flag\([^,()]+, '(\w+)'\)/g)].map((m) => m[1] as string);
+    expect(flags.length).toBeGreaterThan(0);
+    for (const key of flags) expect(DEFAULT_FEATURES[key as "excel_export" | "zip_export"], key).toBe(false);
+    for (const key of ["workflow_canvas", "blog", "sns", "search"] as const) expect(DEFAULT_FEATURES[key]).toBe(false);
+  });
+
+  it("market_api 키가 없으면 SQL 이 거부 → 기본값 []", () => {
+    expect(sql).toContain("coalesce(public.gc_features(new.org_id) -> 'market_api' ? new.market, false)");
+    expect(DEFAULT_FEATURES.market_api).toEqual([]);
+  });
+});
+
+describe("parseFeatures — 누락 키 기본값", () => {
+  it("null · undefined · {} 는 전부 DEFAULT_FEATURES", () => {
+    for (const input of [null, undefined, {}]) {
+      expect(parseFeatures(input)).toEqual({
+        products: 0,
+        market_slots: 1,
+        concurrency: 1,
+        excel_export: false,
+        zip_export: false,
+        market_api: [],
+        image_quality: "draft",
+        shorts_per_month: 0,
+        workflow_canvas: false,
+        blog: false,
+        sns: false,
+        search: false,
+      });
+    }
+  });
+
+  it("일부 키만 있으면 나머지는 SQL 기본값", () => {
     const f = parseFeatures({ products: 2000, workflow_canvas: true });
     expect(f.products).toBe(2000);
     expect(f.workflow_canvas).toBe(true);
-    expect(f.market_slots).toBe(DEFAULT_FEATURES.market_slots);
+    expect(f.market_slots).toBe(1);
     expect(f.concurrency).toBe(1);
-    expect(f.excel_export).toBe(false);
-    expect(f.zip_export).toBe(true);
-    expect(f.market_api).toEqual(["coupang", "smartstore"]);
     expect(f.shorts_per_month).toBe(0);
+    expect(f.excel_export).toBe(false);
+    expect(f.zip_export).toBe(false);
+    expect(f.market_api).toEqual([]);
     expect(f.blog).toBe(false);
     expect(f.sns).toBe(false);
     expect(f.search).toBe(false);
     expect(f.image_quality).toBe("draft");
+    expect(DEFAULT_FEATURES.products).toBe(0);
+  });
+
+  it("-1 은 무제한(SQL gc_limit 과 같음), -2 는 거부", () => {
+    const f = parseFeatures({ products: -1, market_slots: -1, concurrency: -1, shorts_per_month: -1 });
+    for (const key of ["products", "market_slots", "concurrency", "shorts_per_month"] as const) {
+      expect(getLimit(f, key)).toBe(UNLIMITED);
+      expect(isUnlimited(getLimit(f, key))).toBe(true);
+    }
+    expect(isUnlimited(getLimit(PLANS.enterprise.features, "products"))).toBe(false);
+    expect(() => parseFeatures({ products: -2 })).toThrow(ZodError);
   });
 
   it("모르는 키는 버린다", () => {
@@ -41,17 +93,25 @@ describe("parseFeatures — 누락 키 기본값", () => {
     expect(f).not.toHaveProperty("future_key");
   });
 
+  it("모르는 enum 값은 전체 실패가 아니라 항목 제거 · 기본값", () => {
+    expect(parseFeatures({ market_api: ["coupang", "gmarket"] }).market_api).toEqual(["coupang"]);
+    expect(parseFeatures({ market_api: ["gmarket"] }).market_api).toEqual([]);
+    expect(parseFeatures({ image_quality: "hyper" }).image_quality).toBe("draft");
+    expect(parseFeatures({ image_quality: "pro" }).image_quality).toBe("pro");
+  });
+
   it("있는 키의 타입이 틀리면 조용히 넘기지 않고 ZodError", () => {
     expect(() => parseFeatures({ products: "30" })).toThrow(ZodError);
+    expect(() => parseFeatures({ products: 1.5 })).toThrow(ZodError);
     expect(() => parseFeatures({ excel_export: "true" })).toThrow(ZodError);
-    expect(() => parseFeatures({ market_api: ["gmarket"] })).toThrow(ZodError);
-    expect(() => parseFeatures({ concurrency: 0 })).toThrow(ZodError);
+    expect(() => parseFeatures({ market_api: "coupang" })).toThrow(ZodError);
+    expect(() => parseFeatures({ image_quality: 3 })).toThrow(ZodError);
   });
 
   it("기본값 배열을 공유하지 않는다(호출 간 변조 방지)", () => {
     const a = parseFeatures({});
     a.market_api.push("coupang");
-    expect(parseFeatures({}).market_api).toEqual(["coupang", "smartstore"]);
+    expect(parseFeatures({}).market_api).toEqual([]);
   });
 });
 

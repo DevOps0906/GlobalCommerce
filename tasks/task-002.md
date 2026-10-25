@@ -67,3 +67,9 @@
 - 2026-10-25 [DONE] 1차 — config.toml(CLI 2.48.3 템플릿), 코어 lite diff 0, 도메인 R1 분리(R2·R3는 037·039·040·042·045·046), seed, PGlite 기반 타입 생성. check 5/5, smoke-r1 114/114 — 팀장
 - 2026-10-25 [DECISION] scripts/db/를 002 소유로, 타입 경로 apps/web/types/supabase.ts. gc_transition_allowed의 R2 행은 유지(이후 작업의 함수 재정의 결합 방지). 공용 참조 표 select 정책의 using(true)는 금지 규칙에 맞춰 authenticated + auth.uid() 검사로 바꾸고 설계 SQL(products 0002)도 함께 고침 — 팀장
 - 2026-10-25 [REQUEST] 승인: 루트 package.json에 pglite devDependency · db:types 스크립트(001 소유 파일, 팀장 승인으로 002가 수정), develop 4절 · 등록부 · 05장 9절 문서 갱신 — 팀장
+- 2026-10-25 [DONE] 커밋 ff03fca — R2 행 복구, 참조 표 정책 auth.uid() 검사, pglite devDependency · db:types, 문서 갱신. check 5/5, smoke-r1 115/115, 원본 smoke 91/91 — 팀장
+- 2026-10-25 [REVIEW] review-expert: REQUEST_CHANGES — 🔴 gc_create_upload_batch가 진행 중 리스팅을 새 배치로 옮김(중복 등록 위험), 🟡 anon 읽기 기준 불일치 · GC008 문구 · 파일명 문서 — 팀장
+- 2026-10-25 [REVIEW] security-auditor: Critical/High 0, Medium 4(다운그레이드 후 슬롯 한도 우회, gc_admin_set_plan 실행자 미기록, 사용자 수정 컬럼의 금지어 미검사, 조직 금지어가 기본 FAIL 약화), Low 4 — 팀장
+- 2026-10-25 [DECISION] DB 정본은 supabase/migrations. 아직 어디에도 적용 전이라 20261025000002를 제자리 수정. 재투입은 failed/rejected/canceled만, 게이트에서 슬롯 초과 GC003, gc_admin_set_plan에 p_actor_id + DB 역할 확인, 조직 금지어는 기본 FAIL 단어를 약화 불가, 게이트가 해지된 자격증명 · 만료 계정 거부. 전역 참조 표는 authenticated만(06장 기준 수정). GC008은 디스패처 보류(202) — 팀장
+- 2026-10-25 [REQUEST] GC-06-021 · 027 · 028: 금지어 매처가 상품명뿐 아니라 brand · attributes · tags · category_path(마켓 payload 전체)를 검사 — 팀장
+- 2026-10-25 [FOUND] 상품 hard delete 시 market_listings 이력 cascade 삭제, detail_pages verdict null 상태 전이(게이트가 막아 영향 낮음) → tasks/README 발견한 문제 — 팀장

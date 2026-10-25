@@ -5,22 +5,14 @@ import { readRepoFile } from "./helpers";
 
 /**
  * 01장 3.8절 표를 읽어 { key, steps: [{ label, jobTypes }] } 로 만든다.
- * 01장은 점 표기 키로 바뀔 예정이라(팀장 결정), 옛 키면 테스트 안에서만 새 키로 바꿔 대조한다.
  */
-const LEGACY_PRD_KEYS: Record<string, string> = {
-  import_amazon: "sourcing.amazon",
-  import_excel: "sourcing.excel",
-  process_products: "process",
-  confirm_detail: "detail",
-  upload_batch: "upload",
-};
 function parsePrd38() {
   const prd = readRepoFile("products/01_PRD.md");
   const start = prd.indexOf("### 3.8 R1 시스템 파이프라인");
   const end = prd.indexOf("\n### ", start + 10);
   const table = prd.slice(start, end);
   return [...table.matchAll(/^\| `([a-z_.]+)` \| [^|\n]+ \| ([^|\n]+) \| [^|\n]+ \|$/gm)].map((m) => ({
-    key: LEGACY_PRD_KEYS[m[1] as string] ?? (m[1] as string),
+    key: m[1] as string,
     steps: (m[2] as string).split("→").map((raw) => {
       const s = raw.trim();
       const paren = s.indexOf("(");
@@ -64,8 +56,7 @@ describe("단계 이름 · 잡 타입 = 01장 3.8절", () => {
     const steps: readonly PipelineStep[] = SYSTEM_PIPELINES[key as keyof typeof SYSTEM_PIPELINES].steps;
     expect(steps.map((s) => s.label)).toEqual(d.steps.map((s) => s.label));
     steps.forEach((s, i) => {
-      const fromCode = s.jobTypes ? [...s.jobTypes] : s.jobType ? [s.jobType] : [];
-      expect(fromCode).toEqual(d.steps[i]?.jobTypes);
+      expect([...s.jobTypes]).toEqual(d.steps[i]?.jobTypes);
     });
   });
 
@@ -82,7 +73,16 @@ describe("단계 이름 · 잡 타입 = 01장 3.8절", () => {
   it("단계의 잡 타입은 모두 실재한다", () => {
     for (const key of SYSTEM_PIPELINE_KEYS) {
       for (const s of SYSTEM_PIPELINES[key].steps as readonly PipelineStep[]) {
-        for (const t of s.jobTypes ?? (s.jobType ? [s.jobType] : [])) expect(JOB_TYPE_NAMES).toContain(t);
+        for (const t of s.jobTypes) expect(JOB_TYPE_NAMES).toContain(t);
+      }
+    }
+  });
+
+  it("모든 단계에 node_type(NOT NULL): 잡 1종이면 잡 타입, 아니면 단계 키", () => {
+    for (const key of SYSTEM_PIPELINE_KEYS) {
+      for (const s of SYSTEM_PIPELINES[key].steps as readonly PipelineStep[]) {
+        expect(s.nodeType.length).toBeGreaterThan(0);
+        expect(s.nodeType).toBe(s.jobTypes.length === 1 ? s.jobTypes[0] : s.key);
       }
     }
   });
