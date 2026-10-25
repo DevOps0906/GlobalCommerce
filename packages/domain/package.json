@@ -1,0 +1,32 @@
+{
+  "name": "@gc/domain",
+  "version": "0.0.0",
+  "private": true,
+  "description": "GlobalCommerce 도메인 상수 · zod 스키마 · 플랜 features · 크레딧 단가 · 마진 · 마켓 규격 · nav (GC-06-005)",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./plans": "./src/plans.ts",
+    "./credits": "./src/credits.ts",
+    "./margin": "./src/margin.ts",
+    "./markets": "./src/markets.ts",
+    "./jobs": "./src/jobs.ts",
+    "./errors": "./src/errors.ts",
+    "./status": "./src/status.ts",
+    "./pipelines": "./src/pipelines.ts",
+    "./nav": "./src/nav.ts",
+    "./schemas": "./src/schemas.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint src test",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5"
+  }
+}
