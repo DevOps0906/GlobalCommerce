@@ -62,3 +62,8 @@
 ## 로그
 
 - 2026-10-25 [PLAN] 사용자 승인("진행해줘")으로 W0 착수 — 팀장
+- 2026-10-25 [DELEGATE] 구현 supabase-expert(fable) — 06장 GC-06-002 행 — 팀장
+- 2026-10-25 [DECISION] 착수 전 plan-challenger 생략: 설계 SQL(products/supabase/monolith)이 이미 PGlite 검사 · smoke 91건을 통과한 복사·분리 작업이라 변경 후 contract-reviewer · security-auditor로 대신함 — 팀장
+- 2026-10-25 [DONE] 1차 — config.toml(CLI 2.48.3 템플릿), 코어 lite diff 0, 도메인 R1 분리(R2·R3는 037·039·040·042·045·046), seed, PGlite 기반 타입 생성. check 5/5, smoke-r1 114/114 — 팀장
+- 2026-10-25 [DECISION] scripts/db/를 002 소유로, 타입 경로 apps/web/types/supabase.ts. gc_transition_allowed의 R2 행은 유지(이후 작업의 함수 재정의 결합 방지). 공용 참조 표 select 정책의 using(true)는 금지 규칙에 맞춰 authenticated + auth.uid() 검사로 바꾸고 설계 SQL(products 0002)도 함께 고침 — 팀장
+- 2026-10-25 [REQUEST] 승인: 루트 package.json에 pglite devDependency · db:types 스크립트(001 소유 파일, 팀장 승인으로 002가 수정), develop 4절 · 등록부 · 05장 9절 문서 갱신 — 팀장

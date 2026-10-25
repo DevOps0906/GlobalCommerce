@@ -61,3 +61,8 @@
 ## 로그
 
 - 2026-10-25 [PLAN] 사용자 승인("진행해줘")으로 W0 착수 — 팀장
+- 2026-10-25 [DELEGATE] 구현 worker-expert(opus) — 06장 GC-06-005 행 — 팀장
+- 2026-10-25 [DONE] 1차 — @gc/domain 10개 모듈, 요청 스키마 19개 .strict(), 테스트 190건(seed·SQL CHECK·00·01·Sidebar 직접 대조) — 팀장
+- 2026-10-25 [FOUND] 문서 불일치 6건: 단가(01 vs 02·04), 파이프라인 키(01 밑줄 vs 02·04·05·SQL 점 표기), features 키(01·04 vs seed), 04 images_confirmed 상태, 크론 payload run_id, 06 nav 경로 — 팀장
+- 2026-10-25 [DECISION] 단가는 01장 4.2(O-09 정본), 파이프라인 키는 DB와 같은 점 표기로 통일하고 01장 3.8을 고침, features 키는 seed 정본, images_confirmed는 활동 kind + images_confirmed_at. 문서는 sub-agent-1이 고침 — 팀장
+- 2026-10-25 [REQUEST] GC-06-004/006 apps/web: 처음 @gc/domain을 import하는 작업이 의존성 추가 + next.config transpilePackages. GC-06-007 services/worker: TS 원본 워크스페이스 패키지 실행(번들 또는 tsx) — 팀장
