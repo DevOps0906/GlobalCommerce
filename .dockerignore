@@ -1,0 +1,21 @@
+# 이미지에 비밀 값 · 불필요한 파일을 넣지 않는다.
+.git
+.github
+.claude
+**/node_modules
+**/.next
+**/dist
+**/coverage
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+docs
+products
+develop
+tasks
+supabase/.temp
+supabase/.branches
+*.log
+.DS_Store

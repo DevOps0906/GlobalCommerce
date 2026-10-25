@@ -1,0 +1,24 @@
+# 의존성 · 빌드 산출물
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# 환경 변수 (실제 값은 커밋하지 않는다. .env.example 만 커밋)
+.env
+.env.*
+!.env.example
+
+# 로컬 도구
+.DS_Store
+*.log
+.vercel/
+.turbo/
+supabase/.branches/
+supabase/.temp/
+test-results/
+playwright-report/

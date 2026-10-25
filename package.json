@@ -1,0 +1,27 @@
+{
+  "name": "globalcommerce",
+  "version": "0.0.0",
+  "private": true,
+  "description": "GlobalCommerce (NOMAD AI Factory) 모노레포 루트",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @gc/web dev",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint && eslint eslint.config.mjs scripts",
+    "test": "pnpm -r --if-present test",
+    "dev:docker": "node scripts/dev/docker.mjs up",
+    "dev:docker:down": "node scripts/dev/docker.mjs down"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "globals": "17.13.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  }
+}
